@@ -12,14 +12,16 @@
     <vs-row>
         <vs-col class="mb-5" vs-lg="6" vs-sm="12">
         <overview-card
-          :statistic="swapGeneratedValueStatistic"
-          statisticTitle="Swaps Value"
+          :statistic="1002"
+          icon="ArrowUpRightIcon"
+          statisticTitle="Referrals"
           :chartOptionsData="swapGeneratedValueOptions"
           :chartSeriesData="swapGeneratedValueSeries"
           name="swap"
           type="area"
-          :showCurrencySymbol="true"
+          :showCurrencySymbol="false"
           :transition="transition"
+          transitionSize="trade-page-row-1"
         ></overview-card>
       </vs-col>
 
@@ -28,10 +30,10 @@
           <span :class="{'hide': !transition}" class="mt-4" v-html="getFrame('text-label-long')"></span>
           <vs-row vs-type="flex" vs-justify="flex-start">
             <vs-col vs-w="10">
-              <h5 :class="{'hide': transition}" class="mt-4">Split Value</h5>
+              <h5 :class="{'hide': transition}" class="mt-4">KYC Statistics</h5>
             </vs-col>
           </vs-row>
-          <span v-if="transition" v-html="getFrame('trade-page-row-2')"></span>
+          <span v-if="transition" v-html="getFrame('trade-page-row-1')"></span>
           <span :class="{'hide': transition}">
             <vue-apex-charts
               class = "swap-chart"
@@ -40,49 +42,6 @@
               width="100%"
               :options="splitValueCountOptions"
               :series="splitValueCountSeries"
-            ></vue-apex-charts>
-          </span>
-        </vx-card>
-      </vs-col>
-    </vs-row>
-
-    <vs-row>
-      <vs-col class="mb-5" vs-lg="6" vs-sm="12">
-        <vx-card>
-          <span :class="{'hide': !transition}" class="mt-4" v-html="getFrame('text-label-long')"></span>
-          <vs-row vs-type="flex" vs-justify="flex-start">
-            <vs-col vs-w="10">
-              <h5 :class="{'hide': transition}" class="mt-4">{{mostExchangedSourceCurrency.title}}</h5>
-            </vs-col>
-          </vs-row>
-          <span v-if="transition" v-html="getFrame('trade-page-row-2')"></span>
-          <span :class="{'hide': transition}">
-            <vue-apex-charts
-              type="bar"
-              height="200"
-              width="100%"
-              :options="mostExchangedSourceCurrency.chartOptions"
-              :series="mostExchangedSourceCurrency.series"
-            ></vue-apex-charts>
-          </span>
-        </vx-card>
-      </vs-col>
-      <vs-col class="mb-5" vs-lg="6" vs-sm="12">
-        <vx-card>
-          <span :class="{'hide': !transition}" class="mt-4" v-html="getFrame('text-label-long')"></span>
-          <vs-row vs-type="flex" vs-justify="flex-start">
-            <vs-col vs-w="10">
-              <h5 :class="{'hide': transition}" class="mt-4">{{mostExchangedDestinationCurrency.title}}</h5>
-            </vs-col>
-          </vs-row>
-          <span v-if="transition" v-html="getFrame('trade-page-row-2')"></span>
-          <span :class="{'hide': transition}">
-            <vue-apex-charts
-              type="bar"
-              height="200"
-              width="100%"
-              :options="mostExchangedDestinationCurrency.chartOptions"
-              :series="mostExchangedDestinationCurrency.series"
             ></vue-apex-charts>
           </span>
         </vx-card>
@@ -441,6 +400,11 @@ export default {
         });
       });
       this.splitValueCountSeries = currencyValues;
+      this.splitValueCountSeries[0].name = "APPROVED";
+      this.splitValueCountSeries[1].name = "PENDING";
+      this.splitValueCountSeries[2].name = "DECLINED";
+      this.splitValueCountSeries[3].name = "SUCCESS";
+
       this.swapGeneratedValueOptions = {
         grid: {
           show: false,
@@ -510,7 +474,7 @@ export default {
                 if (!Number.isInteger(value)) {
                   value = value.toFixed(2);
                 }
-                return self.$store.state.primaryCurrency.symbol + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
               }
               else
                 return self.$store.state.primaryCurrency.symbol + 0;

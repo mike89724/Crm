@@ -47,8 +47,8 @@ const router = new Router({
         // },
         {
           path: '/',
-          name: 'dashboardAnalytics',
-          component: () => import('./views/DashboardAnalytics.vue'),
+          name: 'dashboardSwaps',
+          component: () => import('./views/DashboardSwaps.vue'),
           meta: {
             rule: 'editor'
           }

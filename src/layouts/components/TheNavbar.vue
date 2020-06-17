@@ -31,20 +31,32 @@
         @click="search(searchString)"
       ></vs-button>
 			<!-- I18N -->
-      <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer currency-picker-wrapper">
-        <span :class="{'blue-color': ($store.state.theme == 'light'), 'white-color': ($store.state.theme == 'dark')}" class="cursor-pointer flex i18n-locale">
-          <span class="sm:block ml-2"
-          style="font-weight: 500; margin-right: 0px; font-size: 15px;">
-          {{ primaryCurrency.short_name }}
-          </span>
-          <span>
-            <vs-icon class="currency-dropdown-caret" icon="expand_more"></vs-icon>
-          </span>
-        </span>
-        <vs-dropdown-menu style="max-height:400px;overflow-y:auto;width:18rem !important;display:block;-webkit-box-align:center;align-items:center;position: fixed; top: 80px !important;">
-          <vs-dropdown-item :class="{'blue-color': ($store.state.theme == 'light'), 'white-color': ($store.state.theme == 'dark')}" v-for="(currency, index) in currencies" :key="index" @click="onCurrencySelected(currency)" class="dropdown-items">{{ currency.name }}
-              <span style="float:right;">{{currency.short_name}}</span>
-          </vs-dropdown-item>
+      <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
+        <div class="con-img ml-3">
+          <img
+            v-if="activeUserImg.startsWith('http')"
+            key="onlineImg"
+            :src="activeUserImg"
+            alt="user-img"
+            width="40"
+            height="40"
+            class="rounded-full shadow-md cursor-pointer block" />
+          <img
+            v-else
+            key="localImg"
+            :src="require(`@/assets/images/portrait/small/${activeUserImg}`)"
+            alt="user-img"
+            width="40"
+            height="40"
+            class="rounded-full shadow-md cursor-pointer block" />
+        </div>
+        <vs-dropdown-menu>
+          <ul style="min-width: 9rem">
+            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/pages/profile')"><feather-icon icon="UserIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Profile</span></li>
+            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/apps/todo')"><feather-icon icon="CheckSquareIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Actions</span></li>
+            <vs-divider class="m-1"></vs-divider>
+            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="logout"><feather-icon icon="LogOutIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Logout</span></li>
+          </ul>
         </vs-dropdown-menu>
       </vs-dropdown>
 		</vs-navbar>
@@ -105,6 +117,9 @@ export default {
             else if (locale == "pt") return { flag: "br", lang: 'Portuguese' }
             else if (locale == "fr") return { flag: "fr", lang: 'French' }
             else if (locale == "de") return { flag: "de", lang: 'German' }
+        },
+        activeUserImg() {
+            return JSON.parse(localStorage.getItem('userInfo')).photoURL || this.$store.state.AppActiveUser.img;
         }
     },
     mounted() {
@@ -126,6 +141,23 @@ export default {
       }
     },
     methods: {
+      logout() {
+            // if user is logged in via auth0
+            if (this.$auth.profile) this.$auth.logOut();
+
+            // if user is looged in via firebase
+            const firebaseCurrentUser = firebase.auth().currentUser
+
+            if (firebaseCurrentUser) {
+                firebase.auth().signOut().then(() => {
+                    this.$router.push('/pages/login')
+                    localStorage.removeItem('userInfo');
+                })
+            }
+            // Change role on logout. Same value as initialRole of acj.js
+            this.$acl.change('admin')
+            localStorage.removeItem('userRole');
+        },
         async onCurrencySelected(currency) {
           await this.$store.dispatch("setPrimaryCurrency", currency);
         },

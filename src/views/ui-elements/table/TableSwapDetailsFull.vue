@@ -135,14 +135,9 @@
                 <vs-row class="mt-3">
                   <vs-col :style="(updatedWidth > 768)?'padding-left: 0;':''" vs-w="12">
                     <vs-row vs-type="flex" vs-justify="space-between">
-                      <vs-col :style="(updatedWidth > 768)?'padding-left: 0;':''" vs-w="8" vs-align="center" vs-justify="center">
-                        <expandable-row-table 
-                          :distribution="swap.distribution"
-                          :source_currency="swap.source_currency.short_name"
-                          :destination_currency="swap.destination_currency.short_name"
-                          :source_amount="swap.source_amount"
-                          :destination_amount="swap.destination_amount"
-                        ></expandable-row-table>
+                      <vs-col class="flex" :style="(updatedWidth > 768)?'padding-left: 0;':''" vs-w="8" vs-align="center" vs-justify="space-around">
+                        <vs-button color="primary" type="filled">Approve</vs-button>
+                        <vs-button color="danger" type="filled">Decline</vs-button>
                       </vs-col>
                       <vs-col style="flex-direction: column; justify-content: space-evenly;" vs-type="flex" vs-align="center" vs-w="4">
                         <vs-row vs-justify="center" vs-align="center">

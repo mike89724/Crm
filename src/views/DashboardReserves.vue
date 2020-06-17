@@ -10,39 +10,6 @@
 <template>
   <div id="dashboard-reserves">
     <!-- GENERAL RESERVE INFO -->
-    <vs-row vs-type="flex" vs-justify="space-between">
-      <vs-col class="mb-5" vs-sm="12" vs-md="6" vs-lg="6" vs-xl="6">
-        <overview-card
-          :iconRight="true"
-          icon="ArrowUpRightIcon"
-          :statistic="totalReserveValueStatistic"
-          :showCurrencySymbol="true"
-          statisticTitle="Total Reserve Value"
-          :chartOptionsData="totalReserveValueOptions"
-          :chartSeriesData="totalReserveValueSeries"
-          type="area"
-          name="reserve"
-          :transition="transition"
-          transitionSize="reserve-page-row-1"
-        ></overview-card>
-      </vs-col>
-
-      <vs-col class="mb-5" vs-sm="12" vs-md="6" vs-lg="6" vs-xl="6">
-        <overview-card
-          :iconRight="true"
-          icon="ArrowUpRightIcon"
-          :statistic="totalReserveCountStatistic"
-          statisticTitle="Total Reserve Count"
-          :chartOptionsData="totalReserveCountOptions"
-          :chartSeriesData="totalReserveCountSeries"
-          type="area"
-          name="reserves_count"
-          :transition="transition"
-          transitionSize="reserve-page-row-1"
-        ></overview-card>
-      </vs-col>
-    </vs-row>
-
     <vs-row>
       <vs-col class="mt-4 mb-4" vs-sm="12" vs-md="6" vs-lg="6">
         <vx-card>
