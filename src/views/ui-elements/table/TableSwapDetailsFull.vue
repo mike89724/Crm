@@ -2,7 +2,7 @@
   <vx-card class="relative" id="table-swap">
     <vs-row vs-type="flex" vs-justify="space-between">
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
-        <h5 class="pt-3 pb-3">SWAP ORDERS</h5>
+        <h5 class="pt-3 pb-3">KYC Requests</h5>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <feather-icon
