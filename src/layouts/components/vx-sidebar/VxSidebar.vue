@@ -54,39 +54,6 @@
                   <div class="footer-box-style">
                     <!-- <template> -->
                       <vs-row vs-type="flex" vs-justify="flex-start" style="padding: 10px 0 10px 7px;">
-                        <vs-col style="display: flex; justify-content: center; align-items: center;" vs-w="2">
-                          <a target="_blank" href="https://t.me/officialnuo">
-                            <vx-tooltip text="Telegram">
-                              <feather-icon style="margin-right: 0 !important;" icon="SendIcon"></feather-icon>
-                            </vx-tooltip>
-                          </a>
-                        </vs-col>
-                        <vs-col style="display: flex; justify-content: center; align-items: center;" vs-w="2">
-                          <a target="_blank" href="https://twitter.com/getnuo">
-                            <vx-tooltip text="Twitter">
-                              <feather-icon style="margin-right: 0 !important;" icon="TwitterIcon"></feather-icon>
-                            </vx-tooltip>
-                          </a>
-                        </vs-col>
-                        <vs-col style="display: flex; justify-content: center; align-items: center;" vs-w="2">
-                          <a target="_blank" href="http://blog.nuo.network/">
-                            <vx-tooltip text="Blog">
-                              <feather-icon style="margin-right: 0 !important;" icon="RssIcon"></feather-icon>
-                            </vx-tooltip>
-                          </a>
-                        </vs-col>
-                      </vs-row>
-                      <vs-row vs-type="flex" vs-justify="flex-start" style="padding: 10px 0 10px 7px;">
-                        <vs-col style="display: flex; justify-content: center; margin-left: 1%; padding-left: 15px;" vs-w="2">
-                          <vx-tooltip style="padding-top: 2px;" :text="(pusher)?'Live Data': 'Static Data'">
-                            <vs-switch class="in-range" v-model="pusher"/>
-                          </vx-tooltip>
-                        </vs-col>
-                        <vs-col style="display: flex; justify-content: center; margin-left: 14px; padding-left: 25px;" vs-w="3">
-                          <label style="font-size: 15px; cursor: pointer;" @click="toggleLiveData" for="">Live Data</label>
-                        </vs-col>
-                      </vs-row>
-                      <vs-row vs-type="flex" vs-justify="flex-start" style="padding: 10px 0 10px 7px;">
                         <vs-col style="display: flex; justify-content: center; margin-left: 1%; padding-left: 15px;" vs-w="2">
                           <vx-tooltip style="padding-top: 2px;" :text="(theme)?'Dark': 'Light'">
                             <vs-switch class="in-range" v-model="theme"/>
@@ -97,15 +64,6 @@
                         </vs-col>
                       </vs-row>
                     <!-- </template> -->
-                    <template class="footerItems" v-for="(footerItem, index) in updatedFooterItems">
-
-                      <!-- IF IT'S SINGLE ITEM -->
-                      <vx-sidebar-item ref="sidebarLink" :featherIcon="footerItem.featherIcon" :key="`footerItem-${index}`" :index="index" :to="footerItem.slug != 'external' ? footerItem.url : ''" :href="footerItem.slug == 'external' ? footerItem.url : ''" :icon="footerItem.icon" :target="footerItem.target" :isDisabled="footerItem.isDisabled">
-                        <span class="truncate">{{ $t(footerItem.i18n) || footerItem.name }}</span>
-                        <vs-chip class="ml-auto" :color="footerItem.tagColor" v-if="footerItem.tag && (isMouseEnter || !reduce)">{{ footerItem.tag }}</vs-chip>
-                      </vx-sidebar-item>
-                    </template>
-
                   </div>
                 </VuePerfectScrollbar>
             </div>
@@ -337,7 +295,7 @@ export default {
 <style lang="scss">
 @import "@/assets/scss/vuesax/components/vxSidebar.scss";
 .logo-custom {
-  width: 65%;
+  width: 30%;
   position: relative;
   top: 10px;
   margin: auto;

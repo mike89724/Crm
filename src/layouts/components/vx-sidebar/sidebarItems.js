@@ -22,52 +22,76 @@
 export default [
   {
     url: '/',
-    name: "Home",
+    name: "KYC",
     slug: "dashboard",
     icon: "HomeIcon",
-    featherIcon: true
+    featherIcon: true,
+    submenu: [
+      {
+        url: '/apps/eCommerce/shop',
+        name: "Pending Requests",
+        slug: "eCommerceShop",
+      },
+      {
+        url: '/apps/eCommerce/wish-list',
+        name: "My Approvals",
+        slug: "eCommerceWishList",
+      }
+    ]
     // i18n: "Home"
   },
   {
     url: '/reserve/overview',
-    name: "Reserves",
+    name: "Affiliates",
     slug: "dashboardReserves",
     icon: "BarChartIcon",
-    featherIcon: true
+    featherIcon: true,
     // i18n: "Reserves"
+    submenu: [
+      {
+        url: '/apps/eCommerce/shop',
+        name: "My Referrals",
+        slug: "eCommerceShop",
+      },
+      {
+        url: '/apps/eCommerce/wish-list',
+        name: "Create Affiliate",
+        slug: "eCommerceWishList",
+      }
+    ]
   },
-  {
-    url: '/loan/overview',
-    name: "Loans",
-    slug: "dashboardLoans",
-    icon: "FileTextIcon",
-    featherIcon: true
-    // i18n: "Loans"
-  },
-  {
-    url: '/trade/overview',
-    name: "Trades",
-    slug: "dashboardTrades",
-    icon: "ZapIcon",
-    featherIcon: true
-    // i18n: "Trades"
-  },
-  {
-    url: '/swap/overview',
-    name: "Swaps",
-    slug: "dashboardSwaps",
-    icon: "ShuffleIcon",
-    featherIcon: true
-    // i18n: "Trades"
-  },
-  {
-    url: '/tokenPrice',
-    name: "TokenPrice",
-    slug: "dashboardTokenPrice",
-    icon: "DollarSignIcon",
-    featherIcon: true
-    // i18n: "TokenPrice"
-  }
+  // {
+  //   url: '/loan/overview',
+  //   name: "Loans",
+  //   slug: "dashboardLoans",
+  //   icon: "FileTextIcon",
+  //   featherIcon: true
+  //   // i18n: "Loans"
+  // },
+  // {
+  //   url: '/trade/overview',
+  //   name: "Trades",
+  //   slug: "dashboardTrades",
+  //   icon: "ZapIcon",
+  //   featherIcon: true
+  //   // i18n: "Trades"
+  // },
+  // {
+  //   url: '/swap/overview',
+  //   name: "Swaps",
+  //   slug: "dashboardSwaps",
+  //   icon: "ShuffleIcon",
+  //   featherIcon: true
+  //   // i18n: "Trades"
+  // },
+  // {
+  //   url: '/tokenPrice',
+  //   name: "TokenPrice",
+  //   slug: "dashboardTokenPrice",
+  //   icon: "DollarSignIcon",
+  //   featherIcon: true
+  //   // i18n: "TokenPrice"
+  // }
   // {
   //   header: "Apps",
   //   i18n: "Apps",
