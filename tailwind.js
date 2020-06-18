@@ -49,6 +49,7 @@ let colors = {
   'white': '#ffffff',
   'grey': '#b8c2cc',
   'grey-light': '#dae1e7',
+  'gray-100': 'rgba(0,0,0,0.2)'
 }
 
 module.exports = {
@@ -227,6 +228,7 @@ module.exports = {
     'tight': 1.25,
     'normal': 1.5,
     'loose': 2,
+    '12': '3rem'
   },
 
 

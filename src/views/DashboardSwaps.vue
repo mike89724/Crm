@@ -22,7 +22,6 @@
         <vs-col class="mb-5" vs-lg="6" vs-sm="12">
         <overview-card
           :statistic="1002"
-          icon="ArrowUpRightIcon"
           statisticTitle="Referrals"
           :chartOptionsData="swapGeneratedValueOptions"
           :chartSeriesData="swapGeneratedValueSeries"

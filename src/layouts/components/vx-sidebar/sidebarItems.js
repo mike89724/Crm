@@ -30,29 +30,29 @@ export default [
     submenu: [
       {
         
-        name: "PENDING REQUESTS",
+        name: "Pending Requests",
         slug: "dashboardTrades",
       },
       {
-        name: "MY APPROVALS",
+        name: "My Approvals",
         slug: "dashboardLoans",
       }
     ]
     // i18n: "Home"
   },
   {
-    name: "AFFILIATES",
+    name: "Affiliates",
     slug: "dashboardReserves",
     icon: "BarChartIcon",
     featherIcon: true,
     // i18n: "Reserves"
     submenu: [
       {
-        name: "MY REFERRALS",
+        name: "My Referrals",
         slug: "dashboardTrades"
       },
       {
-        name: "CREATE AFFILIATES",
+        name: "All Affiliates",
         slug: "dashboardLoans",
       }
     ]
@@ -66,30 +66,30 @@ export default [
     featherIcon: true,
     submenu: [
       {
-        name: "PENDING REQUESTS",
+        name: "Pending Requests",
         slug: "dashboardTrades",
       },
       {
-        name: "MY APPROVALS",
+        name: "My Approvals",
         slug: "dashboardLoans",
       }
     ]
     // i18n: "Home"
   },
   {
-    url: '/trades/overview',
-    name: "AFFILIATES",
-    slug: "dashboardSwaps",
+    url: '/reserve/overview',
+    name: "Affiliates",
+    slug: "dashboardReserves",
     icon: "BarChartIcon",
     featherIcon: true,
     // i18n: "Reserves"
     submenu: [
       {
-        name: "MY REFERRALS",
-        slug: "/?",
+        name: "My Referrals",
+        slug: "dashboardTrades",
       },
       {
-        name: "CREATE AFFILIATE",
+        name: "Create Affiliate",
         slug: "dashboardLoans",
       }
     ]
@@ -114,20 +114,40 @@ export default [
     // i18n: "Home"
   },
   {
-    name: "AFFILIATES",
+    name: "Affiliates",
     slug: "dashboardReserves",
     icon: "BarChartIcon",
     featherIcon: true,
     // i18n: "Reserves"
     submenu: [
       {
-        name: "MY REFERRALS",
+        name: "My Referrals",
         slug: "dashboardTrades",
       },
       {
-        name: "CREATE AFFILIATES",
+        name: "All Affiliates",
         slug: "dashboardLoans",
       }
     ]
-  }
+  },
+  {
+    header: "General"
+  },
+  {
+    url: '/',
+    name: "Access",
+    slug: "dashboard",
+    icon: "HomeIcon",
+    featherIcon: true,
+    submenu: [
+      {
+        name: "Users",
+        slug: "dashboardTrades",
+      },
+      {
+        name: "Roles",
+        slug: "dashboardLoans",
+      }
+    ]
+  },
 ]
