@@ -49,7 +49,8 @@ let colors = {
   'white': '#ffffff',
   'grey': '#b8c2cc',
   'grey-light': '#dae1e7',
-  'gray-100': 'rgba(0,0,0,0.2)'
+  'gray-100': 'rgba(0,0,0,0.2)',
+  'wire-frame': '#DDDBDD'
 }
 
 module.exports = {

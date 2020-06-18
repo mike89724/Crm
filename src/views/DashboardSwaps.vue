@@ -15,6 +15,7 @@
           :title="item.name"
           :amount="item.amount"
           :imageUrl="item.imageUrl"
+          :transition="transition"
         ></transaction-card>
       </vs-col>
     </vs-row>
