@@ -1,3 +1,6 @@
+// new table component for affiliates//
+
+
 <template>
   <vx-card class="relative" id="table-swap">
     <vs-row vs-type="flex" vs-justify="space-between">
@@ -69,7 +72,7 @@
         <vs-table :class="{'mt-5': updatedWidth < 768}" style="width: 100%;" :hoverFlat="false" :data="swaps">
           <template slot="header"></template>
           <template slot="thead">
-            <vs-th><div class="swap-width-acceptable">TIMESTAMP</div></vs-th>
+            <vs-th><div class="swap-width-acceptable">Affiliate</div></vs-th>
             <vs-th class="flex-center"><div class="swap-width-acceptable">USER ID</div></vs-th>
             <vs-th><div class="swap-width-acceptable">EMAIL</div></vs-th>
             <vs-th><div class="swap-width-acceptable">NAME</div></vs-th>

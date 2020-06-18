@@ -9,6 +9,15 @@
 
 <template>
   <div id="dashboard-swaps">
+     <vs-row vs-type="flex" vs-justify="space-evenly" vs-align="center" class="mt-5">
+      <vs-col class="mb-5" vs-sm="12" vs-lg="3" vs-md="6" v-for="(item,index) in transactions" :key="index">
+        <transaction-card
+          :title="item.name"
+          :amount="item.amount"
+          :imageUrl="item.imageUrl"
+        ></transaction-card>
+      </vs-col>
+    </vs-row>
     <vs-row>
         <vs-col class="mb-5" vs-lg="6" vs-sm="12">
         <overview-card
@@ -60,6 +69,7 @@
 <script>
 import VueApexCharts from "vue-apexcharts";
 import OverviewCard from "@/components/statistics-cards/OverviewCard.vue";
+import TransactionCard from "@/components/statistics-cards/TransactionCard.vue";
 import analyticsData from "./ui-elements/card/analyticsData.js";
 import ChangeTimeDurationDropdown from "@/components/ChangeTimeDurationDropdown.vue";
 import apexChatData from "@/views/charts-and-maps/charts/apex-charts/apexChartData.js";
@@ -73,6 +83,7 @@ export default {
       analyticsData: analyticsData,
       apexChatData: apexChatData,
       isImp: false,
+      affiliate: "",
       navbarSearchAndPinList: this.$store.state.navbarSearchAndPinList,
       show: false,
       items: [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -84,6 +95,12 @@ export default {
         "thread: Slot",
         "tbody: Slot",
         "header: Slot"
+      ],
+      transactions: [
+        {name: "KYC APPROVED", amount: 256, imageUrl: "https://nuo-public.s3.ap-south-1.amazonaws.com/trading-competitions/ic_trophy.svg"},
+        {name: "KYC PENDING", amount: 355, imageUrl: "https://nuo-public.s3.ap-south-1.amazonaws.com/trading-competitions/ic_trophy.svg"},
+        {name: "REFERRALS APPROVED", amount: 435, imageUrl: "https://nuo-public.s3.ap-south-1.amazonaws.com/trading-competitions/ic_trophy.svg"},
+        {name: "REFERRALS PENDING", amount: 764, imageUrl: "https://nuo-public.s3.ap-south-1.amazonaws.com/trading-competitions/ic_trophy.svg"},
       ],
       swapGeneratedValueStatistic: "0",
       swapGeneratedValueOptions: {
@@ -266,9 +283,11 @@ export default {
     VueApexCharts,
     ChangeTimeDurationDropdown,
     TableSwapDetailsFull,
-    OverviewCard
+    OverviewCard,
+    TransactionCard
   },
   async mounted() {
+    this.affiliate = this.$route.params.name
     if (this.$store.state.theme == "dark") {
       this.$vs.loading({
         color: "#fff",

@@ -59,7 +59,7 @@ export default [
   },
   {header: 'Juno'},
   {
-    url: '/',
+    url: '/swaps/overview',
     name: "KYC",
     slug: "dashboard",
     icon: "HomeIcon",
@@ -77,16 +77,16 @@ export default [
     // i18n: "Home"
   },
   {
-    url: '/reserve/overview',
+    url: '/trades/overview',
     name: "AFFILIATES",
-    slug: "dashboardReserves",
+    slug: "dashboardSwaps",
     icon: "BarChartIcon",
     featherIcon: true,
     // i18n: "Reserves"
     submenu: [
       {
         name: "MY REFERRALS",
-        slug: "dashboardTrades",
+        slug: "/?",
       },
       {
         name: "CREATE AFFILIATE",

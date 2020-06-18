@@ -31,6 +31,7 @@
         @click="search(searchString)"
       ></vs-button>
 			<!-- I18N -->
+      <div class="ml-4">{{userName}}</div>
       <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
         <div class="con-img ml-3">
           <img
@@ -117,6 +118,9 @@ export default {
             else if (locale == "pt") return { flag: "br", lang: 'Portuguese' }
             else if (locale == "fr") return { flag: "fr", lang: 'French' }
             else if (locale == "de") return { flag: "de", lang: 'German' }
+        },
+        userName() {
+          return JSON.parse(localStorage.getItem('userInfo')).displayName
         },
         activeUserImg() {
             return JSON.parse(localStorage.getItem('userInfo')).photoURL || this.$store.state.AppActiveUser.img;
