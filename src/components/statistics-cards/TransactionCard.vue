@@ -10,7 +10,7 @@
             <div class="flex justify-between">
               <div class="text-5xl bold text-left p-3" v-if="!transition">{{amount}}</div>
               <!-- SHIMMER TRANSITION -->
-              <div v-else class="skeleton-box bg-wire-frame inline-block h-8 w-1/2 mt-10"></div>
+              <div v-else class="skeleton-box inline-block h-8 w-1/3 mt-10"></div>
             </div>
         </vx-card>
     </div>
@@ -36,6 +36,7 @@ export default {
   .skeleton-box {
     display: inline-block;
     position: relative;
+    background: #DDDBDD;
     &::after {
       content: '';
       transform: translateX(-100%);
@@ -52,6 +53,30 @@ export default {
         rgba(#fff, 0)
       );
       animation: shimmer 2s infinite;
+    }
+  }
+  .theme-dark {
+    .skeleton-box {
+      display: inline-block;
+      position: relative;
+      background: gray;
+      &::after {
+        content: '';
+        transform: translateX(-100%);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: linear-gradient(
+          90deg,
+          rgba(#262c49, 0) 0,
+          rgba(#262c49, 0.2) 20%,
+          rgba(#262c49, 0.5) 60%,
+          rgba(#262c49, 0)
+        );
+        animation: shimmer 2s infinite;
+      }
     }
   }
   @keyframes shimmer {
