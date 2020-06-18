@@ -30,7 +30,55 @@
         icon="search"
         @click="search(searchString)"
       ></vs-button>
-			<!-- I18N -->
+
+      <!-- PROFILE EDIT DIALOG BOX -->
+      <vs-prompt
+        vs-title="Edit Profile"
+        :vs-active.sync="editProfileActive"
+        accept-text="Save"
+        @accept="acceptProfile"
+      >
+        <div class="prompt-dialog">
+          <div class="flex justify-center align-center">
+            <img
+              v-if="activeUserImg.startsWith('http')"
+              key="onlineImg"
+              :src="activeUserImg"
+              alt="user-img"
+              width="40"
+              height="40"
+              class="rounded-full shadow-md cursor-pointer inline" />
+            <img
+              v-else
+              key="localImg"
+              :src="require(`@/assets/images/portrait/small/${activeUserImg}`)"
+              alt="user-img"
+              width="40"
+              height="40"
+              class="rounded-full shadow-md cursor-pointer inline" /><span class="leading-12">&nbsp;{{userName}}</span>
+          </div>
+          <div class="flex justify-between">
+            <div class="w-5/12">
+              <div class="p-2">First Name</div>
+              <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="firstName"/>
+            </div>
+            <div class="w-5/12">
+              <div class="p-2">Last Name</div>
+              <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="lastName"/>
+            </div>
+          </div>
+          <div>
+            <div class="p-2">E-mail</div>
+            <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="email" v-validate="'required|email'"/>
+          </div>
+          <div>
+            <div class="p-2">Contact Number</div>
+            <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-validate="'required|digits:10'" v-model="contactNumber"/>
+          </div>
+        </div>
+      </vs-prompt>
+
+
       <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
         <div class="con-img ml-3">
           <img
@@ -52,8 +100,8 @@
         </div>
         <vs-dropdown-menu>
           <ul style="min-width: 9rem">
-            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/pages/profile')"><feather-icon icon="UserIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Profile</span></li>
-            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/apps/todo')"><feather-icon icon="CheckSquareIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Actions</span></li>
+            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="editProfileActive = !editProfileActive"><feather-icon icon="UserIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Profile</span></li>
+            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/apps/todo')"><feather-icon icon="CheckSquareIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">History</span></li>
             <vs-divider class="m-1"></vs-divider>
             <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="logout"><feather-icon icon="LogOutIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Logout</span></li>
           </ul>
@@ -89,12 +137,20 @@ export default {
     },
     data() {
         return {
-          searchString: ""
+          searchString: "",
+          editProfileActive: false,
+          firstName: "",
+          lastName: "",
+          email: "",
+          contactNumber: ""
         }
     },
     created() { 
     },
     computed: {
+        userName() {
+          return JSON.parse(localStorage.getItem('userInfo')).displayName;
+        },
         ...mapState({
             primaryCurrency: "primaryCurrency",
         }),
@@ -141,6 +197,9 @@ export default {
       }
     },
     methods: {
+      acceptProfile() {
+
+      },
       logout() {
             // if user is logged in via auth0
             if (this.$auth.profile) this.$auth.logOut();

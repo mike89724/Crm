@@ -40,7 +40,7 @@
 
                           <!-- IF IT'S SINGLE ITEM -->
                           <vx-sidebar-item ref="sidebarLink" :featherIcon="sidebarItem.featherIcon" :key="`sidebarItem-${index}`" v-if="!sidebarItem.submenu" :index="index" :to="sidebarItem.slug != 'external' ? sidebarItem.url : ''" :href="sidebarItem.slug == 'external' ? sidebarItem.url : ''" :icon="sidebarItem.icon" :target="sidebarItem.target" :isDisabled="sidebarItem.isDisabled">
-                              <span v-show="!sidebarItemsMin" class="truncate">{{ $t(sidebarItem.i18n) || sidebarItem.name }}</span>
+                              <span v-show="!sidebarItemsMin" class="truncate capitalize">{{ $t(sidebarItem.i18n) || sidebarItem.name }}</span>
                               <vs-chip class="ml-auto" :color="sidebarItem.tagColor" v-if="sidebarItem.tag && (isMouseEnter || !reduce)">{{ sidebarItem.tag }}</vs-chip>
                           </vx-sidebar-item>
 
@@ -320,7 +320,7 @@ export default {
   .footer-box-style {
     margin: 8px 16px;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 }
 .footer-box-style {
@@ -328,7 +328,7 @@ export default {
   display: flex;
   height: auto;
   padding-bottom: 50px;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 .top-items {
   margin: 0 16px;
