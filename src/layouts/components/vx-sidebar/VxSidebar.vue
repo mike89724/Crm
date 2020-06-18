@@ -318,13 +318,13 @@ export default {
 }
 @media only screen and (max-height: 600px) {
   .footer-box-style {
-    margin: 8px 16px;
+    margin: 8px 16px 8px;
     display: flex;
     flex-direction: column;
   }
 }
 .footer-box-style {
-  margin: 0 16px;
+  margin: 32px 16px 0;
   display: flex;
   height: auto;
   padding-bottom: 50px;
