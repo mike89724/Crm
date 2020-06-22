@@ -24,7 +24,7 @@ export default [
   {
     url: '/',
     name: "KYC",
-    slug: "dashboardSwaps",
+    slug: "home",
     icon: "HomeIcon",
     featherIcon: true,
     submenu: [

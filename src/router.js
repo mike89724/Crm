@@ -47,8 +47,8 @@ const router = new Router({
         // },
         {
           path: '/',
-          name: 'dashboardSwaps',
-          component: () => import('./views/DashboardSwaps.vue'),
+          name: 'home',
+          component: () => import('./views/Home.vue'),
           meta: {
             rule: 'editor'
           }
@@ -63,8 +63,8 @@ const router = new Router({
         },
         {
           path: '/swap/overview',
-          name: 'dashboardSwaps',
-          component: () => import('./views/DashboardSwaps.vue'),
+          name: 'home',
+          component: () => import('./views/Home.vue'),
           meta: {
             rule: 'editor'
           }
@@ -200,7 +200,7 @@ const router = new Router({
         {
           path: '/swap/orders',
           name: 'swapfull',
-          component: () => import('./views/ui-elements/table/TableSwapDetailsFull.vue'),
+          component: () => import('./views/ui-elements/table/RecordSliderTableWithoutButton.vue'),
           meta: {
             rule: 'editor'
           }

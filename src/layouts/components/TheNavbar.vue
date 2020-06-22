@@ -47,17 +47,17 @@
               key="onlineImg"
               :src="activeUserImg"
               alt="user-img"
-              width="40"
-              height="40"
-              class="rounded-full shadow-md cursor-pointer inline" />
+              width="80"
+              height="80"
+              class="rounded-full shadow-md cursor-pointer inline profile-pic" />
             <img
               v-else
               key="localImg"
               :src="require(`@/assets/images/portrait/small/${activeUserImg}`)"
               alt="user-img"
-              width="40"
-              height="40"
-              class="rounded-full shadow-md cursor-pointer inline" /><span class="leading-12">&nbsp;{{userName}}</span>
+              width="80"
+              height="80"
+              class="rounded-full shadow-md cursor-pointer inline profile-pic" /><span class="leading-12">&nbsp;{{userName}}</span>
           </div>
           <div class="flex justify-between">
             <div class="w-5/12">
@@ -303,6 +303,11 @@ export default {
 }
 </script>
 <style lang="scss">
+.profile-pic {
+  &:hover {
+    display: none;
+  }
+}
 .currency-dropdown-caret {
   position: relative;
   top: 3px;

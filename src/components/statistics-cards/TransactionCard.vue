@@ -18,12 +18,9 @@
 
 <script>
 export default {
-    data(){
-
-    },
     props: {
       title: String,
-      amount: Number,
+      amount: String,
       imageUrl: String,
       transition: Boolean
     },

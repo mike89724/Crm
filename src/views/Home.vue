@@ -9,60 +9,18 @@
 
 <template>
   <div id="dashboard-swaps">
-     <vs-row vs-type="flex" vs-justify="space-evenly" vs-align="center" class="mt-5">
-      <vs-col class="mb-5" vs-sm="12" vs-lg="3" vs-md="6" v-for="(item,index) in transactions" :key="index">
-        <transaction-card
-          :title="item.name"
-          :amount="item.amount"
-          :imageUrl="item.imageUrl"
-          :transition="transition"
-        ></transaction-card>
-      </vs-col>
-    </vs-row>
-    <vs-row>
-        <vs-col class="mb-5" vs-lg="6" vs-sm="12">
-        <overview-card
-          :statistic="1002"
-          statisticTitle="Referrals"
-          :chartOptionsData="swapGeneratedValueOptions"
-          :chartSeriesData="swapGeneratedValueSeries"
-          name="swap"
-          type="area"
-          :showCurrencySymbol="false"
-          :transition="transition"
-          transitionSize="trade-page-row-1"
-        ></overview-card>
-      </vs-col>
-
-      <vs-col class="mb-5" vs-lg="6" vs-sm="12">
-        <vx-card>
-          <span :class="{'hide': !transition}" class="mt-4" v-html="getFrame('text-label-long')"></span>
-          <vs-row vs-type="flex" vs-justify="flex-start">
-            <vs-col vs-w="10">
-              <h5 :class="{'hide': transition}" class="mt-4">KYC Statistics</h5>
-            </vs-col>
-          </vs-row>
-          <span v-if="transition" v-html="getFrame('trade-page-row-1')"></span>
-          <span :class="{'hide': transition}">
-            <vue-apex-charts
-              class = "swap-chart"
-              type="area"
-              height="175"
-              width="100%"
-              :options="splitValueCountOptions"
-              :series="splitValueCountSeries"
-            ></vue-apex-charts>
-          </span>
-        </vx-card>
-      </vs-col>
-    </vs-row>
-
-    <!-- Tabs of Trade,  Loan and Reserve Details-->
-    <vs-row>
-      <vs-col vs-w="12">
-        <TableSwapDetailsFull :showPagination="false" :showFilters="false"></TableSwapDetailsFull>
-      </vs-col>
-    </vs-row>
+    <div class="flex justify-between my-10">
+      <generic-card :width="componentWidth(uiComponents[0].length)" :value="uiComponents[0][index].value" :name="uiComponents[0][index].name" :title="uiComponents[0][index].title" :key="index" v-for="(componentItem, index) in uiComponents[0]">
+      </generic-card>
+    </div>
+    <div class="flex justify-between my-10">
+      <generic-card :width="componentWidth(uiComponents[1].length)" :value="uiComponents[1][index].value" :name="uiComponents[1][index].name" :title="uiComponents[1][index].title" :key="index" v-for="(componentItem, index) in uiComponents[1]">
+      </generic-card>
+    </div>
+    <div class="flex justify-between my-10">
+      <generic-card :width="componentWidth(uiComponents[2].length)" :value="uiComponents[2][index].value" :name="uiComponents[2][index].name" :title="uiComponents[2][index].title" :key="index" v-for="(componentItem, index) in uiComponents[2]">
+      </generic-card>
+    </div>
   </div>
 </template>
 
@@ -73,12 +31,15 @@ import TransactionCard from "@/components/statistics-cards/TransactionCard.vue";
 import analyticsData from "./ui-elements/card/analyticsData.js";
 import ChangeTimeDurationDropdown from "@/components/ChangeTimeDurationDropdown.vue";
 import apexChatData from "@/views/charts-and-maps/charts/apex-charts/apexChartData.js";
-import TableSwapDetailsFull from "./ui-elements/table/TableSwapDetailsFull.vue";
+import RecordSliderTableWithoutButton from "./ui-elements/table/RecordSliderTableWithoutButton.vue";
+import PageService from "@/services/PageService.js";
 import {getFrame} from "@/utils/util.js";
+import GenericCard from "@/components/statistics-cards/GenericUICard.vue";
 
 export default {
   data() {
     return {
+      uiComponents: [],
       transition: true,
       analyticsData: analyticsData,
       apexChatData: apexChatData,
@@ -276,63 +237,21 @@ export default {
             }
           }
         }
-      }
+      },
+      
     };
   },
   components: {
     VueApexCharts,
     ChangeTimeDurationDropdown,
-    TableSwapDetailsFull,
+    RecordSliderTableWithoutButton,
     OverviewCard,
-    TransactionCard
+    TransactionCard,
+    GenericCard
   },
   async mounted() {
-    this.affiliate = this.$route.params.name
-    if (this.$store.state.theme == "dark") {
-      this.$vs.loading({
-        color: "#fff",
-        container: "#dashboard-swaps",
-        type: "sound"
-      });
-    } else {
-      this.$vs.loading({
-        container: "#dashboard-swaps",
-        type: "sound"
-      });
-    }
-    await this.getSwapsOverviewData();
-    this.generateSwapValueAndSplitChart();
-    this.generatemostExchangedSourceCurrency();
-    this.generatemostExchangedDestinationCurrency();
-    // setTimeout(
-      // () => {
-        this.$vs.loading.close('#dashboard-swaps > .con-vs-loading');
-      // }
-    // , 1000000);
+    await this.getHomeData();
     this.transition = false;
-  },
-  watch: {
-    "$store.state.primaryCurrency": async function() {
-      if (this.$store.state.theme == "dark") {
-        this.$vs.loading({
-          color: "#fff",
-          container: "#dashboard-swaps",
-          type: "sound"
-        });
-      } else {
-        this.$vs.loading({
-          container: "#dashboard-swaps",
-          type: "sound"
-        });
-      }
-      await this.getSwapsOverviewData();
-      this.initializeValues();
-      this.generateSwapValueAndSplitChart();
-      this.generatemostExchangedSourceCurrency();
-      this.generatemostExchangedDestinationCurrency();
-      this.$forceUpdate();
-      this.$vs.loading.close('#dashboard-swaps > .con-vs-loading');
-    }
   },
   methods: {
     initializeValues() {
@@ -365,9 +284,21 @@ export default {
       let isDark = this.$store.state.theme == 'dark';
       return getFrame(size, isDark);
     },
-    async getSwapsOverviewData() {
-      await this.$store.dispatch("fetchSwapsOverview", this.$store.state.primaryCurrency.short_name);
-      // await this.$store.dispatch("fetchSwapsOverview");
+    componentWidth(items) {
+      if (items == 1) {
+        return "100%";
+      } else {
+        return ((100 - (items-1)*5)/parseFloat(items)).toString() + "%";
+      }
+    },
+    async getHomeData() {
+      var response;
+      try {
+        response = await PageService.getPageDetails("home");
+        this.uiComponents = response.data.data.components;
+      } catch(err) {
+        console.log(err);
+      }
     },
     generateSwapValueAndSplitChart() {
       let self = this;

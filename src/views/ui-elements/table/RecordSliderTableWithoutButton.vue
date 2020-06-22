@@ -2,7 +2,7 @@
   <vx-card class="relative" id="table-swap">
     <vs-row vs-type="flex" vs-justify="space-between">
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
-        <h5 class="pt-3 pb-3">KYC Requests</h5>
+        <h5 class="pt-3 pb-3">{{title}}</h5>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <feather-icon
@@ -12,166 +12,34 @@
           icon="ArrowUpRightIcon"
         ></feather-icon>
       </vs-col>
-      <vs-col style="display: flex; justify-content: flex-end;" vs-lg="4" vs-sm="12" vs-xs="12" vs-type="flex">
-        <vs-row vs-type="flex" vs-align="center" vs-lg-justify="flex-end" vs-sm-justify="space-around">
-          <vs-col class="status-wrapper" style="display: flex;" vs-align="center" vs-lg="6" vs-sm="6">
-            <vs-select
-              v-if="showFilters"
-              placeholder="Filter"
-              :width="filterWidth"
-              autocomplete
-              class="selectExample status-picker"
-              v-model="status"
-            >
-              <vs-select-item
-                :key="index"
-                :value="item.value"
-                :text="item.text"
-                v-for="(item,index) in statusNames"
-              />
-            </vs-select>
-          </vs-col>
-          <vs-col :style="(updatedWidth < 900)?'justify-content: flex-start; padding-left: 0; padding-right: 0;':'justify-content: flex-end;'" style="display: flex; justify-content: flex-end;" vs-align="center" vs-lg="6" vs-sm="6">
-            <date-range-picker
-              v-if="showFilters"
-              class="date-range-picker-box"
-              :class="{'theme-dark': $store.state.theme == 'dark'}"
-              ref="picker"
-              v-model="dateRange"
-              :minDate="minDate"
-              :maxDate="maxDate"
-              :opens="opens"
-            >
-              <div slot="input" slot-scope="picker" style="min-width: 130px; align-text: center;">
-                {{ picker.startDate | date }} - {{ picker.endDate | date }}
-                <vs-icon class="currency-dropdown-caret" icon="expand_more"></vs-icon>
-              </div>
-            </date-range-picker>
-          </vs-col>
-        </vs-row>
-      </vs-col>
     </vs-row>
     <vs-row>
-      <vs-col vs-w="12" v-if="showTable" :class="{'hide': !transition, 'show': transition}">
-        <vs-table style="width: 100%;" :hoverFlat="false" :data="frames">
+      <vs-col vs-w="12" :class="{'hide': transition, 'show': !transition}">
+        <vs-table :class="{'mt-5': updatedWidth < 768}" style="width: 100%;" :hoverFlat="false" :data="value['main_values']">
           <template slot="header"></template>
           <template slot="thead">
-            <vs-th>LOADING</vs-th>
+            <vs-th v-for="(column, index) in value.main_columns" :key="index">
+              {{column.name}}
+            </vs-th>
           </template>
           <template slot-scope="{data}">
-            <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td v-html="getFrame('row')"></vs-td>
-            </vs-tr>
-          </template>
-        </vs-table>
-      </vs-col>
-      <vs-col vs-w="12" :class="{'hide': transition, 'show': !transition}">
-        <vs-table :class="{'mt-5': updatedWidth < 768}" style="width: 100%;" :hoverFlat="false" :data="swaps">
-          <template slot="header"></template>
-          <template slot="thead">
-            <vs-th><div class="swap-width-acceptable">TIMESTAMP</div></vs-th>
-            <vs-th class="flex-center"><div class="swap-width-acceptable">USER ID</div></vs-th>
-            <vs-th><div class="swap-width-acceptable">EMAIL</div></vs-th>
-            <vs-th><div class="swap-width-acceptable">NAME</div></vs-th>
-            <vs-th><div class="swap-width-acceptable">METABASE LINK</div></vs-th>
-            <vs-th><div class="swap-width-acceptable">AMOUNT</div></vs-th>
-            <vs-th><div class="swap-width-acceptable">STATUS</div></vs-th>
-          </template>
-          <template v-if="swaps != null" slot-scope="{data}">
-            <vs-tr class="row-expand" v-for="(swap,index) in data" :key="index">
-              <vs-td :data="currentTime">
-                <div class="swap-width-acceptable">
-                  {{formatDate(swap.added_on)}}
-                </div>
-              </vs-td>
-              <vs-td class="center-align">
-                <transition name="list" mode="out-in">
-                  <div class="swap-width-acceptable m-auto">
-                      {{swap.id}}
-                  </div>
-                </transition>
-              </vs-td>
-              <vs-td style="white-space: nowrap"
-              >
-              <div class="disp-fl"><img class="image-icon" :src="swap.source_currency.image_url">{{swap.source_currency.short_name}}/{{swap.destination_currency.short_name}}
-              </div>
-              </vs-td>
-
-              <vs-td class="center-align">
-                <div class="swap-width-acceptable">
-                  {{convertToPreciseFloat(swap.slippage, 2)}}%
-                </div>
-              </vs-td>
-
-              <vs-td class="center-align" >
-                <div class="swap-width-acceptable">
-                  {{swap.source_amount | handleFloat(4)}} {{swap.source_currency.short_name}}
-                </div>
-              </vs-td>
-              <vs-td class="center-align">
-                <div class="swap-width-acceptable">
-                  {{swap.destination_amount | handleFloat(4)}} {{swap.destination_currency.short_name}}
-                </div>
-              </vs-td>
-              <vs-td v-if="swap.status === 1" class="center-align">
-                <div class="swap-width-acceptable">
-                  <div class="rounded-border oval-green"></div>
-                  Completed
-                </div>
-              </vs-td>
-               <vs-td v-if="swap.status === 2" class="center-align">
-                <div class="swap-width-acceptable">
-                  <div class="rounded-border oval-red"></div>
-                  Failed
-                </div>
-              </vs-td>
-               <vs-td v-if="swap.status != 1 && swap.status != 2" class="center-align">
-                <div class="swap-width-acceptable">
-                  <div class="rounded-border oval-blue"></div>
-                  Pending
-                </div>
+            <vs-tr class="row-expand" v-for="(item, index) in data" :key="index">
+              <vs-td v-for="(rowItem, i) in item" :key="i">
+                {{rowItem}}
               </vs-td>
               <template class="expand-user" slot="expand">
-                <vs-row class="mt-3">
-                  <vs-col :style="(updatedWidth > 768)?'padding-left: 0;':''" vs-w="12">
-                    <vs-row vs-type="flex" vs-justify="space-between">
-                      <vs-col class="flex" :style="(updatedWidth > 768)?'padding-left: 0;':''" vs-w="8" vs-align="center" vs-justify="space-around">
-                        <vs-button color="primary" type="filled">Approve</vs-button>
-                        <vs-button color="danger" type="filled">Decline</vs-button>
-                      </vs-col>
-                      <vs-col style="flex-direction: column; justify-content: space-evenly;" vs-type="flex" vs-align="center" vs-w="4">
-                        <vs-row vs-justify="center" vs-align="center">
-                          <vs-col :style="(updatedWidth > 768)?'padding-left: 0;':''" class="mt-1" vs-lg="1" vs-sm="1">
-                            <feather-icon class="expanded-icons" style="color: rgb(53, 118, 253);" icon="DollarSignIcon"></feather-icon>
-                          </vs-col>
-                          <vs-col class="pl-2" vs-align="flex-end" vs-lg="11" vs-sm="11">
-                            <span style="position: relative; bottom: 2px;">Fee: {{$store.state.primaryCurrency.symbol}}{{swap.final_fee_primary| handleFloat(4)}}</span>
-                          </vs-col>
-                        </vs-row>
-                        <vs-row vs-justify="center" vs-align="center">
-                          <vs-col :style="(updatedWidth > 768)?'padding-left: 0;':''" class="mt-1" vs-lg="1" vs-sm="1">
-                            <feather-icon class="expanded-icons" style="color: rgb(53, 118, 253);" icon="SendIcon"></feather-icon>
-                          </vs-col>
-                          <vs-col class="pl-2" vs-align="flex-end" vs-lg="11" vs-sm="11">
-                            <vs-row vs-type="flex" vs-justify="space-between" vs-align="center">
-                              <vs-col style="padding: 0;" vs-w="12">
-                                <span style="position: relative; bottom: 2px;">Swapped On: {{getHypenatedDate(swap.added_on)}}</span>
-                                <!-- <a
-                                target="_blank"
-                                :href="tr.etherscan_url"
-                                >
-                                  <span v-if="tr.etherscan_url" class="icon-wrapper etherscan-link">
-                                    <vs-icon size="12px" icon="launch" class="launch-icon"></vs-icon>
-                                  </span>
-                                </a> -->
-                              </vs-col>
-                            </vs-row>
-                          </vs-col>
-                        </vs-row>
-                      </vs-col>
-                    </vs-row>
-                  </vs-col>
-                </vs-row>
+                <div class="flex justify-between w-full">
+                  <div class="w-1/2 flex flex-col justify-around">
+                    <div class="text-left pl-5" v-for="(item, index) in value.secondary_columns.filter(v => v.name)" :key="index">
+                      <span v-if="item.name">{{item.name}}:</span><span v-if="item.name && value.secondary_values[index]">{{value.secondary_values[index]}}</span>
+                    </div>
+                  </div>
+                  <div class="w-1/2">
+                    <div class="text-right pr-5 my-5" v-for="(item, index) in value.secondary_columns" :key="index">
+                      <vs-button v-if="item.name == null" :color="item.tag == 'approve_kyc'?'success':'danger'">{{item.tag}}</vs-button>
+                    </div>
+                  </div>
+                </div>
               </template>
             </vs-tr>
           </template>
@@ -233,17 +101,15 @@ import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 
 export default {
   props: {
-    showPagination: {
-      type: Boolean,
-      default: true
+    title: {
+      type: String,
+      required: true
     },
-    showFilters: {
-      type: Boolean,
-      default: true
+    name: {
+      type: String
     },
-    showExpandable: {
-      type: Boolean,
-      default: true
+    value: {
+      type: Object
     }
   },
   data() {
@@ -299,99 +165,8 @@ export default {
     DateRangePicker
   },
   async mounted() {
-    var pusher = new Pusher(pusherKey, {
-      cluster: "ap2",
-      forceTLS: true
-    });
-    var channel = pusher.subscribe("order");
-    var self = this;
-    channel.bind("exchange", function(data) {
-      if (self.$store.state.pusher) {
-        let orderId = data.id;
-        var orderIdMatch = false;
-        let matchedIndex = -1;
-        self.swaps.forEach((item, index, arr) => {
-          if (item.id == orderId) {
-            orderIdMatch = true;
-            arr[index] = data;
-            matchedIndex = index;
-          }
-        });
-        if (!orderIdMatch) {
-          var statusNew = data.status
-          let statusMatch = (self.status == "" || self.status == "All")?true:self.matchStatus(self.status, statusNew);
-          if (statusMatch) {
-            self.swaps.unshift(data);
-            self.orderCount++;
-            self.showTable = false;
-            self.$nextTick(() => {
-              self.showTable = true;
-            });
-            setTimeout(() => {
-              let topRow = document.getElementById(data.id);
-              if (topRow)
-                topRow.className += " fade-1";
-            }, 100);
-            setTimeout(() => {
-              let topRow = document.getElementById(data.id);
-              if (topRow)
-                topRow.className += " fade-2";
-            }, 300);
-            setTimeout(() => {
-              let topRow = document.getElementById(data.id);
-              if (topRow)
-                topRow.className += " fade-3";
-            }, 600);
-            setTimeout(() => {
-              let topRow = document.getElementById(data.id);
-              if (topRow)
-                topRow.className += " fade-4";
-            }, 900);
-            setTimeout(() => {
-              let topRow = document.getElementById(data.id);
-              if (topRow)
-                topRow.className += " fade-5";
-            }, 1200);
-          }
-        } else {
-          self.swaps.splice(matchedIndex, 1);
-          self.swaps.unshift(data);
-          self.showTable = false;
-          self.$nextTick(() => {
-            self.showTable = true;
-          });
-          setTimeout(() => {
-            let topRow = document.getElementById(data.id);
-            if (topRow)
-              topRow.className += " fade-1";
-          }, 100);
-          setTimeout(() => {
-            let topRow = document.getElementById(data.id);
-            if (topRow)
-              topRow.className += " fade-2";
-          }, 300);
-          setTimeout(() => {
-            let topRow = document.getElementById(data.id);
-            if (topRow)
-              topRow.className += " fade-3";
-          }, 600);
-          setTimeout(() => {
-            let topRow = document.getElementById(data.id);
-            if (topRow)
-              topRow.className += " fade-4";
-          }, 900);
-          setTimeout(() => {
-            let topRow = document.getElementById(data.id);
-            if (topRow)
-              topRow.className += " fade-5";
-          }, 1200);
-        }
-      }
-    });
     await this.getSwapOrders();
     this.transition = false;
-    setInterval(this.setCurrentTime, 1000);
-    setInterval(this.expandRowAfterClick, 10);
   },
   updated() {
     var self = this;
