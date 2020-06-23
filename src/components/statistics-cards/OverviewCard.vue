@@ -37,8 +37,44 @@ export default {
   data() {
     return {
       series: [],
-      options: {}
-    };
+      options: {
+         chart: {
+            animations: {
+              enabled: false
+            }
+          },
+          yaxis: {
+            labels: {
+              show: false
+            }
+          },
+          xaxis: {
+            labels: {
+              show: false
+            },
+            axisBorder: {
+              show: false
+            }
+          },
+          grid: {
+            show: true,
+            xaxis: {
+              lines: {
+                show: false
+              }
+            },
+            yaxis: {
+              lines: {
+                show: false
+              }
+            },
+            row: {
+              colors: ["transparent", "transparent"], // takes an array which will be repeated on columns
+              opacity: 0.1
+            }
+          }
+        }
+      }
   },
   props: {
     value: Object,
@@ -74,8 +110,46 @@ export default {
       });
     }
     this.options = {
-      categories: this.value["graph_value"]["x"]
-    };
+      categories: this.value["graph_value"]["x"],
+      chart: {
+        animations: {
+          enabled: false
+        },
+        toolbar: {
+          show: false
+        }
+      },
+      yaxis: {
+        labels: {
+          show: false
+        }
+      },
+      xaxis: {
+        labels: {
+          show: false
+        },
+        axisBorder: {
+          show: false
+        }
+      },
+      grid: {
+        show: true,
+        xaxis: {
+          lines: {
+            show: false
+          }
+        },
+        yaxis: {
+          lines: {
+            show: false
+          }
+        },
+        row: {
+          colors: ["transparent", "transparent"], // takes an array which will be repeated on columns
+          opacity: 0.1
+        }
+      }
+    }
   },
   mounted() {
     console.log(this.$refs["overview"]);

@@ -5,6 +5,18 @@
         <h5 class="pt-3 pb-3">{{title}}</h5>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
+        <vs-button class="text-xs" @click="activePrompt1 = true">ADD</vs-button>
+        <vs-prompt                   
+          :vs-is-valid="validName"
+          :vs-active.sync="activePrompt1">
+          <div class="con-exemple-prompt">
+            
+            <vs-input placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
+            <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
+              Fields can not be empty please enter the data
+            </vs-alert>
+          </div>
+        </vs-prompt>
         <feather-icon
           v-if="!showFilters"
           @click="openNewRoute()"
@@ -28,7 +40,9 @@
                     </div>
                   </template>
                   <v-list class="vs-con-tbody vs-table--tbody" style="position: absolute; width: max-content;" id="competition">
-                    <div class="p-2 cursor-pointer" @click="activePrompt2 = true"><feather-icon icon="FilterIcon"></feather-icon>FILTER</div>
+                    <div class="p-2 cursor-pointer" @click="activePrompt2 = true">
+                      <feather-icon icon="FilterIcon"></feather-icon>FILTER
+                    </div>
                     <vs-prompt
                      
                       :vs-is-valid="validName"
@@ -147,6 +161,7 @@ export default {
       rowClicked: 0,
       transition: true,
       activePrompt2:false,
+      activePrompt1:false,
       val:'',
       valMultipe: {
         value1:'',
