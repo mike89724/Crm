@@ -19,7 +19,35 @@
           <template slot="header"></template>
           <template slot="thead">
             <vs-th v-for="(column, index) in value.main_columns" :key="index">
-              {{column.name}}
+               <div>
+                <v-menu offset-y>
+                  <template v-slot:activator="{ on }">
+                    <div type="border" v-on="on" class="cursor-pointer outline">
+                          {{column.name}}
+                          <feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>
+                    </div>
+                  </template>
+                  <v-list class="vs-con-tbody vs-table--tbody" style="position: absolute; width: max-content;" id="competition">
+                    <div class="p-2 cursor-pointer" @click="activePrompt2 = true"><feather-icon icon="FilterIcon"></feather-icon>FILTER</div>
+                    <vs-prompt
+                     
+                      :vs-is-valid="validName"
+                      :vs-active.sync="activePrompt2">
+                      <div class="con-exemple-prompt">
+                        
+                        <vs-input placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
+                        <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
+                          Fields can not be empty please enter the data
+                        </vs-alert>
+                      </div>
+                    </vs-prompt>
+                    <div  class="cursor-pointer flex p-2">
+                    <div><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
+                    <div class="ml-5"><feather-icon class="h-3" icon="ChevronsUpIcon"></feather-icon>DESCENDING</div>
+                    </div>
+                  </v-list>
+                </v-menu>   
+              </div>
             </vs-th>
           </template>
           <template slot-scope="{data}">
@@ -118,6 +146,12 @@ export default {
       currentTime: (new Date()).getMilliseconds(),
       rowClicked: 0,
       transition: true,
+      activePrompt2:false,
+      val:'',
+      valMultipe: {
+        value1:'',
+        value2:''
+      },
       showTable: true,
       activePage: 1,
       pageSize: 20,
@@ -189,6 +223,25 @@ export default {
     }
   },
   methods: {
+    acceptAlert(){
+      this.clearValMultiple();
+      this.$vs.notify({
+        color:'success',
+        title:'Accept Selected',
+        text:'search successful'
+      })
+    },
+    close(){
+      this.$vs.notify({
+        color:'danger',
+        title:'Closed',
+        text:'You closed search!'
+      })
+    },
+    clearValMultiple() {
+      this.valMultipe.value1 = "";
+      this.valMultipe.value2 = "";
+    },
     gainsCurrency(row) {
       if (row.gains_new >= 0 && row.position_type == "LONG") {
         return row.market_currency.short_name;
@@ -428,6 +481,9 @@ export default {
 }
 .disp-fl {
   display: flex;
+}
+.feather {
+  height: 10px;
 }
 .image-icon {
   margin-right: 5%;
