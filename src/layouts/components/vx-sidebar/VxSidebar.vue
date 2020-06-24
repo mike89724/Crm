@@ -15,8 +15,85 @@
             <div @mouseenter="sidebarMouseEntered" @mouseleave="sidebarMouseLeave">
                 <div class="header-sidebar flex items-end justify-between" slot="header">
                     <div class="logo flex items-center">
-                        <img @click="openHomeRoute()" :src="logo" alt="logo" class="logo-custom cursor-pointer" v-if="logo">
-                        <span class="logo-text" v-show="isMouseEnter || !reduce" v-if="title">{{ title }}</span>
+
+      <!-- PROFILE EDIT DIALOG BOX -->
+                      <vs-prompt
+                        vs-title="Edit Profile"
+                        :vs-active.sync="editProfileActive"
+                        accept-text="Save"
+                        @accept="acceptProfile"
+                      >
+                        <div class="prompt-dialog">
+                          <div class="flex justify-center align-center">
+                            <img
+                              v-if="activeUserImg.startsWith('http')"
+                              key="onlineImg"
+                              :src="activeUserImg"
+                              alt="user-img"
+                              width="80"
+                              height="80"
+                              class="rounded-full shadow-md cursor-pointer inline profile-pic" />
+                            <img
+                              v-else
+                              key="localImg"
+                              :src="require(`@/assets/images/portrait/small/${activeUserImg}`)"
+                              alt="user-img"
+                              width="80"
+                              height="80"
+                              class="rounded-full shadow-md cursor-pointer inline profile-pic" /><span class="leading-12">&nbsp;{{userName}}</span>
+                          </div>
+                          <div class="flex justify-between">
+                            <div class="w-5/12">
+                              <div class="p-2">First Name</div>
+                              <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="firstName"/>
+                            </div>
+                            <div class="w-5/12">
+                              <div class="p-2">Last Name</div>
+                              <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="lastName"/>
+                            </div>
+                          </div>
+                          <div>
+                            <div class="p-2">E-mail</div>
+                            <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="email" v-validate="'required|email'"/>
+                          </div>
+                          <div>
+                            <div class="p-2">Contact Number</div>
+                            <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-validate="'required|digits:10'" v-model="contactNumber"/>
+                          </div>
+                        </div>
+                      </vs-prompt>
+
+
+
+                      <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
+                        <div class="con-img ml-3">
+                          <img
+                            v-if="activeUserImg.startsWith('http')"
+                            key="onlineImg"
+                            :src="activeUserImg"
+                            alt="user-img"
+                            width="40"
+                            height="40"
+                            class="rounded-full shadow-md cursor-pointer block" />
+                          <img
+                            v-else
+                            key="localImg"
+                            :src="require(`@/assets/images/portrait/small/${activeUserImg}`)"
+                            alt="user-img"
+                            width="40"
+                            height="40"
+                            class="rounded-full shadow-md cursor-pointer block" />
+                        </div>
+                        <vs-dropdown-menu>
+                          <ul style="min-width: 9rem">
+                            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="editProfileActive = !editProfileActive"><feather-icon icon="UserIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Profile</span></li>
+                            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/apps/todo')"><feather-icon icon="CheckSquareIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">History</span></li>
+                            <vs-divider class="m-1"></vs-divider>
+                            <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="logout"><feather-icon icon="LogOutIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Logout</span></li>
+                          </ul>
+                        </vs-dropdown-menu>
+                      </vs-dropdown>
+                      <div class="ml-4">{{userName}}</div>
                     </div>
                     <div>
                         <template v-if="showCloseButton">
@@ -106,6 +183,11 @@ export default {
         }
     },
     data: () => ({
+        editProfileActive: false,
+        firstName: "",
+        lastName: "",
+        email: "",
+        contactNumber: "",
         clickNotClose: false, // disable close sidebar on outside click
         reduce: false, // determines if sidebar is reduce - component property
         showCloseButton: false, // show close button in smaller devices
@@ -119,6 +201,15 @@ export default {
         showShadowBottom: false,
     }),
     computed: {
+        userName() {
+          return JSON.parse(localStorage.getItem('userInfo')).displayName;
+        },
+        userName() {
+          return JSON.parse(localStorage.getItem('userInfo')).displayName
+        },
+        activeUserImg() {
+            return JSON.parse(localStorage.getItem('userInfo')).photoURL || this.$store.state.AppActiveUser.img;
+        },
         theme: {
           get: function() {
             if (this.$store.state.theme == "dark") {
@@ -209,6 +300,23 @@ export default {
         }
     },
     methods: {
+      logout() {
+        // if user is logged in via auth0
+        if (this.$auth.profile) this.$auth.logOut();
+
+        // if user is looged in via firebase
+        const firebaseCurrentUser = firebase.auth().currentUser
+
+        if (firebaseCurrentUser) {
+            firebase.auth().signOut().then(() => {
+                this.$router.push('/pages/login')
+                localStorage.removeItem('userInfo');
+            })
+        }
+        // Change role on logout. Same value as initialRole of acj.js
+        this.$acl.change('admin')
+        localStorage.removeItem('userRole');
+        },
       toggleLiveData() {
         this.$store.dispatch("togglePusher", !this.$store.state.pusher);
       },

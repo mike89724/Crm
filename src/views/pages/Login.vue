@@ -50,8 +50,12 @@
                                     <vs-checkbox v-model="checkbox_remember_me" class="mb-3">Remember Me</vs-checkbox>
                                     <router-link to="/pages/forgot-password">Forgot Password?</router-link>
                                 </div>
+                                <vue-recaptcha ref="recaptcha" size="large" :sitekey="sitekey" @verify="validate" @expired="onCaptchaExpired" />
                                 <div class="flex justify-center my-5">
-                                  <vs-button class="float-right" :disabled="!validateForm" @click="login">Login</vs-button>
+                                    <vs-button v-google-signin-button="clientId" class="google-signin-button"> Continue with Google</vs-button>
+                                </div>
+                                <div class="flex justify-center my-5">
+                                    <vs-button class="float-right" :disabled="!validateForm" @click="login">Login</vs-button>
                                 </div>
                             </div>
                         </div>
@@ -63,21 +67,29 @@
 </template>
 
 <script>
-
+import VueRecaptcha from 'vue-recaptcha' 
 export default {
     data() {
         return {
             email: 'demo@demo.com',
+            clientId: 'cliend-id',
             password: 'demodemo',
-            checkbox_remember_me: false
+            checkbox_remember_me: false,
+            sitekey: '6LcH26gZAAAAAKuAk8fwvTNdeIVMLQdM_hzKJpBK'
         }
     },
+    components: { VueRecaptcha },
     computed: {
         validateForm() {
             return !this.errors.any() && this.email != '' && this.password != '';
         },
     },
     methods: {
+        onCaptchaExpired () { this.$refs.recaptcha.reset() },
+        validate () { this.$refs.recaptcha.execute() },
+        submit: function(token) {
+            console.log(token);
+        },
         login() {
             const payload = {
                 checkbox_remember_me: this.checkbox_remember_me,
@@ -88,6 +100,14 @@ export default {
                 notify: this.$vs.notify
             }
             this.$store.dispatch('auth/loginAttempt', payload);
+        },
+
+        OnGoogleAuthSuccess (idToken) {
+            console.log(idToken)
+      // Receive the idToken and make your magic with the backend
+        },
+        OnGoogleAuthFail (error) {
+            console.log(error)
         },
 
         loginAuth0() {

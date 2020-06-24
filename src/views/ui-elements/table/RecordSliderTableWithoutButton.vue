@@ -5,8 +5,9 @@
         <h5 class="pt-3 pb-3">{{title}}</h5>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
-        <vs-button class="text-xs" @click="activePrompt1 = true">ADD</vs-button>
-        <vs-prompt                   
+        <vs-button class="text-xs" @click="activePrompt1 = true" style="margin-top: -3.5%; margin-right: 10%;">ADD</vs-button>
+        <vs-prompt   
+          vs-title=""                
           :vs-is-valid="validName"
           :vs-active.sync="activePrompt1">
           <div class="con-exemple-prompt">
@@ -34,20 +35,21 @@
                <div>
                 <v-menu offset-y>
                   <template v-slot:activator="{ on }">
-                    <div type="border" v-on="on" class="cursor-pointer outline">
+                    <div type="border" :href="`#${index}`" v-on="on" class="cursor-pointer outline">
                           {{column.name}}
                           <feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>
                     </div>
                   </template>
-                  <v-list class="vs-con-tbody vs-table--tbody" style="position: absolute; width: max-content;" id="competition">
-                    <div class="p-2 cursor-pointer" @click="activePrompt2 = true">
+                  <v-list class="vs-con-tbody vs-table--tbody absolute" style="width: max-content;">
+                    <div class="p-2 cursor-pointer" @click="activePrompt = true">
                       <feather-icon icon="FilterIcon"></feather-icon>FILTER
                     </div>
                     <vs-prompt
-                     
+                      :id="`${index}`"
+                      vs-title=""
                       :vs-is-valid="validName"
-                      :vs-active.sync="activePrompt2">
-                      <div class="con-exemple-prompt">
+                      :vs-active.sync="activePrompt">
+                      <div class="">
                         
                         <vs-input placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
                         <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
@@ -78,7 +80,7 @@
                   </div>
                   <div class="w-1/2">
                     <div class="text-right pr-5 my-5" v-for="(item, index) in value.secondary_columns" :key="index">
-                      <vs-button v-if="item.name == null" :color="item.tag == 'approve_kyc'?'success':'danger'">{{item.tag}}</vs-button>
+                      <vs-button @click="activePrompt = true" v-if="item.name == null" :color="item.tag == 'approve_kyc'?'success':'danger'">{{item.tag}}</vs-button>
                     </div>
                   </div>
                 </div>
@@ -160,7 +162,7 @@ export default {
       currentTime: (new Date()).getMilliseconds(),
       rowClicked: 0,
       transition: true,
-      activePrompt2:false,
+      activePrompt:false,
       activePrompt1:false,
       val:'',
       valMultipe: {
