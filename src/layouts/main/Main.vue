@@ -10,6 +10,17 @@
 
 <template>
     <div class="layout--main" :class="[navbarClasses, footerClasses, {'app-page': isAppPage}]">
+      <vs-prompt
+        vs-title="Enter Authentication Code"
+        :vs-active.sync="activePrompt">
+        <div class="">
+          
+          <vs-input placeholder="Enter"  class="mt-4 mb-2 w-full" />
+          <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
+            Fields can not be empty please enter the data
+          </vs-alert>
+        </div>
+      </vs-prompt>
       <div v-if="showBanner" :class="bgColorClass" id="bannerInfo">
         <span style="color: rgb(255, 255, 255); font-weight: 400;">
           <span style="font-weight: 500;">
@@ -37,7 +48,7 @@
             /> -->
         <!-- <vx-sidebar :sidebarItems="sidebarItems" :logo="require('@/assets/images/logo/logo.png')" title="NuoScan" parent=".layout--main" /> -->
         <!-- <vx-sidebar :sidebarItems="sidebarItems" :logo="'https://nuo-public.s3.ap-south-1.amazonaws.com/nuo_web/images/nuo-logo.png'" title="Scan" parent=".layout--main" /> -->
-        <vx-sidebar :sidebarItems="sidebarItems" :footerItems="footerItems" :logo="require('@/assets/images/logo/logo-color-demibold.png')" title="" parent=".layout--main" />
+        <vx-sidebar v-if="promptShown == true" :sidebarItems="sidebarItems" :footerItems="footerItems" :logo="require('@/assets/images/logo/logo-color-demibold.png')" title="" parent=".layout--main" />
 
         <div id="content-area" :class="[contentAreaClass, {'show-overlay': bodyOverlay}]">
 
@@ -46,11 +57,9 @@
             <div class="content-wrapper">
 
                 <!-- <the-navbar :navbarColor="navbarColor" :currencies="currencies" :class="[{'text-white': isNavbarDark && !isThemeDark}, {'text-base': !isNavbarDark && isThemeDark}]">
-                </the-navbar> -->
-
-                
+                </the-navbar> -->                
                 <div class="router-view mt-22">
-                    <div class="router-content" :class="{'mt-0': navbarType == 'hidden'}">
+                    <div v-if="promptShown == true" class="router-content" :class="{'mt-0': navbarType == 'hidden'}">
                         <transition :name="routerTransition">
                         <div class="router-header flex flex-wrap items-center mb-6" v-if="$route.meta.breadcrumb || $route.meta.pageTitle">
                             <div class="content-area__heading" :class="{'pr-4 border-0 md:border-r border-t-0 border-b-0 border-l-0 border-solid border-grey-light' : $route.meta.breadcrumb}">
@@ -102,6 +111,8 @@ const VxTour = () => import('@/components/VxTour.vue')
 export default {
     data() {
         return {
+            promptShown: false,
+            activePrompt: false,
             navbarType: themeConfig.navbarType || 'floating',
             navbarColor: themeConfig.navbarColor || '#fff',
             footerType: themeConfig.footerType || 'static',
@@ -146,6 +157,11 @@ export default {
         }
     },
     watch: {
+        activePrompt(val) {
+          if(val == false) {
+            this.promptShown = true;
+          }
+        },
         '$route'() {
             this.routeTitle = this.$route.meta.pageTitle;
             var wrapperDivs = document.querySelectorAll('.vx-navbar-wrapper');
@@ -334,6 +350,11 @@ export default {
         this.getFiatCurrencies();
     },
     mounted() {
+      this.activePrompt = true;
+      // this.$nextTick => {}
+      // if(this.activePrompt = false) {
+      //   this.promptShown = true;
+      // }
       this.routeTitle = this.$route.meta.pageTitle;
       var wrapperDivs = document.querySelectorAll('.vx-navbar-wrapper');
       var length = wrapperDivs.length;

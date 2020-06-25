@@ -65,7 +65,7 @@
 
 
 
-                      <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
+                      <vs-dropdown v-if="promtShown == true" vs-custom-content vs-trigger-click class="cursor-pointer">
                         <div class="con-img ml-3">
                           <img
                             v-if="activeUserImg.startsWith('http')"
@@ -185,6 +185,8 @@ export default {
     data: () => ({
         editProfileActive: false,
         firstName: "",
+        activePrompt: false,
+        promtShown: false,
         lastName: "",
         email: "",
         contactNumber: "",
@@ -389,6 +391,8 @@ export default {
         VuePerfectScrollbar,
     },
     mounted() {
+        // this.activePrompt = true;
+        // this.promtShown = true;
         this.$nextTick(() => {
             window.addEventListener('resize', this.handleWindowResize);
         });

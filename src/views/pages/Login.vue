@@ -51,9 +51,9 @@
                                     <router-link to="/pages/forgot-password">Forgot Password?</router-link>
                                 </div>
                                 <vue-recaptcha ref="recaptcha" size="large" :sitekey="sitekey" @verify="validate" @expired="onCaptchaExpired" />
-                                <div class="flex justify-center my-5">
+                                <!-- <div class="flex justify-center my-5">
                                     <vs-button v-google-signin-button="clientId" class="google-signin-button"> Continue with Google</vs-button>
-                                </div>
+                                </div> -->
                                 <div class="flex justify-center my-5">
                                     <vs-button class="float-right" :disabled="!validateForm" @click="login">Login</vs-button>
                                 </div>
