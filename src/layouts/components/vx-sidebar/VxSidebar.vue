@@ -64,8 +64,8 @@
                       </vs-prompt>
 
 
-
-                      <vs-dropdown v-if="promtShown == true" vs-custom-content vs-trigger-click class="cursor-pointer">
+                      <div class="ml-4">{{userName}}</div>
+                      <vs-dropdown  vs-custom-content vs-trigger-click class="cursor-pointer">
                         <div class="con-img ml-3">
                           <img
                             v-if="activeUserImg.startsWith('http')"
@@ -84,7 +84,7 @@
                             height="40"
                             class="rounded-full shadow-md cursor-pointer block" />
                         </div>
-                        <vs-dropdown-menu>
+                        <vs-dropdown-menu style="z-index: 9999999">
                           <ul style="min-width: 9rem">
                             <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="editProfileActive = !editProfileActive"><feather-icon icon="UserIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">Profile</span></li>
                             <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white" @click="$router.push('/apps/todo')"><feather-icon icon="CheckSquareIcon" svgClasses="w-4 h-4"></feather-icon> <span class="ml-2">History</span></li>
@@ -93,7 +93,6 @@
                           </ul>
                         </vs-dropdown-menu>
                       </vs-dropdown>
-                      <div class="ml-4">{{userName}}</div>
                     </div>
                     <div>
                         <template v-if="showCloseButton">
