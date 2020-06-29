@@ -12,7 +12,7 @@
     <div class="layout--main" :class="[navbarClasses, footerClasses, {'app-page': isAppPage}]">
       <vs-prompt
         vs-title="Enter Google Auth Code"
-        @vs-cancel="close()"
+        @vs-buttonAccept="'OK'"
         @vs-close="close()"
         :vs-active.sync="activePrompt">
         <div class="">
@@ -275,7 +275,12 @@ export default {
     },
     methods: {
         close() {
-          this.router.push({ path: '/pages/login'})
+          this.$vs.notify({
+            color:'danger',
+            title:'Closed',
+            text:'You close a dialog!'
+          })
+          // this.$router.push({ path: '/pages/login'})
         },
         registerGA() {
           var category = "banner";
@@ -356,6 +361,7 @@ export default {
     },
     mounted() {
       this.activePrompt = true;
+      // this.activePrompt = false;
       // this.$nextTick => {}
       // if(this.activePrompt = false) {
       //   this.promptShown = true;
