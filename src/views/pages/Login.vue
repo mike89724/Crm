@@ -75,7 +75,7 @@ export default {
             clientId: 'cliend-id',
             password: 'demodemo',
             checkbox_remember_me: false,
-            sitekey: '6LcH26gZAAAAAKuAk8fwvTNdeIVMLQdM_hzKJpBK'
+            sitekey: '6LfMvKkZAAAAAPewkKAVKPWhrRIUNe0p8rkmnuCB'
         }
     },
     components: { VueRecaptcha },

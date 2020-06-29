@@ -1344,7 +1344,7 @@ router.beforeEach((to, from, next) => {
     to.path === "/pages/comingsoon" ) {
     return next();
   }
-  router.push({ path: '/pages/register', query: { to: to.path } })
+  router.push({ path: '/pages/login', query: { to: to.path } })
   // firebase.auth().onAuthStateChanged(() => {
 
   //     // get firebase current user

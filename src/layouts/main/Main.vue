@@ -11,7 +11,9 @@
 <template>
     <div class="layout--main" :class="[navbarClasses, footerClasses, {'app-page': isAppPage}]">
       <vs-prompt
-        vs-title="Enter Authentication Code"
+        vs-title="Enter Google Auth Code"
+        @vs-cancel="close()"
+        @vs-close="close()"
         :vs-active.sync="activePrompt">
         <div class="">
           
@@ -272,6 +274,9 @@ export default {
         },
     },
     methods: {
+        close() {
+          this.router.push({ path: '/pages/login'})
+        },
         registerGA() {
           var category = "banner";
           var action = "clicked";
