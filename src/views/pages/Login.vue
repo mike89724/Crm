@@ -50,7 +50,11 @@
                                     <vs-checkbox v-model="checkbox_remember_me" class="mb-3">Remember Me</vs-checkbox>
                                     <router-link to="/pages/forgot-password">Forgot Password?</router-link>
                                 </div>
-                                <vue-recaptcha ref="recaptcha" size="large" :sitekey="sitekey" @verify="validate" @expired="onCaptchaExpired" />
+                                <div
+                                    id="login-recaptcha"
+                                    class="g-recaptcha"
+                                ></div>
+                                <!-- <vue-recaptcha ref="recaptcha" size="large" :sitekey="sitekey" @verify="validate" @expired="onCaptchaExpired" /> -->
                                 <!-- <div class="flex justify-center my-5">
                                     <vs-button v-google-signin-button="clientId" class="google-signin-button"> Continue with Google</vs-button>
                                 </div> -->
@@ -75,7 +79,9 @@ export default {
             clientId: 'cliend-id',
             password: 'demodemo',
             checkbox_remember_me: false,
-            sitekey: '6LfMvKkZAAAAAPewkKAVKPWhrRIUNe0p8rkmnuCB'
+            sitekey: '6LfMvKkZAAAAAPewkKAVKPWhrRIUNe0p8rkmnuCB',
+            recaptchaResponse = null,
+            recaptchaID = null,
         }
     },
     components: { VueRecaptcha },
@@ -84,18 +90,47 @@ export default {
             return !this.errors.any() && this.email != '' && this.password != '';
         },
     },
+    mounted() {
+        this.initRecaptcha()
+    },
     methods: {
-        onCaptchaExpired () { this.$refs.recaptcha.reset() },
-        validate () { this.$refs.recaptcha.execute() },
-        submit: function(token) {
-            console.log(token);
+        // onCaptchaExpired () { this.$refs.recaptcha.reset() },
+        // validate () { this.$refs.recaptcha.execute() },
+        // submit: function(token) {
+        //     console.log(token);
+        // },
+        initRecaptcha() {
+            var self = this;
+            setTimeout(function() {
+            if ((!grecaptcha ||
+            typeof grecaptcha === "undefined") || (!grecaptcha.render || typeof grecaptcha.render ==='undefined')) {
+                self.initRecaptcha();
+            } else {
+                console.log(grecaptcha, "G-Recaptcha Found ")
+                self.recaptchaID = grecaptcha.render("login-recaptcha", {
+                sitekey: this.sitekey,
+                callback: self.onCaptchaVerify
+                });
+            }
+            }, 100);
+        },
+
+        onCaptchaVerify(recaptchaResponse) {
+            // console.log("On Captcha Verified", recaptchaResponse);
+            this.recaptchaResponse = recaptchaResponse;
+        },
+
+        onCaptchaExpired() {
+            this.recaptchaResponse = "";
+            this.$showSnackbar("Captcha Expired please try again.", "error");
         },
         login() {
             const payload = {
                 checkbox_remember_me: this.checkbox_remember_me,
                 userDetails: {
                     email: this.email,
-                    password: this.password
+                    password: this.password,
+                    recaptcha: this.recaptchaResponse
                 },
                 notify: this.$vs.notify
             }
