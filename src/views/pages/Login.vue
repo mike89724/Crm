@@ -81,7 +81,7 @@ export default {
             checkbox_remember_me: false,
             sitekey: '6LfMvKkZAAAAAPewkKAVKPWhrRIUNe0p8rkmnuCB',
             recaptchaResponse: null,
-            recaptchaID = null,
+            recaptchaID: null,
         }
     },
     components: { VueRecaptcha },
