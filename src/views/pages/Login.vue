@@ -50,7 +50,7 @@
                                     <vs-checkbox v-model="checkbox_remember_me" class="mb-3">Remember Me</vs-checkbox>
                                     <router-link to="/pages/forgot-password">Forgot Password?</router-link>
                                 </div>
-                                <vue-recaptcha ref="recaptcha" size="large" :sitekey="sitekey" @verify="validate" @expired="onCaptchaExpired" />
+                                <vue-recaptcha ref="recaptcha" size="large" :sitekey="sitekey" @verify="submit" @expired="onCaptchaExpired" />
                                 <!-- <div class="flex justify-center my-5">
                                     <vs-button v-google-signin-button="clientId" class="google-signin-button"> Continue with Google</vs-button>
                                 </div> -->
@@ -86,7 +86,7 @@ export default {
     },
     methods: {
         onCaptchaExpired () { this.$refs.recaptcha.reset() },
-        validate () { this.$refs.recaptcha.execute() },
+        // validate () { this.$refs.recaptcha.execute() },
         submit: function(token) {
             console.log(token);
         },
