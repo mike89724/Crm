@@ -80,7 +80,7 @@ export default {
             password: 'demodemo',
             checkbox_remember_me: false,
             sitekey: '6LfMvKkZAAAAAPewkKAVKPWhrRIUNe0p8rkmnuCB',
-            recaptchaResponse = null,
+            recaptchaResponse: null,
             recaptchaID = null,
         }
     },
