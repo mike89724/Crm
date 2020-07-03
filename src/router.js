@@ -1358,21 +1358,21 @@ router.afterEach(() => {
 })
 
 router.beforeEach((to, from, next) => {
-  if (
-    to.path === "/pages/login" ||
-    to.path === "/pages/forgot-password" ||
-    to.path === "/pages/error-404" ||
-    to.path === "/pages/error-500" ||
-    to.path === "/pages/register" ||
-    to.path === "/callback" ||
-    to.path === "/pages/comingsoon" ) {
-    return next();
-  }
+  // if (
+  //   to.path === "/pages/login" ||
+  //   to.path === "/pages/forgot-password" ||
+  //   to.path === "/pages/error-404" ||
+  //   to.path === "/pages/error-500" ||
+  //   to.path === "/pages/register" ||
+  //   to.path === "/callback" ||
+  //   to.path === "/pages/comingsoon" ) {
+  //   return next();
+  // }
   // router.push({ path: '/pages/login', query: { to: to.path } })
   // firebase.auth().onAuthStateChanged(() => {
 
   //     // get firebase current user
-  //     const firebaseCurrentUser = firebase.auth().currentUser;
+  //     // const firebaseCurrentUser = firebase.auth().currentUser;
 
   //     if (
   //         to.path === "/pages/login" ||
