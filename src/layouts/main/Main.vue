@@ -196,15 +196,7 @@ export default {
     },
     computed: {
         showBanner() {
-          if (
-            this.$route.name == "dashboardTrades" ||
-            this.$route.name == "dashboardReserves" ||
-            this.$route.name == "dashboardLoans"
-          ) {
-            return true;
-          } else {
             return false;
-          }
         },
         getBannerLink() {
           if (this.$route.name == "dashboardTrades") {

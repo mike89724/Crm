@@ -62,6 +62,30 @@ const router = new Router({
           }
         },
         {
+          path: '/kyc/overview',
+          name: 'dashboardTrades',
+          component: () => import('./views/DashboardKYC.vue'),
+          meta: {
+            rule: 'editor'
+          }
+        },
+        {
+          path: '/affiliate/overview',
+          name: 'dashboardTrades',
+          component: () => import('./views/DashboardAffiliate.vue'),
+          meta: {
+            rule: 'editor'
+          }
+        },
+        {
+          path: '/referral/overview',
+          name: 'dashboardTrades',
+          component: () => import('./views/DashboardReferral.vue'),
+          meta: {
+            rule: 'editor'
+          }
+        },
+        {
           path: '/swap/overview',
           name: 'home',
           component: () => import('./views/Home.vue'),
@@ -1334,17 +1358,17 @@ router.afterEach(() => {
 })
 
 router.beforeEach((to, from, next) => {
-  if (
-    to.path === "/pages/login" ||
-    to.path === "/pages/forgot-password" ||
-    to.path === "/pages/error-404" ||
-    to.path === "/pages/error-500" ||
-    to.path === "/pages/register" ||
-    to.path === "/callback" ||
-    to.path === "/pages/comingsoon" ) {
-    return next();
-  }
-  router.push({ path: '/pages/login', query: { to: to.path } })
+  // if (
+  //   to.path === "/pages/login" ||
+  //   to.path === "/pages/forgot-password" ||
+  //   to.path === "/pages/error-404" ||
+  //   to.path === "/pages/error-500" ||
+  //   to.path === "/pages/register" ||
+  //   to.path === "/callback" ||
+  //   to.path === "/pages/comingsoon" ) {
+    // return next();
+  // }
+  // router.push({ path: '/pages/login', query: { to: to.path } })
   // firebase.auth().onAuthStateChanged(() => {
 
   //     // get firebase current user

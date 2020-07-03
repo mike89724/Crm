@@ -67,7 +67,8 @@
 </template>
 
 <script>
-import VueRecaptcha from 'vue-recaptcha' 
+import VueRecaptcha from 'vue-recaptcha' ;
+import axios from 'axios';
 export default {
     data() {
         return {
@@ -75,7 +76,8 @@ export default {
             clientId: 'cliend-id',
             password: 'demodemo',
             checkbox_remember_me: false,
-            sitekey: '6LfMvKkZAAAAAPewkKAVKPWhrRIUNe0p8rkmnuCB'
+            sitekey: '6LfMvKkZAAAAAPewkKAVKPWhrRIUNe0p8rkmnuCB',
+            recaptchaToken: '',
         }
     },
     components: { VueRecaptcha },
@@ -89,13 +91,23 @@ export default {
         // validate () { this.$refs.recaptcha.execute() },
         submit: function(token) {
             console.log(token);
+            this.recaptchaToken = token;
         },
         login() {
+            var response = axios.post('https://api-crm.nuofox.com/login/init', {
+                    email: this.email,
+                    password: this.password,
+                    recaptcha_response: this.recaptchaToken   
+            })
+
+            console.log(response);
+            this.$store.commit('isUserLoggedIn', true)
             const payload = {
                 checkbox_remember_me: this.checkbox_remember_me,
                 userDetails: {
                     email: this.email,
-                    password: this.password
+                    password: this.password,
+                    recaptcha_response: this.recaptchaToken
                 },
                 notify: this.$vs.notify
             }
@@ -111,7 +123,7 @@ export default {
         },
 
         loginAuth0() {
-            if (this.$store.state.auth.isUserLoggedIn()) {
+            if (this.$store.state.isUserLoggedIn()) {
                 this.notifyAlreadyLogedIn();
                 return false
             }

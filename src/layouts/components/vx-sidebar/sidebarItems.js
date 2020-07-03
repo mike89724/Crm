@@ -20,134 +20,168 @@
 
 
 export default [
-  {header: 'Nuo'},
-  {
-    url: '/',
-    name: "KYC",
-    slug: "home",
-    icon: "HomeIcon",
-    featherIcon: true,
-    submenu: [
-      {
-        
-        name: "Pending Requests",
-        slug: "dashboardTrades",
-      },
-      {
-        name: "My Approvals",
-        slug: "dashboardLoans",
-      }
-    ]
-    // i18n: "Home"
-  },
-  {
-    name: "Affiliates",
-    slug: "dashboardReserves",
-    icon: "BarChartIcon",
-    featherIcon: true,
-    // i18n: "Reserves"
-    submenu: [
-      {
-        name: "My Referrals",
-        slug: "dashboardTrades"
-      },
-      {
-        name: "All Affiliates",
-        slug: "dashboardLoans",
-      }
-    ]
-  },
-  {header: 'Juno'},
-  {
-    url: '/swaps/overview',
-    name: "KYC",
-    slug: "dashboard",
-    icon: "HomeIcon",
-    featherIcon: true,
-    submenu: [
-      {
-        name: "Pending Requests",
-        slug: "dashboardTrades",
-      },
-      {
-        name: "My Approvals",
-        slug: "dashboardLoans",
-      }
-    ]
-    // i18n: "Home"
-  },
-  {
-    url: '/reserve/overview',
-    name: "Affiliates",
-    slug: "dashboardReserves",
-    icon: "BarChartIcon",
-    featherIcon: true,
-    // i18n: "Reserves"
-    submenu: [
-      {
-        name: "My Referrals",
-        slug: "dashboardTrades",
-      },
-      {
-        name: "Create Affiliate",
-        slug: "dashboardLoans",
-      }
-    ]
-  },
   {header: 'Buy BTC'},
   {
     url: '/',
-    name: "KYC",
+    name: "Home",
     slug: "dashboard",
     icon: "HomeIcon",
-    featherIcon: true,
-    submenu: [
-      {
-        name: "PENDING REQUESTS",
-        slug: "dashboardTrades",
-      },
-      {
-        name: "MY APPROVALS",
-        slug: "dashboardLoans",
-      }
-    ]
+    featherIcon: true
     // i18n: "Home"
   },
   {
-    name: "Affiliates",
-    slug: "dashboardReserves",
-    icon: "BarChartIcon",
-    featherIcon: true,
-    // i18n: "Reserves"
-    submenu: [
-      {
-        name: "My Referrals",
-        slug: "dashboardTrades",
-      },
-      {
-        name: "All Affiliates",
-        slug: "dashboardLoans",
-      }
-    ]
-  },
-  {
-    header: "General"
-  },
-  {
-    url: '/',
-    name: "Access",
+    url: '/kyc/overview',
+    name: "KYC",
     slug: "dashboard",
-    icon: "HomeIcon",
-    featherIcon: true,
-    submenu: [
-      {
-        name: "Users",
-        slug: "dashboardTrades",
-      },
-      {
-        name: "Roles",
-        slug: "dashboardLoans",
-      }
-    ]
+    icon: "BarChartIcon",
+    featherIcon: true
+    // i18n: "Home"
   },
+  {
+    url: '/affiliate/overview',
+    name: "Affiliates",
+    slug: "dashboard",
+    icon: "BarChartIcon",
+    featherIcon: true
+    // i18n: "Home"
+  },
+  {
+    url: '/referral/overview',
+    name: "Referrals",
+    slug: "dashboard",
+    icon: "BarChartIcon",
+    featherIcon: true
+    // i18n: "Home"
+  },
+  // 
+  // {header: 'Nuo'},
+  // {
+  //   url: '/',
+  //   name: "KYC",
+  //   slug: "home",
+  //   icon: "HomeIcon",
+  //   featherIcon: true,
+  //   submenu: [
+  //     {
+        
+  //       name: "Pending Requests",
+  //       slug: "dashboardTrades",
+  //     },
+  //     {
+  //       name: "My Approvals",
+  //       slug: "dashboardLoans",
+  //     }
+  //   ]
+  //   // i18n: "Home"
+  // },
+  // {
+  //   name: "Affiliates",
+  //   slug: "dashboardReserves",
+  //   icon: "BarChartIcon",
+  //   featherIcon: true,
+  //   // i18n: "Reserves"
+  //   submenu: [
+  //     {
+  //       name: "My Referrals",
+  //       slug: "dashboardTrades"
+  //     },
+  //     {
+  //       name: "All Affiliates",
+  //       slug: "dashboardLoans",
+  //     }
+  //   ]
+  // },
+  // {header: 'Juno'},
+  // {
+  //   url: '/swaps/overview',
+  //   name: "KYC",
+  //   slug: "dashboard",
+  //   icon: "HomeIcon",
+  //   featherIcon: true,
+  //   submenu: [
+  //     {
+  //       name: "Pending Requests",
+  //       slug: "dashboardTrades",
+  //     },
+  //     {
+  //       name: "My Approvals",
+  //       slug: "dashboardLoans",
+  //     }
+  //   ]
+  //   // i18n: "Home"
+  // },
+  // {
+  //   url: '/reserve/overview',
+  //   name: "Affiliates",
+  //   slug: "dashboardReserves",
+  //   icon: "BarChartIcon",
+  //   featherIcon: true,
+  //   // i18n: "Reserves"
+  //   submenu: [
+  //     {
+  //       name: "My Referrals",
+  //       slug: "dashboardTrades",
+  //     },
+  //     {
+  //       name: "Create Affiliate",
+  //       slug: "dashboardLoans",
+  //     }
+  //   ]
+  // },
+  // {header: 'Buy BTC'},
+  // {
+  //   url: '/',
+  //   name: "KYC",
+  //   slug: "dashboard",
+  //   icon: "HomeIcon",
+  //   featherIcon: true,
+  //   submenu: [
+  //     {
+  //       name: "PENDING REQUESTS",
+  //       slug: "dashboardTrades",
+  //     },
+  //     {
+  //       name: "MY APPROVALS",
+  //       slug: "dashboardLoans",
+  //     }
+  //   ]
+  //   // i18n: "Home"
+  // },
+  // {
+  //   name: "Affiliates",
+  //   slug: "dashboardReserves",
+  //   icon: "BarChartIcon",
+  //   featherIcon: true,
+  //   // i18n: "Reserves"
+  //   submenu: [
+  //     {
+  //       name: "My Referrals",
+  //       slug: "dashboardTrades",
+  //     },
+  //     {
+  //       name: "All Affiliates",
+  //       slug: "dashboardLoans",
+  //     }
+  //   ]
+  // },
+  // {
+  //   header: "General"
+  // },
+  // {
+  //   url: '/',
+  //   name: "Access",
+  //   slug: "dashboard",
+  //   icon: "HomeIcon",
+  //   featherIcon: true,
+  //   submenu: [
+  //     {
+  //       name: "Users",
+  //       slug: "dashboardTrades",
+  //     },
+  //     {
+  //       name: "Roles",
+  //       slug: "dashboardLoans",
+  //     }
+  //   ]
+  // },
 ]

@@ -15,6 +15,7 @@ import {getVersionCode} from "../static/util.js";
 export function initialState() {
   return {
     isSidebarActive: true,
+    isUserLoggedIn: false,
     breakpoint: null,
     sidebarWidth: "default",
     reduceButton: themeConfig.sidebarCollapsed,
