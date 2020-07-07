@@ -16,6 +16,8 @@ export function initialState() {
   return {
     isSidebarActive: true,
     isUserLoggedIn: false,
+    email: '',
+    password: '',
     breakpoint: null,
     sidebarWidth: "default",
     reduceButton: themeConfig.sidebarCollapsed,

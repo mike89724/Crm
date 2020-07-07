@@ -33,6 +33,12 @@ const mutations = {
     isUserLoggedIn(state, value) {
       state.isUserLoggedIn = value;
     },
+    email(state, value) {
+      state.email = value;
+    },
+    password(state, value) {
+      state.password = value;
+    },
     setGlobalReserveDetails(state, globalReserveDetails) {
         state.globalReserveDetails = globalReserveDetails;
     },

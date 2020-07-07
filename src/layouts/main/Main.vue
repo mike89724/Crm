@@ -12,12 +12,12 @@
     <div class="layout--main" :class="[navbarClasses, footerClasses, {'app-page': isAppPage}]">
       <vs-prompt
         vs-title="Enter Google Auth Code"
-        @vs-buttonAccept="'OK'"
+        @vs-accept="submit()"
         @vs-close="close()"
         :vs-active.sync="activePrompt">
         <div class="">
           
-          <vs-input placeholder="Enter"  class="mt-4 mb-2 w-full" />
+          <vs-input placeholder="Enter"  v-model="otp" class="mt-4 mb-2 w-full" />
           <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
             Fields can not be empty please enter the data
           </vs-alert>
@@ -113,6 +113,7 @@ const VxTour = () => import('@/components/VxTour.vue')
 export default {
     data() {
         return {
+            otp: '',
             promptShown: false,
             activePrompt: false,
             navbarType: themeConfig.navbarType || 'floating',
@@ -266,6 +267,14 @@ export default {
         },
     },
     methods: {
+        submit() {
+          console.log('printing email')
+          console.log(this.$store.state.email)
+          console.log('printing password')
+          console.log(this.$store.state.password)
+          console.log('printing otp')
+          console.log(this.otp)
+        },
         close() {
           this.$vs.notify({
             color:'danger',

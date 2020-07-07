@@ -9,8 +9,8 @@
 
 <template>
   <div id="dashboard-swaps">
-    <div class="flex justify-between my-10">
-      <generic-card :width="componentWidth(uiComponents[0].slice(0,2).length)" :value="uiComponents[0][index].value" :name="uiComponents[0][index].name" :title="uiComponents[0][index].title" :key="index" v-for="(componentItem, index) in uiComponents[0].slice(0,2)">
+    <div class="flex my-10">
+      <generic-card style="margin-right: 5%;" :width="componentWidth(uiComponents[0].length)" :value="uiComponents[0][index].value" :name="uiComponents[0][index].name" :title="uiComponents[0][index].title" :key="index" v-for="(componentItem, index) in uiComponents[0].slice(0,2)">
       </generic-card>
     </div>
     <div class="flex justify-between my-10">

@@ -102,6 +102,10 @@ export default {
 
             console.log(response);
             this.$store.commit('isUserLoggedIn', true)
+            if(this.email != '' && this.password != ''){
+                this.$store.commit('email', this.email)
+                this.$store.commit('password', this.password)
+            }
             const payload = {
                 checkbox_remember_me: this.checkbox_remember_me,
                 userDetails: {
