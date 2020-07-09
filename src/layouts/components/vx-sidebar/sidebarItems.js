@@ -20,7 +20,41 @@
 
 
 export default [
-  {header: 'Buy BTC'},
+  // {header: 'Buy BTC'},
+  // {
+  //   url: '/',
+  //   name: "Home",
+  //   slug: "dashboard",
+  //   icon: "HomeIcon",
+  //   featherIcon: true
+  //   // i18n: "Home"
+  // },
+  // {
+  //   url: '/kyc/overview',
+  //   name: "KYC",
+  //   slug: "dashboard",
+  //   icon: "BarChartIcon",
+  //   featherIcon: true
+  //   // i18n: "Home"
+  // },
+  // {
+  //   url: '/affiliate/overview',
+  //   name: "Affiliates",
+  //   slug: "dashboard",
+  //   icon: "BarChartIcon",
+  //   featherIcon: true
+  //   // i18n: "Home"
+  // },
+  // {
+  //   url: '/referral/overview',
+  //   name: "Referrals",
+  //   slug: "dashboard",
+  //   icon: "BarChartIcon",
+  //   featherIcon: true
+  //   // i18n: "Home"
+  // },
+  // 
+  {header: 'Nuo'},
   {
     url: '/',
     name: "Home",
@@ -30,67 +64,34 @@ export default [
     // i18n: "Home"
   },
   {
-    url: '/kyc/overview',
+    url: '/',
     name: "KYC",
-    slug: "dashboard",
-    icon: "BarChartIcon",
-    featherIcon: true
+    slug: "home",
+    icon: "HomeIcon",
+    featherIcon: true,
+    submenu: [
+      {
+        url: '/kyc/overview',
+        name: "My Approvals",
+        slug: "dashboardLoans",
+      }
+    ]
     // i18n: "Home"
   },
   {
-    url: '/affiliate/overview',
     name: "Affiliates",
-    slug: "dashboard",
+    slug: "dashboardReserves",
     icon: "BarChartIcon",
-    featherIcon: true
-    // i18n: "Home"
+    featherIcon: true,
+    // i18n: "Reserves"
+    submenu: [
+      {
+        url: '/affiliate/overview',
+        name: "All Affiliates",
+        slug: "dashboardLoans",
+      }
+    ]
   },
-  {
-    url: '/referral/overview',
-    name: "Referrals",
-    slug: "dashboard",
-    icon: "BarChartIcon",
-    featherIcon: true
-    // i18n: "Home"
-  },
-  // 
-  // {header: 'Nuo'},
-  // {
-  //   url: '/',
-  //   name: "KYC",
-  //   slug: "home",
-  //   icon: "HomeIcon",
-  //   featherIcon: true,
-  //   submenu: [
-  //     {
-        
-  //       name: "Pending Requests",
-  //       slug: "dashboardTrades",
-  //     },
-  //     {
-  //       name: "My Approvals",
-  //       slug: "dashboardLoans",
-  //     }
-  //   ]
-  //   // i18n: "Home"
-  // },
-  // {
-  //   name: "Affiliates",
-  //   slug: "dashboardReserves",
-  //   icon: "BarChartIcon",
-  //   featherIcon: true,
-  //   // i18n: "Reserves"
-  //   submenu: [
-  //     {
-  //       name: "My Referrals",
-  //       slug: "dashboardTrades"
-  //     },
-  //     {
-  //       name: "All Affiliates",
-  //       slug: "dashboardLoans",
-  //     }
-  //   ]
-  // },
   // {header: 'Juno'},
   // {
   //   url: '/swaps/overview',
