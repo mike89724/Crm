@@ -39,6 +39,9 @@ const mutations = {
     password(state, value) {
       state.password = value;
     },
+    profileData(state, value) {
+      state.profileData = value;
+    },
     setGlobalReserveDetails(state, globalReserveDetails) {
         state.globalReserveDetails = globalReserveDetails;
     },

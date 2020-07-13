@@ -75,12 +75,12 @@
                           <img
                             v-else
                             key="localImg"
-                            :src="require(`@/assets/images/portrait/small/${activeUserImg}`)"
+                            :src="profileData.data.data.image"
                             alt="user-img"
                             width="40"
                             height="40"
                             class="rounded-full shadow-md cursor-pointer block" />
-                            <div class="ml-4 mt-4">{{userName}}</div>
+                            <div class="ml-4 mt-4">{{profileData.data.data.first_name}} {{profileData.data.data.last_name}}</div>
                         </div>
                         <vs-dropdown-menu style="z-index: 9999999;" class="dropdown-menu-right ml-5">
                           <ul style="min-width: 9rem">
@@ -180,6 +180,7 @@ export default {
         }
     },
     data: () => ({
+        profileData: {},
         editProfileActive: false,
         firstName: "",
         activePrompt: false,
@@ -390,6 +391,7 @@ export default {
     mounted() {
         // this.activePrompt = true;
         // this.promtShown = true;
+        this.profileData = this.$store.state.profileData
         this.$nextTick(() => {
             window.addEventListener('resize', this.handleWindowResize);
         });

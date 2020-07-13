@@ -18,6 +18,7 @@ export function initialState() {
     isUserLoggedIn: false,
     email: '',
     password: '',
+    profileData: null,
     breakpoint: null,
     sidebarWidth: "default",
     reduceButton: themeConfig.sidebarCollapsed,

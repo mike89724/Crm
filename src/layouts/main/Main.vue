@@ -18,7 +18,7 @@
         <div class="">
           <div style="display: flex;justify-content:center;">
               <center><img v-if="!isGoogleAuthActive" :src=
-                  "'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Nuo%3Fsecret%3D' + 'U2FsdGVkX1+iQe1mM7fZmdTuGtb/7eZGpv6fK0nwMuBD2BosIvRqSOgsmjCpnsEa2ZyGwKXfYKmCj0SAFEMRJA'" 
+                  "'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Nuo%3Fsecret%3D' + 'GBDEOTKJLBYTARCNKB4EO2CUOBEW4VZQ'" 
                   style="height: 150px; margin: 10px auto;">
               </center>
           </div>
@@ -55,7 +55,7 @@
             /> -->
         <!-- <vx-sidebar :sidebarItems="sidebarItems" :logo="require('@/assets/images/logo/logo.png')" title="NuoScan" parent=".layout--main" /> -->
         <!-- <vx-sidebar :sidebarItems="sidebarItems" :logo="'https://nuo-public.s3.ap-south-1.amazonaws.com/nuo_web/images/nuo-logo.png'" title="Scan" parent=".layout--main" /> -->
-        <vx-sidebar v-if="promptShown == true" :sidebarItems="sidebarItems" :footerItems="footerItems" :logo="require('@/assets/images/logo/logo-color-demibold.png')" title="" parent=".layout--main" />
+        <vx-sidebar v-if="showData == true" :sidebarItems="sidebarItems" :footerItems="footerItems" :logo="require('@/assets/images/logo/logo-color-demibold.png')" title="" parent=".layout--main" />
 
         <div id="content-area" :class="[contentAreaClass, {'show-overlay': bodyOverlay}]">
 
@@ -66,7 +66,7 @@
                 <!-- <the-navbar :navbarColor="navbarColor" :currencies="currencies" :class="[{'text-white': isNavbarDark && !isThemeDark}, {'text-base': !isNavbarDark && isThemeDark}]">
                 </the-navbar> -->                
                 <div class="router-view mt-22">
-                    <div v-if="promptShown == true" class="router-content" :class="{'mt-0': navbarType == 'hidden'}">
+                    <div v-if="showData == true" class="router-content" :class="{'mt-0': navbarType == 'hidden'}">
                         <transition :name="routerTransition">
                         <div class="router-header flex flex-wrap items-center mb-6" v-if="$route.meta.breadcrumb || $route.meta.pageTitle">
                             <div class="content-area__heading" :class="{'pr-4 border-0 md:border-r border-t-0 border-b-0 border-l-0 border-solid border-grey-light' : $route.meta.breadcrumb}">
@@ -120,6 +120,7 @@ export default {
     data() {
         return {
             otp: '',
+            showData: false,
             promptShown: false,
             activePrompt: false,
             navbarType: themeConfig.navbarType || 'floating',
@@ -274,13 +275,19 @@ export default {
     },
     methods: {
         async submit() {
-          var response = await axios.post('https://api-crm.nuofox.com/login/final', {
-            email: 'test@test.com',
-            password: 'Test@123',
+          let response = await axios.post('https://api-crm.nuofox.com/login/final', {
+            email: this.$store.state.email,
+            password: this.$store.state.password,
             ga_token: this.otp  
           })
+          console.log('priniting final response')
+          console.log(response)
+          if(response.status == 200) {
+            this.showData = true;
+            this.$store.commit('profileData', response);
             console.log('printing response')
             console.log(response);
+          } else this.$router.push({path: '/pages/login'})
             // this.otp = response;
         },
         close() {
