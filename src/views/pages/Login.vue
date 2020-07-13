@@ -68,13 +68,14 @@
 
 <script>
 import VueRecaptcha from 'vue-recaptcha' ;
+import router from '@/router'
 import axios from 'axios';
 export default {
     data() {
         return {
-            email: 'demo@demo.com',
+            email: 'test@test.com',
             clientId: 'cliend-id',
-            password: 'demodemo',
+            password: 'Test@123',
             checkbox_remember_me: false,
             sitekey: '6LfMvKkZAAAAAPewkKAVKPWhrRIUNe0p8rkmnuCB',
             recaptchaToken: '',
@@ -93,8 +94,8 @@ export default {
             console.log(token);
             this.recaptchaToken = token;
         },
-        login() {
-            var response = axios.post('https://api-crm.nuofox.com/login/init', {
+        async login() {
+            var response = await axios.post('https://api-crm.nuofox.com/login/init', {
                     email: this.email,
                     password: this.password,
                     recaptcha_response: this.recaptchaToken   
@@ -106,16 +107,19 @@ export default {
                 this.$store.commit('email', this.email)
                 this.$store.commit('password', this.password)
             }
-            const payload = {
-                checkbox_remember_me: this.checkbox_remember_me,
-                userDetails: {
-                    email: this.email,
-                    password: this.password,
-                    recaptcha_response: this.recaptchaToken
-                },
-                notify: this.$vs.notify
+            if(response.status == 200) {
+                this.$router.push({path: '/'});
             }
-            this.$store.dispatch('auth/loginAttempt', payload);
+            // const payload = {
+            //     checkbox_remember_me: this.checkbox_remember_me,
+            //     userDetails: {
+            //         email: 'demo@demo.com',
+            //         password: 'password',
+            //         recaptcha_response: this.recaptchaToken
+            //     },
+            //     notify: this.$vs.notify
+            // }
+            // this.$store.dispatch('auth/loginAttempt', payload);
         },
 
         OnGoogleAuthSuccess (idToken) {

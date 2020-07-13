@@ -16,7 +16,12 @@
         @vs-close="close()"
         :vs-active.sync="activePrompt">
         <div class="">
-          
+          <div style="display: flex;justify-content:center;">
+              <center><img v-if="!isGoogleAuthActive" :src=
+                  "'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Nuo%3Fsecret%3D' + 'U2FsdGVkX1+iQe1mM7fZmdTuGtb/7eZGpv6fK0nwMuBD2BosIvRqSOgsmjCpnsEa2ZyGwKXfYKmCj0SAFEMRJA'" 
+                  style="height: 150px; margin: 10px auto;">
+              </center>
+          </div>
           <vs-input placeholder="Enter"  v-model="otp" class="mt-4 mb-2 w-full" />
           <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
             Fields can not be empty please enter the data
@@ -107,7 +112,8 @@ import sidebarItems from "@/layouts/components/vx-sidebar/sidebarItems.js";
 import footerItems from "@/layouts/components/vx-sidebar/footerItems.js";
 import BackToTop from 'vue-backtotop'
 import CurrencyService from '@/services/CurrencyService';
-
+import axios from 'axios';
+ 
 const VxTour = () => import('@/components/VxTour.vue')
 
 export default {
@@ -267,13 +273,15 @@ export default {
         },
     },
     methods: {
-        submit() {
-          console.log('printing email')
-          console.log(this.$store.state.email)
-          console.log('printing password')
-          console.log(this.$store.state.password)
-          console.log('printing otp')
-          console.log(this.otp)
+        async submit() {
+          var response = await axios.post('https://api-crm.nuofox.com/login/final', {
+            email: 'test@test.com',
+            password: 'Test@123',
+            ga_token: this.otp  
+          })
+            console.log('printing response')
+            console.log(response);
+            // this.otp = response;
         },
         close() {
           this.$vs.notify({

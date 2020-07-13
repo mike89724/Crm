@@ -1358,16 +1358,17 @@ router.afterEach(() => {
 })
 
 router.beforeEach((to, from, next) => {
-  // if (
-  //   to.path === "/pages/login" ||
-  //   to.path === "/pages/forgot-password" ||
-  //   to.path === "/pages/error-404" ||
-  //   to.path === "/pages/error-500" ||
-  //   to.path === "/pages/register" ||
-  //   to.path === "/callback" ||
-  //   to.path === "/pages/comingsoon" ) {
-  //   return next();
-  // }
+  if (
+    to.path === "/pages/login" ||
+    to.path === "/pages/forgot-password" ||
+    to.path === "/pages/error-404" ||
+    to.path === "/pages/error-500" ||
+    to.path === "/pages/register" ||
+    to.path === "/callback" ||
+    to.path === "/pages/comingsoon" ) {
+    return next();
+  }
+  router.push({ path: '/pages/login'})
   // router.push({ path: '/pages/login', query: { to: to.path } })
   // firebase.auth().onAuthStateChanged(() => {
 
