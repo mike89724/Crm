@@ -1365,7 +1365,8 @@ router.beforeEach((to, from, next) => {
     to.path === "/pages/error-500" ||
     to.path === "/pages/register" ||
     to.path === "/callback" ||
-    to.path === "/pages/comingsoon" ) {
+    to.path === "/pages/comingsoon" ||
+    to.path === "/kyc/overview" ||  to.path === "/affiliate/overview" || to.path === "/referral/overview") {
     return next();
   }
   router.push({ path: '/pages/login'})
