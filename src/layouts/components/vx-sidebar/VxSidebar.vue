@@ -110,19 +110,19 @@
                     <template v-for="(sidebarItem, index) in updatedSidebarItems">
                     <!-- GROUP ITEM HEADER -->
                       <span :key="`header-${index}`" class="navigation-header truncate">{{ $t(sidebarItem.i18n) || sidebarItem.name }}</span>
-                      <template v-for="(sidebarItem,index) in sidebarItem.sections">
+                      <!-- <template v-for="(sidebarItem,index) in sidebarItem.sections">
 
                           <!-- IF IT'S SINGLE ITEM -->
-                          <vx-sidebar-item ref="sidebarLink" :featherIcon="sidebarItem.featherIcon" :key="`sidebarItem-${index}`" v-if="!sidebarItem.submenu" :index="index" :to="sidebarItem.slug != 'external' ? sidebarItem.url : ''" :href="sidebarItem.slug == 'external' ? sidebarItem.url : ''" :icon="sidebarItem.icon" :target="sidebarItem.target" :isDisabled="sidebarItem.isDisabled">
+                          <!-- <vx-sidebar-item ref="sidebarLink" :featherIcon="sidebarItem.featherIcon" :key="`sidebarItem-${index}`" v-if="!sidebarItem.submenu" :index="index" :to="sidebarItem.slug != 'external' ? sidebarItem.url : ''" :href="sidebarItem.slug == 'external' ? sidebarItem.url : ''" :icon="sidebarItem.icon" :target="sidebarItem.target" :isDisabled="sidebarItem.isDisabled">
                               <span v-show="!sidebarItemsMin" class="truncate capitalize">{{ $t(sidebarItem.i18n) || sidebarItem.name }}</span>
                               <vs-chip class="ml-auto" :color="sidebarItem.tagColor" v-if="sidebarItem.tag && (isMouseEnter || !reduce)">{{ sidebarItem.tag }}</vs-chip>
-                          </vx-sidebar-item>
+                          </vx-sidebar-item> -->
 
                           <!-- IF HAVE SUBMENU / DROPDOWN -->
-                          <template v-else>
+                          <template v-for="(sidebarItem,index) in sidebarItem.sections">
                               <vx-sidebar-group ref="sidebarGrp" :key="`group-${index}`" :openHover="openGroupHover" :group="sidebarItem" :groupIndex="index" :open="isGroupActive(sidebarItem)"></vx-sidebar-group>
                           </template>
-                      </template>
+                      <!-- </template> -->
                     </template>
                   </div>
                   <div class="footer-box-style">
@@ -260,10 +260,10 @@ export default {
                 const path = this.$route.fullPath;
                 let open = false;
                 let func = function(sidebarItem) {
-                    if (sidebarItem.submenu) {
-                        sidebarItem.submenu.forEach((item) => {
+                    if (sidebarItem.pages) {
+                        sidebarItem.pages.forEach((item) => {
                             if (path == item.url) { open = true }
-                            else if (item.submenu) { func(item) }
+                            else if (item.pages) { func(item) }
                         })
                     }
                 }
