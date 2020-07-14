@@ -109,8 +109,8 @@
                   <div class="top-items">
                     <template v-for="(sidebarItem, index) in updatedSidebarItems">
                     <!-- GROUP ITEM HEADER -->
-                      <span :key="`header-${index}`" v-if="sidebarItem.header && !sidebarItemsMin" class="navigation-header truncate">{{ $t(sidebarItem.i18n) || sidebarItem.header }}</span>
-                      <template v-else-if="!sidebarItem.header">
+                      <span :key="`header-${index}`" class="navigation-header truncate">{{ $t(sidebarItem.i18n) || sidebarItem.name }}</span>
+                      <template v-for="(sidebarItem,index) in sidebarItem.sections">
 
                           <!-- IF IT'S SINGLE ITEM -->
                           <vx-sidebar-item ref="sidebarLink" :featherIcon="sidebarItem.featherIcon" :key="`sidebarItem-${index}`" v-if="!sidebarItem.submenu" :index="index" :to="sidebarItem.slug != 'external' ? sidebarItem.url : ''" :href="sidebarItem.slug == 'external' ? sidebarItem.url : ''" :icon="sidebarItem.icon" :target="sidebarItem.target" :isDisabled="sidebarItem.isDisabled">

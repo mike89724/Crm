@@ -129,7 +129,7 @@ export default {
             routerTransition: themeConfig.routerTransition || 'none',
             isNavbarDark: false,
             routeTitle: this.$route.meta.pageTitle,
-            sidebarItems: sidebarItems,
+            sidebarItems: [],
             footerItems: footerItems,
             disableCustomizer: themeConfig.disableCustomizer,
             windowWidth: window.innerWidth, //width of windows
@@ -287,7 +287,10 @@ export default {
             this.$store.commit('profileData', response);
             console.log('printing response')
             console.log(response);
-          } else this.$router.push({path: '/pages/login'})
+            this.sidebarItems = response.data.data.products
+          } else if(response.status != 200) {
+              this.$router.push({path: '/pages/login'})
+          }
             // this.otp = response;
         },
         close() {
@@ -296,7 +299,7 @@ export default {
             title:'Closed',
             text:'You close a dialog!'
           })
-          // this.$router.push({ path: '/pages/login'})
+          this.$router.push({ path: '/pages/login'})
         },
         registerGA() {
           var category = "banner";
