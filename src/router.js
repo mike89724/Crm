@@ -41,30 +41,54 @@ const router = new Router({
         // =============================================================================
         // Theme Routes
         // =============================================================================
-        // {
-        //   path: '/',
-        //   redirect: '/'
-        // },
         {
           path: '/',
-          name: 'dashboardAnalytics',
-          component: () => import('./views/DashboardAnalytics.vue'),
+          redirect: '/google-auth-verify/otp'
+        },
+        {
+          path: '/:productSlug/:sectionSlug/:pageSlug/:tag',
+          name: 'home',
+          component: () => import('./views/Home.vue'),
           meta: {
             rule: 'editor'
           }
         },
         {
-          path: '/trade/overview',
+          path: '/google-auth-verify/otp',
+          name: 'googleAuthVerify',
+          component: () => import('./views/googleAuthVerify.vue'),
+          meta: {
+            rule: 'editor'
+          }
+        },
+        {
+          path: '/kyc/overview',
           name: 'dashboardTrades',
-          component: () => import('./views/DashboardTrades.vue'),
+          component: () => import('./views/DashboardKYC.vue'),
+          meta: {
+            rule: 'editor'
+          }
+        },
+        {
+          path: '/affiliate/overview',
+          name: 'dashboardTrades',
+          component: () => import('./views/DashboardAffiliate.vue'),
+          meta: {
+            rule: 'editor'
+          }
+        },
+        {
+          path: '/referral/overview',
+          name: 'dashboardTrades',
+          component: () => import('./views/DashboardReferral.vue'),
           meta: {
             rule: 'editor'
           }
         },
         {
           path: '/swap/overview',
-          name: 'dashboardSwaps',
-          component: () => import('./views/DashboardSwaps.vue'),
+          name: 'home',
+          component: () => import('./views/Home.vue'),
           meta: {
             rule: 'editor'
           }
@@ -200,7 +224,7 @@ const router = new Router({
         {
           path: '/swap/orders',
           name: 'swapfull',
-          component: () => import('./views/ui-elements/table/TableSwapDetailsFull.vue'),
+          component: () => import('./views/ui-elements/table/RecordSliderTableWithoutButton.vue'),
           meta: {
             rule: 'editor'
           }
@@ -1334,10 +1358,23 @@ router.afterEach(() => {
 })
 
 router.beforeEach((to, from, next) => {
+  if (
+    to.path === "/pages/login" ||
+    to.path === "/pages/forgot-password" ||
+    to.path === "/pages/error-404" ||
+    to.path === "/pages/error-500" ||
+    to.path === "/pages/register" ||
+    to.path === "/callback" ||
+    to.path === "/pages/comingsoon" ||
+    to.path === "/kyc/overview" ||  to.path === "/:productSlug/:sectionSlug/:pageSlug/:tag" || to.path === "/google-auth-verify/otp") {
+    return next();
+  }
+  // router.push({ path: '/pages/login'})
+  // router.push({ path: '/pages/login', query: { to: to.path } })
   // firebase.auth().onAuthStateChanged(() => {
 
   //     // get firebase current user
-  //     const firebaseCurrentUser = firebase.auth().currentUser;
+  //     // const firebaseCurrentUser = firebase.auth().currentUser;
 
   //     if (
   //         to.path === "/pages/login" ||

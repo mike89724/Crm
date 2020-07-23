@@ -1,5 +1,5 @@
 /*=========================================================================================
-  File Name: sidebarItems.js
+File Name: sidebarItems.js
   Description: Sidebar Items list. Add / Remove menu items from here.
   Strucutre:
           url     => router path

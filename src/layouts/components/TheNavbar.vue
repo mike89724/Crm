@@ -11,8 +11,8 @@
 
 <template>
 <div class="relative">
-	<div class="vx-navbar-wrapper">
-		<vs-navbar class="vx-navbar navbar-custom" :color="navbarColor" :class="classObj">
+	<!-- <div class="vx-navbar-wrapper"> -->
+		<!-- <vs-navbar class="vx-navbar navbar-custom" :color="navbarColor" :class="classObj">
 
 			<feather-icon class="sm:inline-flex xl:hidden cursor-pointer mr-1" icon="MenuIcon" @click.stop="showSidebar"></feather-icon>
       <vs-input
@@ -31,24 +31,9 @@
         @click="search(searchString)"
       ></vs-button>
 			<!-- I18N -->
-      <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer currency-picker-wrapper">
-        <span :class="{'blue-color': ($store.state.theme == 'light'), 'white-color': ($store.state.theme == 'dark')}" class="cursor-pointer flex i18n-locale">
-          <span class="sm:block ml-2"
-          style="font-weight: 500; margin-right: 0px; font-size: 15px;">
-          {{ primaryCurrency.short_name }}
-          </span>
-          <span>
-            <vs-icon class="currency-dropdown-caret" icon="expand_more"></vs-icon>
-          </span>
-        </span>
-        <vs-dropdown-menu style="max-height:400px;overflow-y:auto;width:18rem !important;display:block;-webkit-box-align:center;align-items:center;position: fixed; top: 80px !important;">
-          <vs-dropdown-item :class="{'blue-color': ($store.state.theme == 'light'), 'white-color': ($store.state.theme == 'dark')}" v-for="(currency, index) in currencies" :key="index" @click="onCurrencySelected(currency)" class="dropdown-items">{{ currency.name }}
-              <span style="float:right;">{{currency.short_name}}</span>
-          </vs-dropdown-item>
-        </vs-dropdown-menu>
-      </vs-dropdown>
-		</vs-navbar>
-	</div>
+  
+		<!-- </vs-navbar> -->
+	<!-- </div> -->
 </div>
 </template>
 
@@ -77,12 +62,20 @@ export default {
     },
     data() {
         return {
-          searchString: ""
+          searchString: "",
+          editProfileActive: false,
+          firstName: "",
+          lastName: "",
+          email: "",
+          contactNumber: ""
         }
     },
     created() { 
     },
     computed: {
+        userName() {
+          return JSON.parse(localStorage.getItem('userInfo')).displayName;
+        },
         ...mapState({
             primaryCurrency: "primaryCurrency",
         }),
@@ -105,6 +98,12 @@ export default {
             else if (locale == "pt") return { flag: "br", lang: 'Portuguese' }
             else if (locale == "fr") return { flag: "fr", lang: 'French' }
             else if (locale == "de") return { flag: "de", lang: 'German' }
+        },
+        userName() {
+          return JSON.parse(localStorage.getItem('userInfo')).displayName
+        },
+        activeUserImg() {
+            return JSON.parse(localStorage.getItem('userInfo')).photoURL || this.$store.state.AppActiveUser.img;
         }
     },
     mounted() {
@@ -126,6 +125,26 @@ export default {
       }
     },
     methods: {
+      acceptProfile() {
+
+      },
+      logout() {
+            // if user is logged in via auth0
+            if (this.$auth.profile) this.$auth.logOut();
+
+            // if user is looged in via firebase
+            const firebaseCurrentUser = firebase.auth().currentUser
+
+            if (firebaseCurrentUser) {
+                firebase.auth().signOut().then(() => {
+                    this.$router.push('/pages/login')
+                    localStorage.removeItem('userInfo');
+                })
+            }
+            // Change role on logout. Same value as initialRole of acj.js
+            this.$acl.change('admin')
+            localStorage.removeItem('userRole');
+        },
         async onCurrencySelected(currency) {
           await this.$store.dispatch("setPrimaryCurrency", currency);
         },
@@ -207,6 +226,11 @@ export default {
 }
 </script>
 <style lang="scss">
+.profile-pic {
+  &:hover {
+    display: none;
+  }
+}
 .currency-dropdown-caret {
   position: relative;
   top: 3px;

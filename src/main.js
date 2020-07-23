@@ -17,6 +17,9 @@ import Vuesax from 'vuesax'
 import 'material-icons/iconfont/material-icons.css' //Material Icons
 import 'vuesax/dist/vuesax.css'; // Vuesax
 import VueAnalytics from "vue-analytics";
+import GoogleSignInButton from 'vue-google-signin-button-directive'
+
+Vue.config.productionTip = false
 
 // Vue Router
 import router from './router'
@@ -142,5 +145,6 @@ new Vue({
     store,
     i18n,
     acl,
+    GoogleSignInButton,
     render: h => h(App)
 }).$mount('#app')

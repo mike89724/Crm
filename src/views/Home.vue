@@ -9,111 +9,42 @@
 
 <template>
   <div id="dashboard-swaps">
-    <vs-row>
-        <vs-col class="mb-5" vs-lg="6" vs-sm="12">
-        <overview-card
-          :statistic="swapGeneratedValueStatistic"
-          statisticTitle="Swaps Value"
-          :chartOptionsData="swapGeneratedValueOptions"
-          :chartSeriesData="swapGeneratedValueSeries"
-          name="swap"
-          type="area"
-          :showCurrencySymbol="true"
-          :transition="transition"
-        ></overview-card>
-      </vs-col>
-
-      <vs-col class="mb-5" vs-lg="6" vs-sm="12">
-        <vx-card>
-          <span :class="{'hide': !transition}" class="mt-4" v-html="getFrame('text-label-long')"></span>
-          <vs-row vs-type="flex" vs-justify="flex-start">
-            <vs-col vs-w="10">
-              <h5 :class="{'hide': transition}" class="mt-4">Split Value</h5>
-            </vs-col>
-          </vs-row>
-          <span v-if="transition" v-html="getFrame('trade-page-row-2')"></span>
-          <span :class="{'hide': transition}">
-            <vue-apex-charts
-              class = "swap-chart"
-              type="area"
-              height="175"
-              width="100%"
-              :options="splitValueCountOptions"
-              :series="splitValueCountSeries"
-            ></vue-apex-charts>
-          </span>
-        </vx-card>
-      </vs-col>
-    </vs-row>
-
-    <vs-row>
-      <vs-col class="mb-5" vs-lg="6" vs-sm="12">
-        <vx-card>
-          <span :class="{'hide': !transition}" class="mt-4" v-html="getFrame('text-label-long')"></span>
-          <vs-row vs-type="flex" vs-justify="flex-start">
-            <vs-col vs-w="10">
-              <h5 :class="{'hide': transition}" class="mt-4">{{mostExchangedSourceCurrency.title}}</h5>
-            </vs-col>
-          </vs-row>
-          <span v-if="transition" v-html="getFrame('trade-page-row-2')"></span>
-          <span :class="{'hide': transition}">
-            <vue-apex-charts
-              type="bar"
-              height="200"
-              width="100%"
-              :options="mostExchangedSourceCurrency.chartOptions"
-              :series="mostExchangedSourceCurrency.series"
-            ></vue-apex-charts>
-          </span>
-        </vx-card>
-      </vs-col>
-      <vs-col class="mb-5" vs-lg="6" vs-sm="12">
-        <vx-card>
-          <span :class="{'hide': !transition}" class="mt-4" v-html="getFrame('text-label-long')"></span>
-          <vs-row vs-type="flex" vs-justify="flex-start">
-            <vs-col vs-w="10">
-              <h5 :class="{'hide': transition}" class="mt-4">{{mostExchangedDestinationCurrency.title}}</h5>
-            </vs-col>
-          </vs-row>
-          <span v-if="transition" v-html="getFrame('trade-page-row-2')"></span>
-          <span :class="{'hide': transition}">
-            <vue-apex-charts
-              type="bar"
-              height="200"
-              width="100%"
-              :options="mostExchangedDestinationCurrency.chartOptions"
-              :series="mostExchangedDestinationCurrency.series"
-            ></vue-apex-charts>
-          </span>
-        </vx-card>
-      </vs-col>
-    </vs-row>
-
-    <!-- Tabs of Trade,  Loan and Reserve Details-->
-    <vs-row>
-      <vs-col vs-w="12">
-        <TableSwapDetailsFull :showPagination="false" :showFilters="false"></TableSwapDetailsFull>
-      </vs-col>
-    </vs-row>
+    <div class="flex justify-between my-10">
+      <generic-card :width="componentWidth(uiComponents[0].length)" :value="uiComponents[0][index].value" :name="uiComponents[0][index].name" :title="uiComponents[0][index].title" :key="index" v-for="(componentItem, index) in uiComponents[0]">
+      </generic-card>
+    </div>
+    <div class="flex justify-between my-10">
+      <generic-card :width="componentWidth(uiComponents[1].length)" :value="uiComponents[1][index].value" :name="uiComponents[1][index].name" :title="uiComponents[1][index].title" :key="index" v-for="(componentItem, index) in uiComponents[1]">
+      </generic-card>
+    </div>
+    <div class="flex justify-between my-10">
+      <generic-card :width="componentWidth(uiComponents[2].length)" :value="uiComponents[2][index].value" :name="uiComponents[2][index].name" :title="uiComponents[2][index].title" :key="index" v-for="(componentItem, index) in uiComponents[2]">
+      </generic-card>
+    </div>
   </div>
 </template>
 
 <script>
 import VueApexCharts from "vue-apexcharts";
 import OverviewCard from "@/components/statistics-cards/OverviewCard.vue";
+import TransactionCard from "@/components/statistics-cards/TransactionCard.vue";
 import analyticsData from "./ui-elements/card/analyticsData.js";
 import ChangeTimeDurationDropdown from "@/components/ChangeTimeDurationDropdown.vue";
 import apexChatData from "@/views/charts-and-maps/charts/apex-charts/apexChartData.js";
-import TableSwapDetailsFull from "./ui-elements/table/TableSwapDetailsFull.vue";
+import RecordSliderTableWithoutButton from "./ui-elements/table/RecordSliderTableWithoutButton.vue";
+import PageService from "@/services/PageService.js";
 import {getFrame} from "@/utils/util.js";
+import GenericCard from "@/components/statistics-cards/GenericUICard.vue";
 
 export default {
   data() {
     return {
+      uiComponents: [],
       transition: true,
       analyticsData: analyticsData,
       apexChatData: apexChatData,
       isImp: false,
+      affiliate: "",
       navbarSearchAndPinList: this.$store.state.navbarSearchAndPinList,
       show: false,
       items: [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -125,6 +56,12 @@ export default {
         "thread: Slot",
         "tbody: Slot",
         "header: Slot"
+      ],
+      transactions: [
+        {name: "KYC APPROVED", amount: 256, imageUrl: "https://nuo-public.s3.ap-south-1.amazonaws.com/trading-competitions/ic_trophy.svg"},
+        {name: "KYC PENDING", amount: 355, imageUrl: "https://nuo-public.s3.ap-south-1.amazonaws.com/trading-competitions/ic_trophy.svg"},
+        {name: "REFERRALS APPROVED", amount: 435, imageUrl: "https://nuo-public.s3.ap-south-1.amazonaws.com/trading-competitions/ic_trophy.svg"},
+        {name: "REFERRALS PENDING", amount: 764, imageUrl: "https://nuo-public.s3.ap-south-1.amazonaws.com/trading-competitions/ic_trophy.svg"},
       ],
       swapGeneratedValueStatistic: "0",
       swapGeneratedValueOptions: {
@@ -300,61 +237,21 @@ export default {
             }
           }
         }
-      }
+      },
+      
     };
   },
   components: {
     VueApexCharts,
     ChangeTimeDurationDropdown,
-    TableSwapDetailsFull,
-    OverviewCard
+    RecordSliderTableWithoutButton,
+    OverviewCard,
+    TransactionCard,
+    GenericCard
   },
   async mounted() {
-    if (this.$store.state.theme == "dark") {
-      this.$vs.loading({
-        color: "#fff",
-        container: "#dashboard-swaps",
-        type: "sound"
-      });
-    } else {
-      this.$vs.loading({
-        container: "#dashboard-swaps",
-        type: "sound"
-      });
-    }
-    await this.getSwapsOverviewData();
-    this.generateSwapValueAndSplitChart();
-    this.generatemostExchangedSourceCurrency();
-    this.generatemostExchangedDestinationCurrency();
-    // setTimeout(
-      // () => {
-        this.$vs.loading.close('#dashboard-swaps > .con-vs-loading');
-      // }
-    // , 1000000);
+    await this.getHomeData();
     this.transition = false;
-  },
-  watch: {
-    "$store.state.primaryCurrency": async function() {
-      if (this.$store.state.theme == "dark") {
-        this.$vs.loading({
-          color: "#fff",
-          container: "#dashboard-swaps",
-          type: "sound"
-        });
-      } else {
-        this.$vs.loading({
-          container: "#dashboard-swaps",
-          type: "sound"
-        });
-      }
-      await this.getSwapsOverviewData();
-      this.initializeValues();
-      this.generateSwapValueAndSplitChart();
-      this.generatemostExchangedSourceCurrency();
-      this.generatemostExchangedDestinationCurrency();
-      this.$forceUpdate();
-      this.$vs.loading.close('#dashboard-swaps > .con-vs-loading');
-    }
   },
   methods: {
     initializeValues() {
@@ -387,9 +284,21 @@ export default {
       let isDark = this.$store.state.theme == 'dark';
       return getFrame(size, isDark);
     },
-    async getSwapsOverviewData() {
-      await this.$store.dispatch("fetchSwapsOverview", this.$store.state.primaryCurrency.short_name);
-      // await this.$store.dispatch("fetchSwapsOverview");
+    componentWidth(items) {
+      if (items == 1) {
+        return "100%";
+      } else {
+        return ((100 - (items-1)*5)/parseFloat(items)).toString() + "%";
+      }
+    },
+    async getHomeData() {
+      var response;
+      try {
+        response = await PageService.getPageDetails("home");
+        this.uiComponents = response.data.data.components;
+      } catch(err) {
+        console.log(err);
+      }
     },
     generateSwapValueAndSplitChart() {
       let self = this;
@@ -441,6 +350,11 @@ export default {
         });
       });
       this.splitValueCountSeries = currencyValues;
+      this.splitValueCountSeries[0].name = "APPROVED";
+      this.splitValueCountSeries[1].name = "PENDING";
+      this.splitValueCountSeries[2].name = "DECLINED";
+      this.splitValueCountSeries[3].name = "SUCCESS";
+
       this.swapGeneratedValueOptions = {
         grid: {
           show: false,
@@ -510,7 +424,7 @@ export default {
                 if (!Number.isInteger(value)) {
                   value = value.toFixed(2);
                 }
-                return self.$store.state.primaryCurrency.symbol + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
               }
               else
                 return self.$store.state.primaryCurrency.symbol + 0;

@@ -34,7 +34,7 @@
                                         class="w-full" />
                                     <span class="text-danger text-sm">{{ errors.first('username') }}</span>
 
-                                    <vs-input
+                                    <!-- <vs-input
                                         v-validate="'required|email'"
                                         data-vv-validate-on="blur"
                                         name="email"
@@ -43,7 +43,7 @@
                                         placeholder="Email"
                                         v-model="email"
                                         class="w-full mt-6" />
-                                    <span class="text-danger text-sm">{{ errors.first('email') }}</span>
+                                    <span class="text-danger text-sm">{{ errors.first('email') }}</span> -->
 
                                     <vs-input
                                         ref="password"
@@ -69,9 +69,9 @@
                                         class="w-full mt-6" />
                                     <span class="text-danger text-sm">{{ errors.first('confirm_password') }}</span>
 
-                                    <vs-checkbox v-model="isTermsConditionAccepted" class="mt-6">I accept the terms & conditions.</vs-checkbox>
-                                    <vs-button  type="border" to="/pages/login" class="mt-6">Login</vs-button>
-                                    <vs-button class="float-right mt-6" @click="registerUser" :disabled="!validateForm">Register</vs-button>
+                                    <!-- <vs-checkbox v-model="isTermsConditionAccepted" class="mt-6">I accept the terms & conditions.</vs-checkbox>
+                                    <vs-button  type="border" to="/pages/login" class="mt-6">Login</vs-button> -->
+                                    <vs-button class="float-right mt-6" @click="registerUser" :disabled="!validateForm">Confirm</vs-button>
                                 </div>
                             </div>
                         </div>

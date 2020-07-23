@@ -49,6 +49,8 @@ let colors = {
   'white': '#ffffff',
   'grey': '#b8c2cc',
   'grey-light': '#dae1e7',
+  'gray-100': 'rgba(0,0,0,0.2)',
+  'wire-frame': '#DDDBDD'
 }
 
 module.exports = {
@@ -227,6 +229,7 @@ module.exports = {
     'tight': 1.25,
     'normal': 1.5,
     'loose': 2,
+    '12': '3rem'
   },
 
 
@@ -450,6 +453,7 @@ module.exports = {
     '10': '2.5rem',
     '12': '3rem',
     '16': '4rem',
+    '20': '5rem',
     '24': '6rem',
     '32': '8rem',
     '48': '12rem',
@@ -617,6 +621,7 @@ module.exports = {
     '20': '5rem',
     '24': '6rem',
     '32': '8rem',
+    '22': '-5rem'
   },
 
 

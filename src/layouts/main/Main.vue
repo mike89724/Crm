@@ -37,7 +37,7 @@
             /> -->
         <!-- <vx-sidebar :sidebarItems="sidebarItems" :logo="require('@/assets/images/logo/logo.png')" title="NuoScan" parent=".layout--main" /> -->
         <!-- <vx-sidebar :sidebarItems="sidebarItems" :logo="'https://nuo-public.s3.ap-south-1.amazonaws.com/nuo_web/images/nuo-logo.png'" title="Scan" parent=".layout--main" /> -->
-        <vx-sidebar :sidebarItems="sidebarItems" :footerItems="footerItems" :logo="require('@/assets/images/logo/nuo-scan.png')" title="" parent=".layout--main" />
+        <vx-sidebar :sidebarItems="sidebarItems" :footerItems="footerItems" :logo="require('@/assets/images/logo/logo-color-demibold.png')" title="" parent=".layout--main" />
 
         <div id="content-area" :class="[contentAreaClass, {'show-overlay': bodyOverlay}]">
 
@@ -45,11 +45,9 @@
 
             <div class="content-wrapper">
 
-                <the-navbar :navbarColor="navbarColor" :currencies="currencies" :class="[{'text-white': isNavbarDark && !isThemeDark}, {'text-base': !isNavbarDark && isThemeDark}]">
-                </the-navbar>
-
-                
-                <div class="router-view">
+                <!-- <the-navbar :navbarColor="navbarColor" :currencies="currencies" :class="[{'text-white': isNavbarDark && !isThemeDark}, {'text-base': !isNavbarDark && isThemeDark}]">
+                </the-navbar> -->                
+                <div class="router-view mt-22">
                     <div class="router-content" :class="{'mt-0': navbarType == 'hidden'}">
                         <transition :name="routerTransition">
                         <div class="router-header flex flex-wrap items-center mb-6" v-if="$route.meta.breadcrumb || $route.meta.pageTitle">
@@ -96,7 +94,8 @@ import sidebarItems from "@/layouts/components/vx-sidebar/sidebarItems.js";
 import footerItems from "@/layouts/components/vx-sidebar/footerItems.js";
 import BackToTop from 'vue-backtotop'
 import CurrencyService from '@/services/CurrencyService';
-
+import axios from 'axios';
+ 
 const VxTour = () => import('@/components/VxTour.vue')
 
 export default {
@@ -108,7 +107,7 @@ export default {
             routerTransition: themeConfig.routerTransition || 'none',
             isNavbarDark: false,
             routeTitle: this.$route.meta.pageTitle,
-            sidebarItems: sidebarItems,
+            sidebarItems: [],
             footerItems: footerItems,
             disableCustomizer: themeConfig.disableCustomizer,
             windowWidth: window.innerWidth, //width of windows
@@ -146,6 +145,11 @@ export default {
         }
     },
     watch: {
+        activePrompt(val) {
+          if(val == false) {
+            this.promptShown = true;
+          }
+        },
         '$route'() {
             this.routeTitle = this.$route.meta.pageTitle;
             var wrapperDivs = document.querySelectorAll('.vx-navbar-wrapper');
@@ -178,15 +182,7 @@ export default {
     },
     computed: {
         showBanner() {
-          if (
-            this.$route.name == "dashboardTrades" ||
-            this.$route.name == "dashboardReserves" ||
-            this.$route.name == "dashboardLoans"
-          ) {
-            return true;
-          } else {
             return false;
-          }
         },
         getBannerLink() {
           if (this.$route.name == "dashboardTrades") {
@@ -334,6 +330,11 @@ export default {
         this.getFiatCurrencies();
     },
     mounted() {
+      if(this.$store.state.profileData && this.$store.state.isUserLoggedIn) {
+        this.sidebarItems = this.$store.state.profileData.data.data.products
+      } else {
+        this.$router.push({path: '/pages/login'})
+      }
       this.routeTitle = this.$route.meta.pageTitle;
       var wrapperDivs = document.querySelectorAll('.vx-navbar-wrapper');
       var length = wrapperDivs.length;

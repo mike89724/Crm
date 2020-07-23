@@ -30,6 +30,18 @@ const mutations = {
     TOGGLE_IS_SIDEBAR_ACTIVE(state, value) {
         state.isSidebarActive = value;
     },
+    isUserLoggedIn(state, value) {
+      state.isUserLoggedIn = value;
+    },
+    email(state, value) {
+      state.email = value;
+    },
+    password(state, value) {
+      state.password = value;
+    },
+    profileData(state, value) {
+      state.profileData = value;
+    },
     setGlobalReserveDetails(state, globalReserveDetails) {
         state.globalReserveDetails = globalReserveDetails;
     },
