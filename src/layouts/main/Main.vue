@@ -330,7 +330,7 @@ export default {
         this.getFiatCurrencies();
     },
     mounted() {
-      if(this.$store.state.profileData) {
+      if(this.$store.state.profileData && this.$store.state.isUserLoggedIn) {
         this.sidebarItems = this.$store.state.profileData.data.data.products
       } else {
         this.$router.push({path: '/pages/login'})

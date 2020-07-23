@@ -145,7 +145,9 @@ export default {
     },
     methods: {
         redirect(item, slug) {
-            this.$router.push({path: '/' + this.mainSlug +  '/' + slug +  '/' + item.slug, params:{tag: item.tag}})
+            console.log("Printing Tag")
+            console.log(item.tag)
+            this.$router.push({path: '/' + this.mainSlug +  '/' + slug +  '/' + item.slug + '/' + item.tag})
         },
         clickGroup() {
             if (!this.openHover) {

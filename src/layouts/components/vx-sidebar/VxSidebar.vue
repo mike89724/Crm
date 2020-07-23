@@ -47,15 +47,16 @@
                         </div>
                       </vs-prompt>
                       <vs-dropdown  vs-custom-content vs-trigger-click class="cursor-pointer">
-                        <div class="con-img ml-10 flex" v-if="profileData">
+                        <div class="con-img flex" v-if="profileData">
                           <img
                             key="localImg"
                             :src="profileData.data.data.image"
                             alt="user-img"
-                            width="40"
-                            height="40"
+                            width="50"
+                            height="50"
+                            style="padding: 0px !important;"
                             class="rounded-full shadow-md cursor-pointer block" />
-                            <div v-if="profileData" class="ml-4 mt-4">{{profileData.data.data.first_name}} {{profileData.data.data.last_name}}</div>
+                            <div v-if="profileData" style="font-weight: 600; text-transform: capitalize" class="ml-4 mt-4">{{profileData.data.data.first_name}} {{profileData.data.data.last_name}}</div>
                         </div>
                         <vs-dropdown-menu style="z-index: 9999999;" class="dropdown-menu-right ml-5">
                           <ul style="min-width: 9rem">
