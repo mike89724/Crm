@@ -50,7 +50,9 @@
                                     <vs-checkbox v-model="checkbox_remember_me" class="mb-3">Remember Me</vs-checkbox>
                                     <router-link to="/pages/forgot-password">Forgot Password?</router-link>
                                 </div>
-                                <vue-recaptcha ref="recaptcha" size="large" :sitekey="sitekey" @verify="submit" @expired="onCaptchaExpired" />
+                                <div>
+                                    <vue-recaptcha style="margin-left: 9%;" ref="recaptcha" size="large" :sitekey="sitekey" @verify="submit" @expired="onCaptchaExpired" />
+                                </div>
                                 <!-- <div class="flex justify-center my-5">
                                     <vs-button v-google-signin-button="clientId" class="google-signin-button"> Continue with Google</vs-button>
                                 </div> -->
@@ -108,7 +110,7 @@ export default {
                 this.$store.commit('password', this.password)
             }
             if(response.status == 200) {
-                this.$router.push({path: '/'});
+                this.$router.push({path: '/google-auth-verify/otp'});
             }
             // const payload = {
             //     checkbox_remember_me: this.checkbox_remember_me,

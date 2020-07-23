@@ -21,26 +21,10 @@
                         vs-title="Edit Profile"
                         :vs-active.sync="editProfileActive"
                         accept-text="Save"
-                        @accept="acceptProfile"
                       >
                         <div class="prompt-dialog">
                           <div class="flex justify-center align-center">
-                            <img
-                              v-if="activeUserImg.startsWith('http')"
-                              key="onlineImg"
-                              :src="activeUserImg"
-                              alt="user-img"
-                              width="80"
-                              height="80"
-                              class="rounded-full shadow-md cursor-pointer inline profile-pic" />
-                            <img
-                              v-else
-                              key="localImg"
-                              :src="require(`@/assets/images/portrait/small/${activeUserImg}`)"
-                              alt="user-img"
-                              width="80"
-                              height="80"
-                              class="rounded-full shadow-md cursor-pointer inline profile-pic" /><span class="leading-12">&nbsp;{{userName}}</span>
+                            <span class="leading-12">&nbsp;</span>
                           </div>
                           <div class="flex justify-between">
                             <div class="w-5/12">
@@ -63,24 +47,15 @@
                         </div>
                       </vs-prompt>
                       <vs-dropdown  vs-custom-content vs-trigger-click class="cursor-pointer">
-                        <div class="con-img ml-10 flex">
+                        <div class="con-img ml-10 flex" v-if="profileData">
                           <img
-                            v-if="activeUserImg.startsWith('http')"
-                            key="onlineImg"
-                            :src="activeUserImg"
-                            alt="user-img"
-                            width="40"
-                            height="40"
-                            class="rounded-full shadow-md cursor-pointer block" />
-                          <img
-                            v-else
                             key="localImg"
                             :src="profileData.data.data.image"
                             alt="user-img"
                             width="40"
                             height="40"
                             class="rounded-full shadow-md cursor-pointer block" />
-                            <div class="ml-4 mt-4">{{profileData.data.data.first_name}} {{profileData.data.data.last_name}}</div>
+                            <div v-if="profileData" class="ml-4 mt-4">{{profileData.data.data.first_name}} {{profileData.data.data.last_name}}</div>
                         </div>
                         <vs-dropdown-menu style="z-index: 9999999;" class="dropdown-menu-right ml-5">
                           <ul style="min-width: 9rem">
@@ -119,8 +94,8 @@
                           </vx-sidebar-item> -->
 
                           <!-- IF HAVE SUBMENU / DROPDOWN -->
-                          <template v-for="(sidebarItem,index) in sidebarItem.sections">
-                              <vx-sidebar-group ref="sidebarGrp" :key="`group-${index}`" :openHover="openGroupHover" :group="sidebarItem" :groupIndex="index" :open="isGroupActive(sidebarItem)"></vx-sidebar-group>
+                          <template v-for="(itemGroup,index) in sidebarItem.sections">
+                              <vx-sidebar-group :mainSlug="sidebarItem.slug" ref="sidebarGrp" :key="`group-${index}`" :openHover="openGroupHover" :group="itemGroup" :groupIndex="index" :open="isGroupActive(itemGroup)"></vx-sidebar-group>
                           </template>
                       <!-- </template> -->
                     </template>

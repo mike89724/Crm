@@ -28,7 +28,7 @@
       <li v-for="(groupItem, index) in group.pages" :key="index">
 		<vx-sidebar-group :group="groupItem" :groupIndex="Number(`${groupIndex}.${index}`)" :open="isGroupActive(groupItem)" :openHover="openHover" v-if="groupItem.submenu" />
 		<vx-sidebar-item :index="groupIndex + '.' + index" :to="groupItem.url" :icon="itemIcon(groupIndex + '.' + index)" icon-small :target="groupItem.target" v-else>
-			<span class="truncate">{{ $t(groupItem.i18n) || groupItem.name }}</span>
+			<span @click="redirect(groupItem, group.slug)" class="truncate">{{ $t(groupItem.i18n) || groupItem.name }}</span>
 			<!-- <vs-chip class="ml-auto" :color="groupItem.tagColor" v-if="groupItem.tag">{{ groupItem.tag }}</vs-chip> -->
 		</vx-sidebar-item>
       </li>
@@ -49,6 +49,10 @@ export default {
         open: {
             default: false,
             type: Boolean
+        },
+        mainSlug: {
+            default: '',
+            type: String
         },
         group: {
             type: Object
@@ -140,6 +144,9 @@ export default {
         }
     },
     methods: {
+        redirect(item, slug) {
+            this.$router.push({path: '/' + this.mainSlug +  '/' + slug +  '/' + item.slug, params:{tag: item.tag}})
+        },
         clickGroup() {
             if (!this.openHover) {
                 let thisScrollHeight = this.$refs.items.scrollHeight

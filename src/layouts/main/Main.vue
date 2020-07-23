@@ -10,24 +10,6 @@
 
 <template>
     <div class="layout--main" :class="[navbarClasses, footerClasses, {'app-page': isAppPage}]">
-      <vs-prompt
-        vs-title="Enter Google Auth Code"
-        @vs-accept="submit()"
-        @vs-close="close()"
-        :vs-active.sync="activePrompt">
-        <div class="">
-          <div style="display: flex;justify-content:center;">
-              <center><img v-if="!isGoogleAuthActive" :src=
-                  "'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Nuo%3Fsecret%3D' + 'GBDEOTKJLBYTARCNKB4EO2CUOBEW4VZQ'" 
-                  style="height: 150px; margin: 10px auto;">
-              </center>
-          </div>
-          <vs-input placeholder="Enter"  v-model="otp" class="mt-4 mb-2 w-full" />
-          <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
-            Fields can not be empty please enter the data
-          </vs-alert>
-        </div>
-      </vs-prompt>
       <div v-if="showBanner" :class="bgColorClass" id="bannerInfo">
         <span style="color: rgb(255, 255, 255); font-weight: 400;">
           <span style="font-weight: 500;">
@@ -55,7 +37,7 @@
             /> -->
         <!-- <vx-sidebar :sidebarItems="sidebarItems" :logo="require('@/assets/images/logo/logo.png')" title="NuoScan" parent=".layout--main" /> -->
         <!-- <vx-sidebar :sidebarItems="sidebarItems" :logo="'https://nuo-public.s3.ap-south-1.amazonaws.com/nuo_web/images/nuo-logo.png'" title="Scan" parent=".layout--main" /> -->
-        <vx-sidebar v-if="showData == true" :sidebarItems="sidebarItems" :footerItems="footerItems" :logo="require('@/assets/images/logo/logo-color-demibold.png')" title="" parent=".layout--main" />
+        <vx-sidebar :sidebarItems="sidebarItems" :footerItems="footerItems" :logo="require('@/assets/images/logo/logo-color-demibold.png')" title="" parent=".layout--main" />
 
         <div id="content-area" :class="[contentAreaClass, {'show-overlay': bodyOverlay}]">
 
@@ -66,7 +48,7 @@
                 <!-- <the-navbar :navbarColor="navbarColor" :currencies="currencies" :class="[{'text-white': isNavbarDark && !isThemeDark}, {'text-base': !isNavbarDark && isThemeDark}]">
                 </the-navbar> -->                
                 <div class="router-view mt-22">
-                    <div v-if="showData == true" class="router-content" :class="{'mt-0': navbarType == 'hidden'}">
+                    <div class="router-content" :class="{'mt-0': navbarType == 'hidden'}">
                         <transition :name="routerTransition">
                         <div class="router-header flex flex-wrap items-center mb-6" v-if="$route.meta.breadcrumb || $route.meta.pageTitle">
                             <div class="content-area__heading" :class="{'pr-4 border-0 md:border-r border-t-0 border-b-0 border-l-0 border-solid border-grey-light' : $route.meta.breadcrumb}">
@@ -119,10 +101,6 @@ const VxTour = () => import('@/components/VxTour.vue')
 export default {
     data() {
         return {
-            otp: '',
-            showData: false,
-            promptShown: false,
-            activePrompt: false,
             navbarType: themeConfig.navbarType || 'floating',
             navbarColor: themeConfig.navbarColor || '#fff',
             footerType: themeConfig.footerType || 'static',
@@ -274,33 +252,6 @@ export default {
         },
     },
     methods: {
-        async submit() {
-          let response = await axios.post('https://api-crm.nuofox.com/login/final', {
-            email: this.$store.state.email,
-            password: this.$store.state.password,
-            ga_token: this.otp  
-          })
-          console.log('priniting final response')
-          console.log(response)
-          if(response.status == 200) {
-            this.showData = true;
-            this.$store.commit('profileData', response);
-            console.log('printing response')
-            console.log(response);
-            this.sidebarItems = response.data.data.products
-          } else if(response.status != 200) {
-              this.$router.push({path: '/pages/login'})
-          }
-            // this.otp = response;
-        },
-        close() {
-          this.$vs.notify({
-            color:'danger',
-            title:'Closed',
-            text:'You close a dialog!'
-          })
-          this.$router.push({ path: '/pages/login'})
-        },
         registerGA() {
           var category = "banner";
           var action = "clicked";
@@ -379,12 +330,11 @@ export default {
         this.getFiatCurrencies();
     },
     mounted() {
-      this.activePrompt = true;
-      // this.activePrompt = false;
-      // this.$nextTick => {}
-      // if(this.activePrompt = false) {
-      //   this.promptShown = true;
-      // }
+      if(this.$store.state.profileData) {
+        this.sidebarItems = this.$store.state.profileData.data.data.products
+      } else {
+        this.$router.push({path: '/pages/login'})
+      }
       this.routeTitle = this.$route.meta.pageTitle;
       var wrapperDivs = document.querySelectorAll('.vx-navbar-wrapper');
       var length = wrapperDivs.length;

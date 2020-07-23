@@ -46,7 +46,7 @@ const router = new Router({
         //   redirect: '/'
         // },
         {
-          path: '/',
+          path: '/:productSlug/:sectionSlug/:pageSlug',
           name: 'home',
           component: () => import('./views/Home.vue'),
           meta: {
@@ -54,9 +54,9 @@ const router = new Router({
           }
         },
         {
-          path: '/trade/overview',
-          name: 'dashboardTrades',
-          component: () => import('./views/DashboardTrades.vue'),
+          path: '/google-auth-verify/otp',
+          name: 'googleAuthVerify',
+          component: () => import('./views/googleAuthVerify.vue'),
           meta: {
             rule: 'editor'
           }
@@ -1366,10 +1366,10 @@ router.beforeEach((to, from, next) => {
     to.path === "/pages/register" ||
     to.path === "/callback" ||
     to.path === "/pages/comingsoon" ||
-    to.path === "/kyc/overview" ||  to.path === "/affiliate/overview" || to.path === "/referral/overview") {
+    to.path === "/kyc/overview" ||  to.path === "/:productSlug/:sectionSlug/:pageSlug" || to.path === "/google-auth-verify/otp") {
     return next();
   }
-  router.push({ path: '/pages/login'})
+  // router.push({ path: '/pages/login'})
   // router.push({ path: '/pages/login', query: { to: to.path } })
   // firebase.auth().onAuthStateChanged(() => {
 
