@@ -19,7 +19,7 @@
 		<span class="flex items-center w-full">
 			<feather-icon :icon="group.icon || 'CircleIcon'" :svgClasses="{ 'w-3 h-3' : this.groupIndex % 1 != 0 }" v-if="group.icon || (this.groupIndex > Math.floor(this.groupIndex))" />
 			<span v-show="!sidebarItemsMin" class="truncate capitalize mr-3">{{ $t(group.i18n) || group.name }}</span>
-			<vs-chip class="ml-auto mr-4" :color="group.tagColor" v-if="group.tag && !sidebarItemsMin">{{ group.tag }}</vs-chip>
+			<!-- <vs-chip class="ml-auto mr-4" :color="group.tagColor" v-if="group.tag && !sidebarItemsMin">{{ group.tag }}</vs-chip> -->
 		</span>
 		<feather-icon icon="ChevronRightIcon" svg-classes="w-4 h-4" :class="[{'rotate90' : openItems}, 'feather-grp-header-arrow']" v-show="!sidebarItemsMin" />
 		<span class="vs-sidebar--tooltip">{{ $t(group.i18n) || group.name }}</span>
