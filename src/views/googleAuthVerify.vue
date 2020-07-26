@@ -8,7 +8,7 @@
             <div class="">
             <div style="display: flex;justify-content:center;">
                 <center><img :src=
-                    "'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Nuo%3Fsecret%3D' + 'GBDEOTKJLBYTARCNKB4EO2CUOBEW4VZQ'" 
+                    "'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Nuo%3Fsecret%3D' + 'JB4UK6TQPBDUC6CUOA2FMSZSN5GFSY2D'" 
                     style="height: 150px; margin: 10px auto;">
                 </center>
             </div>
