@@ -94,6 +94,7 @@ import sidebarItems from "@/layouts/components/vx-sidebar/sidebarItems.js";
 import footerItems from "@/layouts/components/vx-sidebar/footerItems.js";
 import BackToTop from 'vue-backtotop'
 import CurrencyService from '@/services/CurrencyService';
+import { mapState } from 'vuex';
 import axios from 'axios';
  
 const VxTour = () => import('@/components/VxTour.vue')
@@ -181,6 +182,7 @@ export default {
         },
     },
     computed: {
+        ...mapState(['profileData']),
         showBanner() {
             return false;
         },
@@ -250,6 +252,13 @@ export default {
                 'footer-static': this.footerType == 'static',
             }
         },
+    },
+    watch: {
+      profileData(newValue, oldValue) {
+        if(newValue != null) {
+          this.sidebarItems = profileData.data.data.products
+        }
+      }
     },
     methods: {
         registerGA() {
@@ -333,7 +342,7 @@ export default {
       if(this.$store.state.profileData && this.$store.state.isUserLoggedIn) {
         this.sidebarItems = this.$store.state.profileData.data.data.products
       } else {
-        this.$router.push({path: '/pages/login'})
+        // this.$router.push({path: '/pages/login'})
       }
       this.routeTitle = this.$route.meta.pageTitle;
       var wrapperDivs = document.querySelectorAll('.vx-navbar-wrapper');

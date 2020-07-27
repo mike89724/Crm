@@ -75,9 +75,9 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            email: 'test@test.com',
+            email: 'ratnesh@getnuo.com',
             clientId: 'cliend-id',
-            password: 'Test@123',
+            password: 'Nuofox@123',
             checkbox_remember_me: false,
             sitekey: '6LfMvKkZAAAAAPewkKAVKPWhrRIUNe0p8rkmnuCB',
             recaptchaToken: '',

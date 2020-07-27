@@ -251,6 +251,7 @@ export default {
     GenericCard
   },
   async mounted() {
+    console.log(this.$route.params.groupTag)
     var response = await axios.get('https://api-crm.nuofox.com/page', {
       page_tag: this.$route.params.tag,
       section_tag: this.$route.params.groupTag,
