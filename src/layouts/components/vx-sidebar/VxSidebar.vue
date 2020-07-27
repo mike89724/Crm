@@ -49,6 +49,7 @@
                       <vs-dropdown  vs-custom-content vs-trigger-click class="cursor-pointer">
                         <div class="con-img flex">
                           <img
+                            v-if="imageUrl != ''"
                             key="localImg"
                             :src="imageUrl"
                             alt="user-img"

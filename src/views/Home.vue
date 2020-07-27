@@ -10,15 +10,15 @@
 <template>
   <div id="dashboard-swaps">
     <div class="flex justify-between my-10">
-      <generic-card :width="componentWidth(uiComponents[0].length)" :value="uiComponents[0][index].value" :name="uiComponents[0][index].name" :title="uiComponents[0][index].title" :key="index" v-for="(componentItem, index) in uiComponents[0]">
+      <generic-card :width="componentWidth(singleValueCard.length)" :value="singleValueCard[index].value" :name="singleValueCard[index].name" :title="singleValueCard[index].title" :key="index" v-for="(componentItem, index) in singleValueCard">
       </generic-card>
     </div>
     <div class="flex justify-between my-10">
-      <generic-card :width="componentWidth(uiComponents[1].length)" :value="uiComponents[1][index].value" :name="uiComponents[1][index].name" :title="uiComponents[1][index].title" :key="index" v-for="(componentItem, index) in uiComponents[1]">
+      <generic-card :width="componentWidth(graphs.length)" :value="graphs[index].value" :name="graphs[index].name" :title="graphs[index].title" :key="index" v-for="(componentItem, index) in graphs">
       </generic-card>
     </div>
     <div class="flex justify-between my-10">
-      <generic-card :width="componentWidth(uiComponents[2].length)" :value="uiComponents[2][index].value" :name="uiComponents[2][index].name" :title="uiComponents[2][index].title" :key="index" v-for="(componentItem, index) in uiComponents[2]">
+      <generic-card :width="componentWidth(tables.length)" :value="tables[index].value" :name="tables[index].name" :title="tables[index].title" :key="index" v-for="(componentItem, index) in tables">
       </generic-card>
     </div>
   </div>
@@ -46,6 +46,9 @@ export default {
       apexChatData: apexChatData,
       isImp: false,
       affiliate: "",
+      singleValueCard: [],
+      tables: [],
+      graphs: [],
       navbarSearchAndPinList: this.$store.state.navbarSearchAndPinList,
       show: false,
       items: [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -253,14 +256,29 @@ export default {
   async mounted() {
     console.log('printing tag')
     console.log(this.$route.params.sectionTag)
-    var response = await axios.get('https://api-crm.nuofox.com/page', {
-      page_tag: this.$route.params.tag,
-      section_tag: this.$route.params.sectionTag,
-      product_tag: this.$route.params.productTag
-
-    })
+    const response = await axios.get('https://api-crm.nuofox.com/page', {   
+      params: {
+        page_tag: "user",
+        section_tag: "access_control",
+        product_tag: "settings",
+      },
+      headers: {
+        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+      },
+      })
     console.log(response);
-    this.uiComponents = response.data.data.components
+    this.uiComponents = response.data.data
+    var i;
+    for(i = 0; i < this.uiComponents.length; i++) {
+      if(this.uiComponents[i].name == 'single-value-card') {
+        this.singleValueCard.push(this.uiComponents[i])
+      } else if(this.uiComponents[i].name == 'area-chart-without-value' || this.uiComponents[i].name  == 'area-chart-with-value') {
+        this.graphs.push(this.uiComponents[i])
+      } else if(this.uiComponents[i].name == 'record-slider-table') {
+        this.tables.push(this.uiComponents[i])
+      }
+    }
+    
   },
   methods: {
     initializeValues() {

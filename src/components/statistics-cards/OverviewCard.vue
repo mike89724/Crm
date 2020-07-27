@@ -97,20 +97,20 @@ export default {
   },
   created() {
     if (this.name == "overlapping-area-chart-without-value") {
-      for (var i = 0; i < this.value["graph_value"]["y"].length; i++) {
+      for (var i = 0; i < this.value["y"].length; i++) {
         this.series.push({
-          name: this.value["graph_value"]["y"][i]["label"],
-          data: this.value["graph_value"]["y"][i]["value"]
+          name: this.value["y"][i]["label"],
+          data: this.value["y"][i]["value"]
         });
       }
-    } else if (this.name == "area-chart-with-value") {
+    } else if (this.name == "area-chart-without-value") {
       this.series.push({
-        name: this.value.graph_value["y-label"],
-        data: this.value["graph_value"]["y"]
+        name: this.value["y-label"],
+        data: this.value["y"]
       });
     }
     this.options = {
-      categories: this.value["graph_value"]["x"],
+      categories: this.value["x"],
       chart: {
         animations: {
           enabled: false

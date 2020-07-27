@@ -2,10 +2,7 @@
     <div id="transaction-card">
         <vx-card class="h-48">
             <div class="flex justify-between">
-              <div class="text-2xl text-left p-3 w-1/2">{{title}}</div>
-              <div class="flex items-center">
-                <feather-icon icon="HashIcon"></feather-icon>
-              </div>
+              <div style="min-height: 62px;" class="text-2xl text-left">{{title}}</div>
             </div>
             <div class="flex justify-between">
               <div class="text-5xl bold text-left p-3" v-if="!transition">{{amount}}</div>
@@ -20,7 +17,7 @@
 export default {
     props: {
       title: String,
-      amount: String,
+      amount: Number,
       imageUrl: String,
       transition: Boolean
     },
