@@ -35,6 +35,7 @@ import RecordSliderTableWithoutButton from "./ui-elements/table/RecordSliderTabl
 import PageService from "@/services/PageService.js";
 import {getFrame} from "@/utils/util.js";
 import GenericCard from "@/components/statistics-cards/GenericUICard.vue";
+import axios from 'axios'
 
 export default {
   data() {
@@ -250,8 +251,14 @@ export default {
     GenericCard
   },
   async mounted() {
-    await this.getHomeData();
-    this.transition = false;
+    var response = await axios.get('https://api-crm.nuofox.com/page', {
+      page_tag: this.$route.params.tag,
+      section_tag: this.$route.params.groupTag,
+      product_tag: this.$route.params.product_tag
+
+    })
+    console.log(response);
+    this.uiComponents = response.data.data.components
   },
   methods: {
     initializeValues() {
