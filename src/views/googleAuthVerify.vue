@@ -52,7 +52,7 @@
                 console.log(response.data.data.products[0].slug)
                 console.log(response.data.data.products[0].sections[0].slug)
                 console.log(response.data.data.products[0].sections[0].pages[0].slug)
-                this.$router.push({path: '/' + response.data.data.products[0].slug + '/' + response.data.data.products[0].sections[0].slug + '/' + response.data.data.products[0].sections[0].pages[0].slug + '/' + response.data.data.products[0].sections[0].pages[0].tag})
+                this.$router.push({path: '/' + response.data.data.products[0].slug + '/' + response.data.data.products[0].sections[0].slug + '/' + response.data.data.products[0].sections[0].pages[0].slug + '/' + response.data.data.products[0].sections[0].pages[0].tag + '/' + response.data.data.products[0].sections[0].tag + '/' + response.data.data.products[0].tag})
                 // this.$router.push({path: '/home'});
             } else if(response.status != 200) {
                 this.$router.push({path: '/pages/login'})

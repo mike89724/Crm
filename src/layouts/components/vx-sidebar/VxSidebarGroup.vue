@@ -28,7 +28,7 @@
       <li v-for="(groupItem, index) in group.pages" :key="index">
 		<vx-sidebar-group :group="groupItem" :groupIndex="Number(`${groupIndex}.${index}`)" :open="isGroupActive(groupItem)" :openHover="openHover" v-if="groupItem.submenu" />
 		<vx-sidebar-item :index="groupIndex + '.' + index" :to="groupItem.url" :icon="itemIcon(groupIndex + '.' + index)" icon-small :target="groupItem.target" v-else>
-			<span @click="redirect(groupItem, group.slug)" class="truncate">{{ $t(groupItem.i18n) || groupItem.name }}</span>
+			<span @click="redirect(groupItem, group.slug, group.tag)" class="truncate">{{ $t(groupItem.i18n) || groupItem.name }}</span>
 			<!-- <vs-chip class="ml-auto" :color="groupItem.tagColor" v-if="groupItem.tag">{{ groupItem.tag }}</vs-chip> -->
 		</vx-sidebar-item>
       </li>
@@ -51,6 +51,10 @@ export default {
             type: Boolean
         },
         mainSlug: {
+            default: '',
+            type: String
+        },
+        mainTag: {
             default: '',
             type: String
         },
@@ -144,10 +148,10 @@ export default {
         }
     },
     methods: {
-        redirect(item, slug) {
+        redirect(item, slug, groupTag) {
             console.log("Printing Tag")
             console.log(item.tag)
-            this.$router.push({path: '/' + this.mainSlug +  '/' + slug +  '/' + item.slug + '/' + item.tag})
+            this.$router.push({path: '/' + this.mainSlug +  '/' + slug +  '/' + item.slug + '/' + item.tag  + '/' + groupTag + '/' + this.mainTag})
         },
         clickGroup() {
             if (!this.openHover) {

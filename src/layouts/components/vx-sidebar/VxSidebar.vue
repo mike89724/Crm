@@ -29,11 +29,11 @@
                           <div class="flex justify-between">
                             <div class="w-5/12">
                               <div class="p-2">First Name</div>
-                              <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="firstName"/>
+                              <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
                             </div>
                             <div class="w-5/12">
                               <div class="p-2">Last Name</div>
-                              <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="lastName"/>
+                              <input class="form-control shadow border-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
                             </div>
                           </div>
                           <div>
@@ -47,16 +47,16 @@
                         </div>
                       </vs-prompt>
                       <vs-dropdown  vs-custom-content vs-trigger-click class="cursor-pointer">
-                        <div class="con-img flex" v-if="profileData">
+                        <div class="con-img flex">
                           <img
                             key="localImg"
-                            :src="profileData.data.data.image"
+                            :src="imageUrl"
                             alt="user-img"
                             width="50"
                             height="50"
                             style="padding: 0px !important;"
                             class="rounded-full shadow-md cursor-pointer block" />
-                            <div v-if="profileData" style="font-weight: 600; text-transform: capitalize" class="ml-4 mt-4">{{profileData.data.data.first_name}} {{profileData.data.data.last_name}}</div>
+                            <div style="font-weight: 600; text-transform: capitalize" class="ml-4 mt-4">{{firstName}} {{lastName}}</div>
                         </div>
                         <vs-dropdown-menu style="z-index: 9999999;" class="dropdown-menu-right ml-5">
                           <ul style="min-width: 9rem">
@@ -96,7 +96,7 @@
 
                           <!-- IF HAVE SUBMENU / DROPDOWN -->
                           <template v-for="(itemGroup,index) in sidebarItem.sections">
-                              <vx-sidebar-group :mainSlug="sidebarItem.slug" ref="sidebarGrp" :key="`group-${index}`" :openHover="openGroupHover" :group="itemGroup" :groupIndex="index" :open="isGroupActive(itemGroup)"></vx-sidebar-group>
+                              <vx-sidebar-group :mainSlug="sidebarItem.slug" :mainTag="sidebarItem.tag" ref="sidebarGrp" :key="`group-${index}`" :openHover="openGroupHover" :group="itemGroup" :groupIndex="index" :open="isGroupActive(itemGroup)"></vx-sidebar-group>
                           </template>
                       <!-- </template> -->
                     </template>
@@ -125,6 +125,7 @@
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 import VxSidebarGroup from './VxSidebarGroup.vue';
 import VxSidebarItem  from './VxSidebarItem.vue';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'vx-sidebar',
@@ -158,10 +159,8 @@ export default {
     data: () => ({
         profileData: {},
         editProfileActive: false,
-        firstName: "",
         activePrompt: false,
         promtShown: false,
-        lastName: "",
         email: "",
         contactNumber: "",
         clickNotClose: false, // disable close sidebar on outside click
@@ -177,6 +176,7 @@ export default {
         showShadowBottom: false,
     }),
     computed: {
+        ...mapGetters(['firstName', 'lastName', 'imageUrl']),
         userName() {
           return JSON.parse(localStorage.getItem('userInfo')).displayName;
         },

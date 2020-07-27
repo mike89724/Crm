@@ -14,10 +14,28 @@ const getters = {
   // vx-autosuggest
   // starredPages: state => state.navbarSearchAndPinList.data.filter((page) => page.highlightAction),
   sidebarItems(state) {
-    if(state.profileData.data.data.products) {
+    if(state.profileData != null) {
       return state.profileData.data.data.products 
     }  
     else return [];
+  },
+  imageUrl(state) {
+    if(state.profileData != null) {
+      return state.profileData.data.data.image 
+    }  
+    else return '';
+  },
+  firstName(state) {
+    if(state.profileData != null) {
+      return state.profileData.data.data.first_name 
+    }  
+    else return '';
+  },
+  lastName(state) {
+    if(state.profileData != null) {
+      return state.profileData.data.data.last_name 
+    }  
+    else return '';
   },
   getModalShowState(state) {
     return function (name) {
