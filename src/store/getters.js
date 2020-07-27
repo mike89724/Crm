@@ -13,6 +13,12 @@ const getters = {
   // COMPONENT
   // vx-autosuggest
   // starredPages: state => state.navbarSearchAndPinList.data.filter((page) => page.highlightAction),
+  sidebarItems(state) {
+    if(state.profileData.data.data.products) {
+      return state.profileData.data.data.products 
+    }  
+    else return [];
+  },
   getModalShowState(state) {
     return function (name) {
       for (var i = 0; i < state.modals.length; i++) {

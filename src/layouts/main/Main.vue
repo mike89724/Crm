@@ -94,7 +94,7 @@ import sidebarItems from "@/layouts/components/vx-sidebar/sidebarItems.js";
 import footerItems from "@/layouts/components/vx-sidebar/footerItems.js";
 import BackToTop from 'vue-backtotop'
 import CurrencyService from '@/services/CurrencyService';
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 import axios from 'axios';
  
 const VxTour = () => import('@/components/VxTour.vue')
@@ -108,7 +108,7 @@ export default {
             routerTransition: themeConfig.routerTransition || 'none',
             isNavbarDark: false,
             routeTitle: this.$route.meta.pageTitle,
-            sidebarItems: [],
+            // sidebarItems: [],
             footerItems: footerItems,
             disableCustomizer: themeConfig.disableCustomizer,
             windowWidth: window.innerWidth, //width of windows
@@ -182,7 +182,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(['profileData']),
+        ...mapGetters(['sidebarItems']),
         showBanner() {
             return false;
         },
@@ -253,13 +253,13 @@ export default {
             }
         },
     },
-    watch: {
-      profileData(newValue, oldValue) {
-        if(newValue != null) {
-          this.sidebarItems = profileData.data.data.products
-        }
-      }
-    },
+    // watch: {
+    //   profileData(newValue, oldValue) {
+    //     if(newValue != null) {
+    //       this.sidebarItems = profileData.data.data.products
+    //     }
+    //   }
+    // },
     methods: {
         registerGA() {
           var category = "banner";
@@ -339,11 +339,11 @@ export default {
         this.getFiatCurrencies();
     },
     mounted() {
-      if(this.$store.state.profileData && this.$store.state.isUserLoggedIn) {
-        this.sidebarItems = this.$store.state.profileData.data.data.products
-      } else {
-        // this.$router.push({path: '/pages/login'})
-      }
+      // if(this.$store.state.profileData && this.$store.state.isUserLoggedIn) {
+      //   // this.sidebarItems = this.$store.state.profileData.data.data.products
+      // } else {
+      //   // this.$router.push({path: '/pages/login'})
+      // }
       this.routeTitle = this.$route.meta.pageTitle;
       var wrapperDivs = document.querySelectorAll('.vx-navbar-wrapper');
       var length = wrapperDivs.length;
