@@ -253,7 +253,6 @@ export default {
     TransactionCard,
     GenericCard
   },
-<<<<<<< HEAD
   // watch:{
   //   $route (to, from){
   //     location.reload
@@ -283,16 +282,7 @@ export default {
       } else if(this.uiComponents[i].name == 'record-slider-table') {
         this.tables.push(this.uiComponents[i])
       }
-=======
-  watch: {
-    '$route'
-    : async function() {
-      await this.getHomeData
->>>>>>> a87762eefc0aab25c7bd172e589f8475fb933025
     }
-  },
-  async mounted() {
-    await this.getHomeData()    
   },
   methods: {
     async getHomeData() {
