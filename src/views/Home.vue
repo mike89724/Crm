@@ -253,34 +253,40 @@ export default {
     TransactionCard,
     GenericCard
   },
-  async mounted() {
-    console.log('printing tag')
-    console.log(this.$route.params.sectionTag)
-    const response = await axios.get('https://api-crm.nuofox.com/page', {   
-      params: {
-        page_tag: "user",
-        section_tag: "access_control",
-        product_tag: "settings",
-      },
-      headers: {
-        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-      },
-      })
-    console.log(response);
-    this.uiComponents = response.data.data
-    var i;
-    for(i = 0; i < this.uiComponents.length; i++) {
-      if(this.uiComponents[i].name == 'single-value-card') {
-        this.singleValueCard.push(this.uiComponents[i])
-      } else if(this.uiComponents[i].name == 'area-chart-without-value' || this.uiComponents[i].name  == 'area-chart-with-value') {
-        this.graphs.push(this.uiComponents[i])
-      } else if(this.uiComponents[i].name == 'record-slider-table') {
-        this.tables.push(this.uiComponents[i])
-      }
+  watch: {
+    '$route'
+    : async function() {
+      await this.getHomeData
     }
-    
+  },
+  async mounted() {
+    await this.getHomeData()    
   },
   methods: {
+    async getHomeData() {
+       const response = await axios.get('https://api-crm.nuofox.com/page', {   
+        params: {
+          page_tag: "user",
+          section_tag: "access_control",
+          product_tag: "settings",
+        },
+        headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+        },
+        })
+      console.log(response);
+      this.uiComponents = response.data.data
+      var i;
+      for(i = 0; i < this.uiComponents.length; i++) {
+        if(this.uiComponents[i].name == 'single-value-card') {
+          this.singleValueCard.push(this.uiComponents[i])
+        } else if(this.uiComponents[i].name == 'area-chart-without-value' || this.uiComponents[i].name  == 'area-chart-with-value') {
+          this.graphs.push(this.uiComponents[i])
+        } else if(this.uiComponents[i].name == 'record-slider-table') {
+          this.tables.push(this.uiComponents[i])
+        }
+      }
+    },
     initializeValues() {
       this.swapGeneratedValue.series = [];
       this.splitValueCountSeries = [];
