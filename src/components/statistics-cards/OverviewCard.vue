@@ -90,8 +90,6 @@ export default {
       return this.options;
     }
   },
-  methods: {
-  },
   components: {
     VueApexCharts
   },
