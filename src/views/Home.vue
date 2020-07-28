@@ -253,6 +253,7 @@ export default {
     TransactionCard,
     GenericCard
   },
+<<<<<<< HEAD
   // watch:{
   //   $route (to, from){
   //     location.reload
@@ -282,10 +283,42 @@ export default {
       } else if(this.uiComponents[i].name == 'record-slider-table') {
         this.tables.push(this.uiComponents[i])
       }
+=======
+  watch: {
+    '$route'
+    : async function() {
+      await this.getHomeData
+>>>>>>> a87762eefc0aab25c7bd172e589f8475fb933025
     }
-    
+  },
+  async mounted() {
+    await this.getHomeData()    
   },
   methods: {
+    async getHomeData() {
+       const response = await axios.get('https://api-crm.nuofox.com/page', {   
+        params: {
+          page_tag: "user",
+          section_tag: "access_control",
+          product_tag: "settings",
+        },
+        headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+        },
+        })
+      console.log(response);
+      this.uiComponents = response.data.data
+      var i;
+      for(i = 0; i < this.uiComponents.length; i++) {
+        if(this.uiComponents[i].name == 'single-value-card') {
+          this.singleValueCard.push(this.uiComponents[i])
+        } else if(this.uiComponents[i].name == 'area-chart-without-value' || this.uiComponents[i].name  == 'area-chart-with-value') {
+          this.graphs.push(this.uiComponents[i])
+        } else if(this.uiComponents[i].name == 'record-slider-table') {
+          this.tables.push(this.uiComponents[i])
+        }
+      }
+    },
     initializeValues() {
       this.swapGeneratedValue.series = [];
       this.splitValueCountSeries = [];
