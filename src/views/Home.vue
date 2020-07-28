@@ -18,7 +18,7 @@
       </generic-card>
     </div>
     <div class="flex justify-between my-10">
-      <generic-card :width="componentWidth(tables.length)" :value="tables[index].value" :name="tables[index].name" :title="tables[index].title" :key="index" v-for="(componentItem, index) in tables">
+      <generic-card :width="componentWidth(tables.length)" :value="tables[index]" :name="tables[index].name" :title="tables[index].title" :key="index" v-for="(componentItem, index) in tables">
       </generic-card>
     </div>
   </div>

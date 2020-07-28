@@ -2,7 +2,7 @@
   <div :style="`width: ${width};`">
     <transaction-card v-if="name == 'single-value-card'" :title="title" :amount="value"></transaction-card>
     <overview-card v-if="name == 'area-chart-with-value' || name == 'area-chart-without-value'" :title="title" :value="value" :name="name"></overview-card>
-    <record-slider-table-without-button style="width: 200%;" v-if="name == 'record-slider-table-without-button'" :title="title" :value="value"></record-slider-table-without-button>
+    <record-slider-table-without-button style="width: 100%;" v-if="name == 'record-slider-table'" :title="title" :value="value"></record-slider-table-without-button>
   </div>
 </template>
 

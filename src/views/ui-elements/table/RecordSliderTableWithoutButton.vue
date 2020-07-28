@@ -35,8 +35,8 @@
                <div>
                 <v-menu offset-y>
                   <template v-slot:activator="{ on }">
-                    <div type="border" :href="`#${index}`" v-on="on" class="cursor-pointer outline">
-                          {{column.name}}
+                    <div style="white-space: nowrap;" type="border" :href="`#${index}`" v-on="on" class="cursor-pointer outline">
+                          {{column.title}}
                           <feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>
                     </div>
                   </template>
