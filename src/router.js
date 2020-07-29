@@ -222,7 +222,7 @@ const router = new Router({
           }
         },
         {
-          path: '/swap/orders',
+          path: '/:tag/:sectionTag/:productTag/:subPagetag',
           name: 'swapfull',
           component: () => import('./views/ui-elements/table/RecordSliderTableWithoutButton.vue'),
           meta: {

@@ -2,7 +2,9 @@
   <vx-card class="relative" id="table-swap">
     <vs-row vs-type="flex" vs-justify="space-between">
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
-        <h5 class="pt-3 pb-3">{{title}}</h5>
+        <h5 v-if="title" class="pt-3 pb-3">{{title}}</h5>
+        <h5 v-else class="pt-3 pb-3">{{table.title}}</h5>
+        <div>A {{this.tableText}}</div>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <vs-button class="text-xs" @click="activePrompt1 = true" style="margin-top: -3.5%; margin-right: 10%;">ADD</vs-button>
@@ -28,10 +30,10 @@
     </vs-row>
     <vs-row>
       <vs-col vs-w="12" :class="{'hide': transition, 'show': !transition}">
-        <vs-table :class="{'mt-5': updatedWidth < 768}" style="width: 100%;" :hoverFlat="false" :data="value['main_values']">
+        <vs-table :class="{'mt-5': updatedWidth < 768}" style="width: 100%;" :hoverFlat="false" :data="table['main_values']">
           <template slot="header"></template>
           <template slot="thead">
-            <vs-th v-for="(column, index) in value.main_columns" :key="index">
+            <vs-th v-for="(column, index) in table.main_columns" :key="index">
                <div>
                 <v-menu offset-y>
                   <template v-slot:activator="{ on }">
@@ -46,8 +48,8 @@
                     </div>
                     <vs-prompt
                       :id="`${index}`"
-                      vs-title=""
-                      :vs-is-valid="validName"
+                      vs-title="Filter"
+                      @vs-accept="filter(column.col_tag, table.sub_page_tag)"
                       :vs-active.sync="activePrompt">
                       <div class="">
                         
@@ -57,10 +59,8 @@
                         </vs-alert>
                       </div>
                     </vs-prompt>
-                    <div  class="cursor-pointer flex p-2">
-                    <div><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
-                    <div class="ml-5"><feather-icon class="h-3" icon="ChevronsUpIcon"></feather-icon>DESCENDING</div>
-                    </div>
+                    <div class="p-2" @click="sort('asc', column.col_tag, table.sub_page_tag)"><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
+                    <div class="p-2" @click="sort('desc', column.col_tag, table.sub_page_tag)"><feather-icon class="h-3" icon="ChevronsUpIcon"></feather-icon>DESCENDING</div>
                   </v-list>
                 </v-menu>   
               </div>
@@ -74,12 +74,12 @@
               <template class="expand-user" slot="expand">
                 <div class="flex justify-between w-full">
                   <div class="w-1/2 flex flex-col justify-around">
-                    <div class="text-left pl-5" v-for="(item, index) in value.secondary_columns.filter(v => v.name)" :key="index">
-                      <span v-if="item.name">{{item.name}}:</span><span v-if="item.name && value.secondary_values[index]">{{value.secondary_values[index]}}</span>
+                    <div class="text-left pl-5" v-for="(item, index) in table.secondary_columns.filter(v => v.name)" :key="index">
+                      <span v-if="item.name">{{item.name}}:</span><span v-if="item.name && table.secondary_values[index]">{{table.secondary_values[index]}}</span>
                     </div>
                   </div>
                   <div class="w-1/2">
-                    <div class="text-right pr-5 my-5" v-for="(item, index) in value.secondary_columns" :key="index">
+                    <div class="text-right pr-5 my-5" v-for="(item, index) in table.secondary_columns" :key="index">
                       <vs-button @click="activePrompt = true" v-if="item.name == null" :color="item.tag == 'approve_kyc'?'success':'danger'">{{item.tag}}</vs-button>
                     </div>
                   </div>
@@ -91,7 +91,7 @@
       </vs-col>
     </vs-row>
     <template>
-      <div v-if="showPagination && swaps.length > 0" class="table-page-change mt-3">
+      <div class="table-page-change mt-3">
         <vs-row vs-w="12" vs-justify="space-between">
           <vs-col vs-lg="2" vs-sm="2" :class="{'pt-1': updatedWidth < 768}" style="display: flex; justify-content: flex-start;">
             <vs-dropdown class="cursor-pointer" vs-trigger-click>
@@ -124,7 +124,7 @@
           </vs-col>
         </vs-row>
       </div>
-      <div v-else-if="!showPagination && swaps.length > 0" class="p-6 pb-0 pt-2">
+      <div class="p-6 pb-0 pt-2">
         <span style="color: #3576FD; cursor: pointer;" @click="openNewRoute()">Show More</span>
       </div>
     </template>
@@ -142,6 +142,7 @@ import ExpandableRowGraph from "@/views/ExpandableRowGraph.vue";
 import ExpandableRowTable from "@/views/ExpandableRowTable.vue";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
+import axios from 'axios';
 
 export default {
   props: {
@@ -154,11 +155,20 @@ export default {
     },
     value: {
       type: Object
-    }
+    },
+    showPagination: {
+      type: Boolean,
+      default: true
+    },
+    showFilters: {
+      type: Boolean,
+      default: true
+    },
   },
   data() {
     return {
       swaps: [],
+      table: {},
       currentTime: (new Date()).getMilliseconds(),
       rowClicked: 0,
       transition: true,
@@ -170,6 +180,7 @@ export default {
         value2:''
       },
       showTable: true,
+      tableText: '',
       activePage: 1,
       pageSize: 20,
       frames: new Array(10),
@@ -216,7 +227,26 @@ export default {
     DateRangePicker
   },
   async mounted() {
-    await this.getSwapOrders();
+    if(this.value){
+      this.table = this.value
+    } else {
+      const response = await axios.post('https://api-crm.nuofox.com/page',{
+        page_tag: "user",
+        section_tag: "access_control",
+        product_tag: "settings",
+        get_main_page: 0, 
+        sub_page: [
+          {
+            tag: "all_users_table",
+            params: {}}]
+      },
+      {
+        headers: {
+        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+        },
+      })
+      this.table = response.data.data[0]
+    }
     this.transition = false;
   },
   updated() {
@@ -240,7 +270,45 @@ export default {
     }
   },
   methods: {
-    acceptAlert(){
+    sort(string, tag, pageTag) {
+      const response = axios.post('https://api-crm.nuofox.com/page',{
+        page_tag: this.$route.params.tag,
+        section_tag: this.$route.params.sectionTag,
+        product_tag: this.$route.params.productTag,
+        sort: string,
+        col_tag: tag,
+        sub_page_tag: pageTag,
+      },
+      {
+        headers: {
+        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+        },
+      })
+      this.tableText = 'sorted by ' + string + '' + tag
+      console.log('printing sort response')
+      console.log(response)
+      this.table = response.data
+    },
+     filter(tag, pageTag) {
+      const response = axios.post('https://api-crm.nuofox.com/page',{
+        page_tag: this.$route.params.tag,
+        section_tag: this.$route.params.sectionTag,
+        product_tag: this.$route.params.productTag,
+        filter: this.valMultipe.value1,
+        col_tag: tag,
+        sub_page_tag: pageTag,
+      },
+      {
+        headers: {
+        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+        },
+      })
+      this.tableText = 'filtered by ' + string + '' + tag
+      console.log('printing filter response')
+      console.log(response)
+      this.table = response.data
+    },
+    acceptAlert() {
       this.clearValMultiple();
       this.$vs.notify({
         color:'success',
@@ -282,7 +350,7 @@ export default {
         eventAction: 'Clicked',
         eventLabel: 'Swap Orders'
       });
-      this.$router.push({ path: "/swap/orders"});
+      this.$router.push({ path: "/" + this.$route.params.tag + "/" + this.$route.params.sectionTag + "/" + this.$route.params.productTag + "/" + this.table.sub_page_tag});
     },
     getMaxPages() {
       return 5;
@@ -425,9 +493,12 @@ export default {
     },
   },
   computed: {
+    tableText() {
+      return this.tableText
+    },
     getPagesCount() {
       var maxItems = parseFloat(this.pageSize);
-      var totalNumberOfOrders = parseFloat(this.orderCount);
+      var totalNumberOfOrders = 5
       return Math.ceil(totalNumberOfOrders / maxItems);
     },
     updatedWidth() {

@@ -253,23 +253,18 @@ export default {
     TransactionCard,
     GenericCard
   },
-  // watch:{
-  //   $route (to, from){
-  //     location.reload
-  //   }
-  // },
   async mounted() {
     console.log('printing tag')
     console.log(this.$route.params.sectionTag)
-    const response = await axios.get('https://api-crm.nuofox.com/page', {   
-      params: {
+    const response = await axios.post('https://api-crm.nuofox.com/page', {
         page_tag: this.$route.params.tag,
         section_tag: this.$route.params.sectionTag,
         product_tag: this.$route.params.productTag
       },
-      headers: {
+      {
+        headers: {
         Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-      },
+        },
       })
     console.log(response);
     this.uiComponents = response.data.data
