@@ -9,7 +9,7 @@
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <div v-if="table.buttons.length > 0">
           <div v-for="(button,index) in table.buttons" :key="index">
-            <vs-button class="text-xs" @click="buttonAction()" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
+            <vs-button class="text-xs" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
           </div>
         </div>
         <vs-prompt   
@@ -76,15 +76,15 @@
                 {{rowItem}}
               </vs-td>
               <template class="expand-user" slot="expand">
-                <!-- <div class="flex w-full">
-                  <div class="pl-5" v-for="(item, index) in table.secondary_columns" :key="index">
-                    <img :src="item[0]">
-                    <vs-button v-if="item[1]">Click</vs-button>
+                <div class="w-full">
+                  <div class="flex pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
+                    <div>{{item.title}}</div>
                   </div>
-                </div> -->
+                  <img :src="table.secondary_values[index][0]">
+                </div>
                 <div class="flex w-full">
                   <div class="pl-5" v-for="(button, index) in table.action_columns" :key="index">
-                    <vs-button class="text-xs" @click="buttonAction()" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
+                    <vs-button class="text-xs" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
                   </div>
                 </div>
               </template>
@@ -94,7 +94,7 @@
       </vs-col>
     </vs-row>
     <template>
-      <div class="table-page-change mt-3">
+      <div v-if="showPagination" class="table-page-change mt-3">
         <vs-row vs-w="12" vs-justify="space-between">
           <vs-col vs-lg="2" vs-sm="2" :class="{'pt-1': updatedWidth < 768}" style="display: flex; justify-content: flex-start;">
             <vs-dropdown class="cursor-pointer" vs-trigger-click>
@@ -127,7 +127,7 @@
           </vs-col>
         </vs-row>
       </div>
-      <div class="p-6 pb-0 pt-2">
+      <div v-if="!showPagination" class="p-6 pb-0 pt-2">
         <span style="color: #3576FD; cursor: pointer;" @click="openNewRoute()">Show More</span>
       </div>
     </template>
