@@ -43,13 +43,13 @@
                     </div>
                   </template>
                   <v-list class="vs-con-tbody vs-table--tbody absolute" style="width: max-content;">
-                    <div class="p-2 cursor-pointer" @click="activePrompt = true">
+                    <div class="p-2 cursor-pointer" @click="showPrompt(column.col_tag)">
                       <feather-icon icon="FilterIcon"></feather-icon>FILTER
                     </div>
                     <vs-prompt
                       :id="`${index}`"
                       vs-title="Filter"
-                      @vs-accept="filter(column.col_tag, table.sub_page_tag)"
+                      @vs-accept="filter(table.sub_page_tag)"
                       :vs-active.sync="activePrompt">
                       <div class="">
                         
@@ -169,6 +169,7 @@ export default {
     return {
       swaps: [],
       table: {},
+      colTag: '',
       currentTime: (new Date()).getMilliseconds(),
       rowClicked: 0,
       transition: true,
@@ -270,6 +271,10 @@ export default {
     }
   },
   methods: {
+    showPrompt(id) {
+      this.activePrompt = true;
+      this.colTag = id;
+    },
     sort(number, tag, pageTag) {
       const response = axios.post('https://api-crm.nuofox.com/page',{
         page_tag: this.$route.params.tag,
@@ -294,14 +299,19 @@ export default {
       console.log(response)
       this.table = response.data
     },
-     filter(tag, pageTag) {
+     filter(pageTag) {
       const response = axios.post('https://api-crm.nuofox.com/page',{
         page_tag: this.$route.params.tag,
         section_tag: this.$route.params.sectionTag,
         product_tag: this.$route.params.productTag,
-        filter: this.valMultipe.value1,
-        col_tag: tag,
-        sub_page_tag: pageTag,
+        main_page: 0,
+        get_main_page: 0,
+        sub_page: {
+          tag: pageTag,
+          params: {
+            search_list: [this.valMultipe.value1], search_col: this.colTag
+          }
+        }
       },
       {
         headers: {
