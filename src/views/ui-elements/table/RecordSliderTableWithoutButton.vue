@@ -7,14 +7,18 @@
         <div>A {{this.tableText}}</div>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
-        <vs-button class="text-xs" @click="activePrompt1 = true" style="margin-top: -3.5%; margin-right: 10%;">ADD</vs-button>
+        <div v-if="table.buttons.length > 0">
+          <div v-for="(button,index) in table.buttons" :key="index">
+            <vs-button class="text-xs" @click="buttonAction()" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
+          </div>
+        </div>
         <vs-prompt   
           vs-title=""                
           :vs-is-valid="validName"
           :vs-active.sync="activePrompt1">
           <div class="con-exemple-prompt">
             
-            <vs-input placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
+            <vs-input type="checkbox" placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
             <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
               Fields can not be empty please enter the data
             </vs-alert>
@@ -72,16 +76,15 @@
                 {{rowItem}}
               </vs-td>
               <template class="expand-user" slot="expand">
-                <div class="flex justify-between w-full">
-                  <div class="w-1/2 flex flex-col justify-around">
-                    <div class="text-left pl-5" v-for="(item, index) in table.secondary_columns.filter(v => v.name)" :key="index">
-                      <span v-if="item.name">{{item.name}}:</span><span v-if="item.name && table.secondary_values[index]">{{table.secondary_values[index]}}</span>
-                    </div>
+                <!-- <div class="flex w-full">
+                  <div class="pl-5" v-for="(item, index) in table.secondary_columns" :key="index">
+                    <img :src="item[0]">
+                    <vs-button v-if="item[1]">Click</vs-button>
                   </div>
-                  <div class="w-1/2">
-                    <div class="text-right pr-5 my-5" v-for="(item, index) in table.secondary_columns" :key="index">
-                      <vs-button @click="activePrompt = true" v-if="item.name == null" :color="item.tag == 'approve_kyc'?'success':'danger'">{{item.tag}}</vs-button>
-                    </div>
+                </div> -->
+                <div class="flex w-full">
+                  <div class="pl-5" v-for="(button, index) in table.action_columns" :key="index">
+                    <vs-button class="text-xs" @click="buttonAction()" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
                   </div>
                 </div>
               </template>
@@ -170,6 +173,7 @@ export default {
       swaps: [],
       table: {},
       colTag: '',
+      modalData: {},
       currentTime: (new Date()).getMilliseconds(),
       rowClicked: 0,
       transition: true,
@@ -271,6 +275,10 @@ export default {
     }
   },
   methods: {
+    buttonAction(subPage) {
+      this.activePrompt1 = true;
+      this.modalData = this.subPage
+    },
     showPrompt(id) {
       this.activePrompt = true;
       this.colTag = id;
@@ -821,5 +829,8 @@ export default {
 #table-swap .vs-con-table .vs-con-tbody .vs-table--tbody-table .vs-table--thead th {
   padding: 25px !important;
   text-align: center !important;
+}
+#table-swap .con-vs-dialog .vs-dialog-dark {
+  background: transparent !important;
 }
 </style>
