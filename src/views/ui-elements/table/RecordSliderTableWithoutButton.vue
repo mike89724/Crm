@@ -59,8 +59,8 @@
                         </vs-alert>
                       </div>
                     </vs-prompt>
-                    <div class="p-2" @click="sort('asc', column.col_tag, table.sub_page_tag)"><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
-                    <div class="p-2" @click="sort('desc', column.col_tag, table.sub_page_tag)"><feather-icon class="h-3" icon="ChevronsUpIcon"></feather-icon>DESCENDING</div>
+                    <div class="p-2" @click="sort(2, column.col_tag, table.sub_page_tag)"><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
+                    <div class="p-2" @click="sort(1, column.col_tag, table.sub_page_tag)"><feather-icon class="h-3" icon="ChevronsUpIcon"></feather-icon>DESCENDING</div>
                   </v-list>
                 </v-menu>   
               </div>
@@ -270,14 +270,19 @@ export default {
     }
   },
   methods: {
-    sort(string, tag, pageTag) {
+    sort(number, tag, pageTag) {
       const response = axios.post('https://api-crm.nuofox.com/page',{
         page_tag: this.$route.params.tag,
         section_tag: this.$route.params.sectionTag,
         product_tag: this.$route.params.productTag,
-        sort: string,
-        col_tag: tag,
-        sub_page_tag: pageTag,
+        get_main_page: 0,
+        sub_page: {
+          tag: pageTag,
+          params: {
+            sort: number,
+            sort_col: tag
+          }
+        }
       },
       {
         headers: {
