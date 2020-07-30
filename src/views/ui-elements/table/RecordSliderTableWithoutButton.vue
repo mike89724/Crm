@@ -4,12 +4,12 @@
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
         <h5 v-if="title" class="pt-3 pb-3">{{title}}</h5>
         <h5 v-else class="pt-3 pb-3">{{table.title}}</h5>
-        <div>A {{this.tableText}}</div>
+        <div>{{tableText}}</div>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <div v-if="table.buttons.length > 0">
           <div v-for="(button,index) in table.buttons" :key="index">
-            <vs-button class="text-xs" @click="buttonAction()" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
+            <vs-button class="text-xs" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
           </div>
         </div>
         <vs-prompt   
@@ -18,7 +18,7 @@
           :vs-active.sync="activePrompt1">
           <div class="con-exemple-prompt">
             
-            <vs-input type="checkbox" placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
+            <vs-input placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
             <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
               Fields can not be empty please enter the data
             </vs-alert>
@@ -84,7 +84,7 @@
                 </div> -->
                 <div class="flex w-full">
                   <div class="pl-5" v-for="(button, index) in table.action_columns" :key="index">
-                    <vs-button class="text-xs" @click="buttonAction()" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
+                    <vs-button class="text-xs" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
                   </div>
                 </div>
               </template>
@@ -94,7 +94,7 @@
       </vs-col>
     </vs-row>
     <template>
-      <div class="table-page-change mt-3">
+      <div v-if="showPagination" class="table-page-change mt-3">
         <vs-row vs-w="12" vs-justify="space-between">
           <vs-col vs-lg="2" vs-sm="2" :class="{'pt-1': updatedWidth < 768}" style="display: flex; justify-content: flex-start;">
             <vs-dropdown class="cursor-pointer" vs-trigger-click>
@@ -127,7 +127,7 @@
           </vs-col>
         </vs-row>
       </div>
-      <div class="p-6 pb-0 pt-2">
+      <div v-else-if="!showPagination" class="p-6 pb-0 pt-2">
         <span style="color: #3576FD; cursor: pointer;" @click="openNewRoute()">Show More</span>
       </div>
     </template>
@@ -185,13 +185,12 @@ export default {
         value2:''
       },
       showTable: true,
-      tableText: '',
+      tableText: 'Sorted by: desc',
       activePage: 1,
       pageSize: 20,
       frames: new Array(10),
       sortKey: "added_on",
       order: "DESC",
-      status: "",
       orderCount: "",
       statusNames: [
         {
@@ -302,7 +301,9 @@ export default {
         Authorization: "Bearer " + this.$store.state.profileData.data.data.token
         },
       })
-      this.tableText = 'sorted by ' + string + '' + tag
+      if(number == 2) {
+        this.tableText = 'Sorted by: asc'
+      } 
       console.log('printing sort response')
       console.log(response)
       this.table = response.data
@@ -326,7 +327,7 @@ export default {
         Authorization: "Bearer " + this.$store.state.profileData.data.data.token
         },
       })
-      this.tableText = 'filtered by ' + string + '' + tag
+      this.tableText = 'Filtered by ' + this.valMultipe.value1
       console.log('printing filter response')
       console.log(response)
       this.table = response.data
@@ -516,9 +517,6 @@ export default {
     },
   },
   computed: {
-    tableText() {
-      return this.tableText
-    },
     getPagesCount() {
       var maxItems = parseFloat(this.pageSize);
       var totalNumberOfOrders = 5
