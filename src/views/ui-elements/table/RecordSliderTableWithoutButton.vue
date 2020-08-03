@@ -4,7 +4,7 @@
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
         <h5 v-if="title" class="pt-3 pb-3">{{title}}</h5>
         <h5 v-else class="pt-3 pb-3">{{table.title}}</h5>
-        <div>A {{this.tableText}}</div>
+        <!-- <div>A {{this.tableText}}</div> -->
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <div v-if="table.buttons.length > 0">
@@ -33,6 +33,19 @@
       </vs-col>
     </vs-row>
     <vs-row>
+      <vs-col vs-w="12" v-if="showTable" :class="{'hide': !transition, 'show': transition}">
+        <vs-table style="width: 100%;" :hoverFlat="false" :data="frames">
+          <template slot="header"></template>
+          <template slot="thead">
+            <vs-th>LOADING</vs-th>
+          </template>
+          <template slot-scope="{data}">
+            <vs-tr :key="indextr" v-for="(tr, indextr) in data">
+              <vs-td v-html="getFrame('row')"></vs-td>
+            </vs-tr>
+          </template>
+        </vs-table>
+      </vs-col>
       <vs-col vs-w="12" :class="{'hide': transition, 'show': !transition}">
         <vs-table :class="{'mt-5': updatedWidth < 768}" style="width: 100%;" :hoverFlat="false" :data="table['main_values']">
           <template slot="header"></template>
@@ -185,7 +198,7 @@ export default {
         value2:''
       },
       showTable: true,
-      tableText: '',
+      // tableText: '',
       activePage: 1,
       pageSize: 20,
       frames: new Array(10),
@@ -283,53 +296,59 @@ export default {
       this.activePrompt = true;
       this.colTag = id;
     },
-    sort(number, tag, pageTag) {
-      const response = axios.post('https://api-crm.nuofox.com/page',{
+    async sort(number, tag, pageTag) {
+      const response = await axios.post('https://api-crm.nuofox.com/page',{
         page_tag: this.$route.params.tag,
         section_tag: this.$route.params.sectionTag,
         product_tag: this.$route.params.productTag,
         get_main_page: 0,
-        sub_page: {
+        sub_page: [{
           tag: pageTag,
           params: {
             sort: number,
             sort_col: tag
           }
-        }
+        }]
       },
       {
         headers: {
         Authorization: "Bearer " + this.$store.state.profileData.data.data.token
         },
       })
-      this.tableText = 'sorted by ' + string + '' + tag
+      // this.tableText = 'sorted by ' + string + '' + tag
       console.log('printing sort response')
       console.log(response)
-      this.table = response.data
+      this.showTable = false;
+      this.table = response.data.data[0]
+      this.$nextTick(() => {
+        this.showTable = true;
+      });
     },
-     filter(pageTag) {
-      const response = axios.post('https://api-crm.nuofox.com/page',{
+     async filter(pageTag) {
+      const response = await axios.post('https://api-crm.nuofox.com/page',{
         page_tag: this.$route.params.tag,
         section_tag: this.$route.params.sectionTag,
         product_tag: this.$route.params.productTag,
         main_page: 0,
         get_main_page: 0,
-        sub_page: {
+        sub_page: [{
           tag: pageTag,
           params: {
             search_list: [this.valMultipe.value1], search_col: this.colTag
           }
-        }
+        }]
       },
       {
         headers: {
         Authorization: "Bearer " + this.$store.state.profileData.data.data.token
         },
       })
-      this.tableText = 'filtered by ' + string + '' + tag
-      console.log('printing filter response')
-      console.log(response)
-      this.table = response.data
+      // this.tableText = 'filtered by ' + string + '' + tag
+       this.showTable = false;
+      this.table = response.data.data[0]
+      this.$nextTick(() => {
+        this.showTable = true;
+      });
     },
     acceptAlert() {
       this.clearValMultiple();
@@ -516,9 +535,6 @@ export default {
     },
   },
   computed: {
-    tableText() {
-      return this.tableText
-    },
     getPagesCount() {
       var maxItems = parseFloat(this.pageSize);
       var totalNumberOfOrders = 5
