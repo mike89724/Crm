@@ -46,7 +46,7 @@ const router = new Router({
           redirect: '/google-auth-verify/otp'
         },
         {
-          path: '/:productSlug/:sectionSlug/:pageSlug/:tag/:sectionTag/:productTag',
+          path: '/:productSlug/:sectionSlug/:pageSlug/',
           name: 'home',
           component: () => import('./views/Home.vue'),
           meta: {
@@ -1366,7 +1366,7 @@ router.beforeEach((to, from, next) => {
     to.path === "/pages/register" ||
     to.path === "/callback" ||
     to.path === "/pages/comingsoon" ||
-    to.path === "/kyc/overview" ||  to.path === "/:productSlug/:sectionSlug/:pageSlug/:tag/:sectionTag/:productTag" || to.path === "/google-auth-verify/otp") {
+    to.path === "/kyc/overview" ||  to.path === "/:productSlug/:sectionSlug/:pageSlug/" || to.path === "/google-auth-verify/otp") {
     return next();
   }
   // router.push({ path: '/pages/login'})

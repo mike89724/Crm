@@ -93,7 +93,7 @@
                   <div class="flex pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
                     <div>{{item.title}}</div>
                   </div>
-                  <img :src="table.secondary_values[index][0]">
+                  <img style="height: 50px; width: 50px; border-radious: 50%;" :src="table.secondary_values[index][0]">
                 </div>
                 <div class="flex w-full">
                   <div class="pl-5" v-for="(button, index) in table.action_columns" :key="index">
@@ -187,6 +187,9 @@ export default {
       table: {},
       colTag: '',
       modalData: {},
+      tag: '',
+      sectionTag: '',
+      productTag: '',
       currentTime: (new Date()).getMilliseconds(),
       rowClicked: 0,
       transition: true,
@@ -287,7 +290,27 @@ export default {
       });
     }
   },
+  created() {
+    this.setTags();
+  },
   methods: {
+    setTags() {
+      if(this.$store.state.profileData) {
+        for (let i = 0; i < this.$store.state.profileData.data.data.products.length; i++) {
+          for (let j = 0; j < this.$store.state.profileData.data.data.products[i].sections.length; j++) {
+            for (let k = 0; j < this.$store.state.profileData.data.data.products[i].sections[j].pages.length; j++) {
+              if(this.$store.state.profileData.data.data.products[i].sections[j].pages[k].slug === this.$route.params.pageSlug) {
+                this.tag = this.$store.state.profileData.data.data.products[i].sections[j].pages[k].tag
+                this.sectionTag = this.$store.state.profileData.data.data.products[i].sections[j].tag
+                this.productTag = this.$store.state.profileData.data.data.products[i].tag
+              }
+              else return
+
+            }
+          }
+        }
+      }
+    },
     buttonAction(subPage) {
       this.activePrompt1 = true;
       this.modalData = this.subPage
@@ -298,9 +321,9 @@ export default {
     },
     async sort(number, tag, pageTag) {
       const response = await axios.post('https://api-crm.nuofox.com/page',{
-        page_tag: this.$route.params.tag,
-        section_tag: this.$route.params.sectionTag,
-        product_tag: this.$route.params.productTag,
+        page_tag: this.tag,
+        section_tag: this.sectionTag,
+        product_tag: this.productTag,
         get_main_page: 0,
         sub_page: [{
           tag: pageTag,
@@ -326,9 +349,9 @@ export default {
     },
      async filter(pageTag) {
       const response = await axios.post('https://api-crm.nuofox.com/page',{
-        page_tag: this.$route.params.tag,
-        section_tag: this.$route.params.sectionTag,
-        product_tag: this.$route.params.productTag,
+        page_tag: this.tag,
+        section_tag: this.sectionTag,
+        product_tag: this.productTag,
         main_page: 0,
         get_main_page: 0,
         sub_page: [{

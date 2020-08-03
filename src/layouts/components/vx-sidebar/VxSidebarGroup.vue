@@ -27,8 +27,8 @@
     <ul ref="items" :style="styleItems" class="vs-sidebar-group-items">
       <li v-for="(groupItem, index) in group.pages" :key="index">
 		<vx-sidebar-group :group="groupItem" :groupIndex="Number(`${groupIndex}.${index}`)" :open="isGroupActive(groupItem)" :openHover="openHover" v-if="groupItem.submenu" />
-		<vx-sidebar-item :index="groupIndex + '.' + index" :to="groupItem.url" :icon="itemIcon(groupIndex + '.' + index)" icon-small :target="groupItem.target" v-else>
-			<span @click="redirect(groupItem, group.slug, group.tag)" class="truncate">{{ $t(groupItem.i18n) || groupItem.name }}</span>
+		<vx-sidebar-item :index="groupIndex + '.' + index" :to="'/' + mainSlug +  '/' + group.slug +  '/' + groupItem.slug" :icon="itemIcon(groupIndex + '.' + index)" icon-small :target="groupItem.target" v-else>
+			<span  class="truncate">{{ $t(groupItem.i18n) || groupItem.name }}</span>
 			<!-- <vs-chip class="ml-auto" :color="groupItem.tagColor" v-if="groupItem.tag">{{ groupItem.tag }}</vs-chip> -->
 		</vx-sidebar-item>
       </li>
@@ -148,11 +148,11 @@ export default {
         }
     },
     methods: {
-        redirect(item, slug, groupTag) {
-            console.log("Printing Tag")
-            console.log(item.tag)
-            this.$router.push({path: '/' + this.mainSlug +  '/' + slug +  '/' + item.slug + '/' + item.tag  + '/' + groupTag + '/' + this.mainTag})
-        },
+        // redirect(item, slug, groupTag) {
+        //     console.log("Printing Tag")
+        //     console.log(item.tag)
+        //     this.$router.push({path:})
+        // },
         clickGroup() {
             if (!this.openHover) {
                 let thisScrollHeight = this.$refs.items.scrollHeight

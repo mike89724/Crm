@@ -44,6 +44,9 @@ export default {
       transition: true,
       analyticsData: analyticsData,
       apexChatData: apexChatData,
+      tag: '',
+      sectionTag: '',
+      productTag: '',
       isImp: false,
       affiliate: "",
       singleValueCard: [],
@@ -253,44 +256,44 @@ export default {
     TransactionCard,
     GenericCard
   },
+  created() {
+    this.setTags();
+  },
   async mounted() {
     console.log('printing tag')
-    console.log(this.$route.params.sectionTag)
-    const response = await axios.post('https://api-crm.nuofox.com/page', {
-        page_tag: this.$route.params.tag,
-        section_tag: this.$route.params.sectionTag,
-        product_tag: this.$route.params.productTag
+    console.log(this.$route.params.pageSlug)
+    // this.setTags();
+    this.getHomeData();
+  },
+  methods: {
+    setTags() {
+      if(this.$store.state.profileData) {
+        for (let i = 0; i < this.$store.state.profileData.data.data.products.length; i++) {
+          for (let j = 0; j < this.$store.state.profileData.data.data.products[i].sections.length; j++) {
+            for (let k = 0; j < this.$store.state.profileData.data.data.products[i].sections[j].pages.length; j++) {
+              if(this.$store.state.profileData.data.data.products[i].sections[j].pages[k].slug === this.$route.params.pageSlug) {
+                this.tag = this.$store.state.profileData.data.data.products[i].sections[j].pages[k].tag
+                this.sectionTag = this.$store.state.profileData.data.data.products[i].sections[j].tag
+                this.productTag = this.$store.state.profileData.data.data.products[i].tag
+              }
+              else return
+
+            }
+          }
+        }
+      }
+    },
+    async getHomeData() {
+      const response = await axios.post('https://api-crm.nuofox.com/page', {
+        page_tag: this.tag,
+        section_tag: this.sectionTag,
+        product_tag: this.productTag
       },
       {
         headers: {
         Authorization: "Bearer " + this.$store.state.profileData.data.data.token
         },
       })
-    console.log(response);
-    this.uiComponents = response.data.data
-    var i;
-    for(i = 0; i < this.uiComponents.length; i++) {
-      if(this.uiComponents[i].name == 'single-value-card') {
-        this.singleValueCard.push(this.uiComponents[i])
-      } else if(this.uiComponents[i].name == 'area-chart-without-value' || this.uiComponents[i].name  == 'area-chart-with-value') {
-        this.graphs.push(this.uiComponents[i])
-      } else if(this.uiComponents[i].name == 'record-slider-table') {
-        this.tables.push(this.uiComponents[i])
-      }
-    }
-  },
-  methods: {
-    async getHomeData() {
-       const response = await axios.get('https://api-crm.nuofox.com/page', {   
-        params: {
-          page_tag: "user",
-          section_tag: "access_control",
-          product_tag: "settings",
-        },
-        headers: {
-          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-        },
-        })
       console.log(response);
       this.uiComponents = response.data.data
       var i;
@@ -301,8 +304,8 @@ export default {
           this.graphs.push(this.uiComponents[i])
         } else if(this.uiComponents[i].name == 'record-slider-table') {
           this.tables.push(this.uiComponents[i])
-        }
       }
+    }
     },
     initializeValues() {
       this.swapGeneratedValue.series = [];
@@ -341,15 +344,15 @@ export default {
         return ((100 - (items-1)*5)/parseFloat(items)).toString() + "%";
       }
     },
-    async getHomeData() {
-      var response;
-      try {
-        response = await PageService.getPageDetails("home");
-        this.uiComponents = response.data.data.components;
-      } catch(err) {
-        console.log(err);
-      }
-    },
+    // async getHomeData() {
+    //   var response;
+    //   try {
+    //     response = await PageService.getPageDetails("home");
+    //     this.uiComponents = response.data.data.components;
+    //   } catch(err) {
+    //     console.log(err);
+    //   }
+    // },
     generateSwapValueAndSplitChart() {
       let self = this;
       this.swapGeneratedValueStatistic = this.$store.state.globalSwapOverviewDetails.total_exchange_source_volume;
