@@ -89,21 +89,24 @@
                 {{rowItem}}
               </vs-td>
               <template class="expand-user" slot="expand">
-                <table>
-                  <thead>
-                    <td class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
-                      <div>{{item.title}}</div>
-                    </td>
-                  </thead>
-                  <tbody>
-                    <td>
-                      <img style="height: 50px; width: 50px; border-radious: 50%;" :src="table.secondary_values[index][0]">
-                    </td>
-                  </tbody>  
-                </table>
-                <div class="flex w-full">
-                  <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
-                    <button v-if="table.action_values[index][y]" :color="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</button>
+                <div style="display: block; width: 100%;">
+                  <table style="width: 80%; margin: auto;">
+                    <thead>
+                      <td style="border: 1px solid; text-align: center" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
+                        <div>{{item.title}}</div>
+                      </td>
+                    </thead>
+                    <tbody>
+                      <td style="border: 1px solid; text-align: center">
+                        <img style="height: 50px; width: 50px; border-radious: 50%; display: inline;" :src="table.secondary_values[index][0]">
+                      </td>
+                    </tbody>  
+                  </table>
+                  <div style="margin-top: 5%; width: 80%; margin: auto; padding-top: 5%;" class="flex">
+                    <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
+                      <button v-if="table.action_values[index][y]" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
+                        font-size: 1rem;">{{button.title}}</button>
+                    </div>
                   </div>
                 </div>
               </template>
