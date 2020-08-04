@@ -98,7 +98,7 @@
                     </thead>
                     <tbody>
                       <td style="border: 1px solid; text-align: center">
-                        <img style="height: 50px; width: 50px; border-radious: 50%; display: inline;" :src="table.secondary_values[index][0]">
+                        <img style="height: 50px; width: 50px; border-radius: 50%; display: inline;" :src="table.secondary_values[index][0]">
                       </td>
                     </tbody>  
                   </table>
@@ -439,7 +439,7 @@ export default {
         eventAction: 'Clicked',
         eventLabel: 'Swap Orders'
       });
-      this.$router.push({ path: "/" + this.$route.params.tag + "/" + this.$route.params.sectionTag + "/" + this.$route.params.productTag + "/" + this.table.sub_page_tag});
+      this.$router.push({ path: "/" + this.$route.params.productSlug + "/" + this.$route.params.sectionSlug + "/" + this.$route.params.pageSlug + "/" + this.table.sub_page_tag});
     },
     getMaxPages() {
       return 5;
