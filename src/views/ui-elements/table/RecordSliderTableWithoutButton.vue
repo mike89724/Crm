@@ -105,7 +105,7 @@
                   <div style="margin-top: 5%; width: 80%; margin: auto; padding-top: 5%;" class="flex">
                     <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
                       <button v-if="table.action_values[index][y]" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
-                        font-size: 1rem;">{{button.title}}</button>
+                        font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
                     </div>
                   </div>
                 </div>
@@ -644,7 +644,7 @@ export default {
   background: #28c76f !important;
 }
 .medium-button {
-  background: yellow !important;
+  background: orange !important;
 }
 .danger-button {
   background: #ea5455 !important;
