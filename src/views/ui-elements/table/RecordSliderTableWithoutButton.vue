@@ -89,15 +89,21 @@
                 {{rowItem}}
               </vs-td>
               <template class="expand-user" slot="expand">
-                <div class="w-full">
-                  <div class="flex pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
-                    <div>{{item.title}}</div>
-                  </div>
-                  <img style="height: 50px; width: 50px; border-radious: 50%;" :src="table.secondary_values[index][0]">
-                </div>
+                <table>
+                  <thead>
+                    <td class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
+                      <div>{{item.title}}</div>
+                    </td>
+                  </thead>
+                  <tbody>
+                    <td>
+                      <img style="height: 50px; width: 50px; border-radious: 50%;" :src="table.secondary_values[index][0]">
+                    </td>
+                  </tbody>  
+                </table>
                 <div class="flex w-full">
-                  <div class="pl-5" v-for="(button, index) in table.action_columns" :key="index">
-                    <vs-button class="text-xs" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
+                  <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
+                    <button v-if="table.action_values[index][y]" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</button>
                   </div>
                 </div>
               </template>
@@ -294,6 +300,21 @@ export default {
     this.setTags();
   },
   methods: {
+    getClassByCode(color) {
+      if(color == 'link') {
+        return 'link-button'
+      } else if(color == 'safe') {
+        return 'safe-button'
+      } else if(color == 'medium') {
+        return 'medium-button'
+      } else if(color == 'danger') {
+        return 'danger-button'
+      } else if(color == 'inactive') {
+        return 'inactive-button'
+      } else if(color == 'white') {
+        return 'white-button'
+      }
+    },
     setTags() {
       if(this.$store.state.profileData) {
         for (let i = 0; i < this.$store.state.profileData.data.data.products.length; i++) {
@@ -613,6 +634,24 @@ export default {
 };
 </script>
 <style lang="scss">
+.link-button {
+  background: #007bff !important;
+}
+.safe-button {
+  background: #28c76f !important;
+}
+.medium-button {
+  background: yellow !important;
+}
+.danger-button {
+  background: #ea5455 !important;
+}
+.inactive-button {
+  background: #262c49 !important;
+}
+.white-button {
+  background: #ffffff !important;
+}
 .oval-green {
   background-color: #28c76f !important;
 }
