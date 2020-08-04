@@ -4,7 +4,7 @@
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
         <h5 v-if="title" class="pt-3 pb-3">{{title}}</h5>
         <h5 v-else class="pt-3 pb-3">{{table.title}}</h5>
-        <!-- <div>A {{this.tableText}}</div> -->
+        <div>{{this.tableText}}</div>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <div v-if="table.buttons.length > 0">
@@ -103,7 +103,7 @@
                 </table>
                 <div class="flex w-full">
                   <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
-                    <button v-if="table.action_values[index][y]" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</button>
+                    <button v-if="table.action_values[index][y]" :color="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</button>
                   </div>
                 </div>
               </template>
@@ -359,7 +359,7 @@ export default {
         Authorization: "Bearer " + this.$store.state.profileData.data.data.token
         },
       })
-      // this.tableText = 'sorted by ' + string + '' + tag
+      this.tableText = 'sorted by ' + number + '' + tag
       console.log('printing sort response')
       console.log(response)
       this.showTable = false;
@@ -387,7 +387,7 @@ export default {
         Authorization: "Bearer " + this.$store.state.profileData.data.data.token
         },
       })
-      // this.tableText = 'filtered by ' + string + '' + tag
+      this.tableText = 'filtered by ' + this.valMultipe.value1 + '' + pageTag
        this.showTable = false;
       this.table = response.data.data[0]
       this.$nextTick(() => {
