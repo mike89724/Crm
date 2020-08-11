@@ -101,7 +101,7 @@ export default {
           data: this.value["y"][i]["value"]
         });
       }
-    } else if (this.name == "area-chart-without-value") {
+    } else if (this.name == "bar-chart-without-value") {
       this.series.push({
         name: this.value["y-label"],
         data: this.value["y"]
@@ -120,6 +120,9 @@ export default {
       yaxis: {
         labels: {
           show: true
+        },
+        axisBorder: {
+          show: true
         }
       },
       xaxis: {
@@ -127,7 +130,7 @@ export default {
           show: true
         },
         axisBorder: {
-          show: false
+          show: true
         }
       },
       grid: {

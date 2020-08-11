@@ -4,11 +4,12 @@
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
         <h5 v-if="title" class="pt-3 pb-3">{{title}}</h5>
         <h5 v-else class="pt-3 pb-3">{{table.title}}</h5>
-        <div>{{this.tableText}}</div>
+        <div v-if="tableText != ''">{{this.tableText}}<span class="cursor-pointer" @click="remove(1)"> x</span></div>
+        <div v-if="tableText2 != ''">{{this.tableText2}}<span class="cursor-pointer" @click="remove(2)"> x</span></div>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <div v-if="table.buttons.length > 0">
-          <div v-for="(button,index) in table.buttons" :key="index">
+          <div v-for="(button,index) in table.buttons" :key="index" style="margin-right: 25px;">
             <vs-button class="text-xs" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
           </div>
         </div>
@@ -56,7 +57,10 @@
                     </div>
                   </template>
                   <v-list class="vs-con-tbody vs-table--tbody absolute" style="width: max-content;">
-                    <div class="p-2 cursor-pointer" @click="showPrompt(column.col_tag)">
+                    <div v-if="column.datatype === 'date' || 'integer'" class="p-2 cursor-pointer" @click="showPrompt2(column.col_tag, column.title)">
+                      <feather-icon icon="FilterIcon"></feather-icon>FILTER
+                    </div>
+                     <div v-else class="p-2 cursor-pointer" @click="showPrompt(column.col_tag, column.title)">
                       <feather-icon icon="FilterIcon"></feather-icon>FILTER
                     </div>
                     <vs-prompt
@@ -67,13 +71,21 @@
                       <div class="">
                         
                         <vs-input placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
-                        <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
-                          Fields can not be empty please enter the data
-                        </vs-alert>
                       </div>
                     </vs-prompt>
-                    <div class="p-2" @click="sort(2, column.col_tag, table.sub_page_tag)"><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
-                    <div class="p-2" @click="sort(1, column.col_tag, table.sub_page_tag)"><feather-icon class="h-3" icon="ChevronsUpIcon"></feather-icon>DESCENDING</div>
+                    <vs-prompt
+                      :id="`${index}`"
+                      vs-title="Filter"
+                      @vs-accept="filter(table.sub_page_tag)"
+                      :vs-active.sync="prompt">
+                      <div class="">
+                        
+                        <vs-input placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
+                        <vs-input placeholder="Search" v-model="valMultipe.value2" class="mt-4 mb-2 w-full" />
+                      </div>
+                    </vs-prompt>
+                    <div class="p-2 cursor-pointer" @click="Sort(2, column.col_tag, table.sub_page_tag, column.title)"><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
+                    <div class="p-2 cursor-pointer" @click="Sort(1, column.col_tag, table.sub_page_tag, column.title)"><feather-icon class="h-3" icon="ChevronsUpIcon"></feather-icon>DESCENDING</div>
                   </v-list>
                 </v-menu>   
               </div>
@@ -88,13 +100,16 @@
                 <div style="display: block; width: 100%;">
                   <table style="width: 80%; margin: auto;">
                     <thead>
-                      <td style="border: 1px solid; text-align: center" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
+                      <td style="font-size: 1.25rem; text-align: center" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
                         <div>{{item.title}}</div>
                       </td>
                     </thead>
                     <tbody>
-                      <td style="border: 1px solid; text-align: center">
+                      <td style="font-size: 1.25rem; text-align: center">
                         <img style="height: 50px; width: 50px; border-radius: 50%; display: inline;" :src="table.secondary_values[index][0]">
+                      </td>
+                      <td style="font-size: 1.25rem; text-align: center">
+                        {{table.secondary_values[index][1]}}
                       </td>
                     </tbody>  
                   </table>
@@ -189,13 +204,20 @@ export default {
   data() {
     return {
       swaps: [],
+      prompt: false,
       table: {},
       colTag: '',
       modalData: {},
+      subPageTag: '',
+      sortColTag: '',
+      filterColTag: '',
+      filterColName: '',
+      sort: '',
       tag: '',
       sectionTag: '',
       productTag: '',
       tableText: '',
+      tableText2: '',
       currentTime: (new Date()).getMilliseconds(),
       rowClicked: 0,
       transition: true,
@@ -256,23 +278,26 @@ export default {
   async mounted() {
     if(this.value){
       this.table = this.value
+      this.subPageTag = this.table.sub_page_tag
     } else {
-      const response = await axios.post('https://api-crm.nuofox.com/page',{
-        page_tag: "user",
-        section_tag: "access_control",
-        product_tag: "settings",
-        get_main_page: 0, 
-        sub_page: [
-          {
-            tag: "all_users_table",
-            params: {}}]
-      },
-      {
-        headers: {
-        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-        },
-      })
-      this.table = response.data.data[0]
+      this.subPageTag = this.$route.params.subPagetag
+      // const response = await axios.post('https://api-crm.nuofox.com/page',{
+      //   page_tag: "user",
+      //   section_tag: "access_control",
+      //   product_tag: "settings",
+      //   get_main_page: 0, 
+      //   sub_page: [
+      //     {
+      //       tag: "all_users_table",
+      //       params: {}}]
+      // },
+      // {
+      //   headers: {
+      //   Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+      //   },
+      // })
+      // this.table = response.data.data[0]
+      await this.getTableData();
     }
     this.transition = false;
   },
@@ -300,6 +325,105 @@ export default {
     this.setTags();
   },
   methods: {
+    async remove(id) {
+      if(id == 1) {
+        this.sort = '',
+        this.sortColTag = '',
+        this.tableText = ''
+      } else {
+        this.valMultipe.value1 = '',
+        this.filterColTag = '',        
+        this.tableText2 = ''
+      }
+      await this.getTableData();
+    },
+    async getTableData() {
+      let response = '';
+      if(this.sort == '' && this.valMultipe.value1 == '') {
+          response = await axios.post('https://api-crm.nuofox.com/page',{
+          page_tag: this.tag,
+          section_tag: this.sectionTag,
+          product_tag: this.productTag,
+          get_main_page: 0,
+          sub_page: [{
+            tag: this.subPageTag,
+            params: {},
+          }]
+        },
+        {
+          headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+          },
+        })
+      }
+      else if(this.sort  != '' && this.valMultipe.value1 ==  '') {
+         response = await axios.post('https://api-crm.nuofox.com/page',{
+          page_tag: this.tag,
+          section_tag: this.sectionTag,
+          product_tag: this.productTag,
+          get_main_page: 0,
+          sub_page: [{
+            tag: this.subPageTag,
+            params: {
+              sort: this.sort,
+              sort_col: this.sortColTag
+            }
+          }]
+        },
+        {
+          headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+          },
+        })
+      } else if(this.sort  == '' && this.valMultipe.value1 !=  '') {
+         response = await axios.post('https://api-crm.nuofox.com/page',{
+          page_tag: this.tag,
+          section_tag: this.sectionTag,
+          product_tag: this.productTag,
+          get_main_page: 0,
+          sub_page: [{
+            tag: this.subPageTag,
+            params: {
+              search_list: this.valMultipe.value1,
+              sort_col: this.filterColTag
+            }
+          }]
+        },
+        {
+          headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+          },
+        })
+      } else if(this.sort != '' && this.valMultipe.value1 != '') {
+          response = await axios.post('https://api-crm.nuofox.com/page',{
+          page_tag: this.tag,
+          section_tag: this.sectionTag,
+          product_tag: this.productTag,
+          get_main_page: 0,
+          sub_page: [{
+            tag: this.subPageTag,
+            params: {
+              sort: this.sort,
+              sort_col: this.sortColTag,
+              search_list: [this.valMultipe.value1],
+              search_col: this.filterColTag
+            }
+          }]
+        },
+        {
+          headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+          },
+        })
+      }
+      this.transition = true;
+      this.showTable = false;
+      this.table = response.data.data[0]
+      this.$nextTick(() => {
+        this.showTable = true;
+      });
+      this.transition = false;
+    },
     getClassByCode(color) {
       if(color == 'link') {
         return 'link-button'
@@ -316,7 +440,7 @@ export default {
       }
     },
     setTags() {
-      if(this.$store.state.profileData.data.data.products && this.$store.state.profileData.data.data.products.sections) {
+      if(this.$store.state.profileData.data.data.products) {
         for (let i = 0; i < this.$store.state.profileData.data.data.products.length; i++) {
           for (let j = 0; j < this.$store.state.profileData.data.data.products[i].sections.length; j++) {
             for (let k = 0; j < this.$store.state.profileData.data.data.products[i].sections[j].pages.length; j++) {
@@ -336,63 +460,29 @@ export default {
       this.activePrompt1 = true;
       this.modalData = this.subPage
     },
-    showPrompt(id) {
+    showPrompt(id, name) {
       this.activePrompt = true;
-      this.colTag = id;
+      this.filterColTag = id;
+      this.filterColName = name;
     },
-    async sort(number, tag, pageTag) {
-      const response = await axios.post('https://api-crm.nuofox.com/page',{
-        page_tag: this.tag,
-        section_tag: this.sectionTag,
-        product_tag: this.productTag,
-        get_main_page: 0,
-        sub_page: [{
-          tag: pageTag,
-          params: {
-            sort: number,
-            sort_col: tag
-          }
-        }]
-      },
-      {
-        headers: {
-        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-        },
-      })
-      this.tableText = 'sorted by ' + number + '' + tag
-      console.log('printing sort response')
-      console.log(response)
-      this.showTable = false;
-      this.table = response.data.data[0]
-      this.$nextTick(() => {
-        this.showTable = true;
-      });
+     showPrompt2(id, name) {
+      this.prompt = true;
+      this.filterColTag = id;
+      this.filterColName = name;
     },
-     async filter(pageTag) {
-      const response = await axios.post('https://api-crm.nuofox.com/page',{
-        page_tag: this.tag,
-        section_tag: this.sectionTag,
-        product_tag: this.productTag,
-        main_page: 0,
-        get_main_page: 0,
-        sub_page: [{
-          tag: pageTag,
-          params: {
-            search_list: [this.valMultipe.value1], search_col: this.colTag
-          }
-        }]
-      },
-      {
-        headers: {
-        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-        },
-      })
-      this.tableText = 'filtered by ' + this.valMultipe.value1 + '' + pageTag
-       this.showTable = false;
-      this.table = response.data.data[0]
-      this.$nextTick(() => {
-        this.showTable = true;
-      });
+    async Sort(number, tag, pageTag, colName) {
+      this.sortColTag = tag,
+      this.sort = number
+         if(number == 1) {
+        this.tableText = 'Sorted By' + ' Descending on ' + colName
+      } else {
+        this.tableText = 'Sorted By' + ' Ascending on ' + colName
+      }
+      await this.getTableData();  
+    },
+    async filter(pageTag) {
+      this.tableText2 = 'Filtered ' + this.filterColName + " by " + '"' + this.valMultipe.value1 + '"' 
+      await this.getTableData();
     },
     acceptAlert() {
       this.clearValMultiple();
