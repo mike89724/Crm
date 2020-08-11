@@ -42,6 +42,9 @@ const mutations = {
     profileData(state, value) {
       state.profileData = value;
     },
+    routeData(state, value) {
+      state.routeData = value;
+    },
     setGlobalReserveDetails(state, globalReserveDetails) {
         state.globalReserveDetails = globalReserveDetails;
     },

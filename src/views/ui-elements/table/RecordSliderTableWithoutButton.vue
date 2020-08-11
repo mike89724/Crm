@@ -14,14 +14,10 @@
         </div>
         <vs-prompt   
           vs-title=""                
-          :vs-is-valid="validName"
           :vs-active.sync="activePrompt1">
           <div class="con-exemple-prompt">
             
             <vs-input type="checkbox" placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
-            <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
-              Fields can not be empty please enter the data
-            </vs-alert>
           </div>
         </vs-prompt>
         <feather-icon
@@ -199,6 +195,7 @@ export default {
       tag: '',
       sectionTag: '',
       productTag: '',
+      tableText: '',
       currentTime: (new Date()).getMilliseconds(),
       rowClicked: 0,
       transition: true,
@@ -319,7 +316,7 @@ export default {
       }
     },
     setTags() {
-      if(this.$store.state.profileData) {
+      if(this.$store.state.profileData.data.data.products && this.$store.state.profileData.data.data.products.sections) {
         for (let i = 0; i < this.$store.state.profileData.data.data.products.length; i++) {
           for (let j = 0; j < this.$store.state.profileData.data.data.products[i].sections.length; j++) {
             for (let k = 0; j < this.$store.state.profileData.data.data.products[i].sections[j].pages.length; j++) {

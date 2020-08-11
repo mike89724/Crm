@@ -62,6 +62,14 @@ const router = new Router({
           }
         },
         {
+          path: '/setup-2fa',
+          name: 'Setup2FA',
+          component: () => import('./views/Setup2FA.vue'),
+          meta: {
+            rule: 'editor'
+          }
+        },
+        {
           path: '/kyc/overview',
           name: 'dashboardTrades',
           component: () => import('./views/DashboardKYC.vue'),
@@ -222,7 +230,7 @@ const router = new Router({
           }
         },
         {
-          path: '/:tag/:sectionTag/:productTag/:subPagetag',
+          path: '/:productSlug/:sectionSlug/:pageSlug/:subPagetag',
           name: 'swapfull',
           component: () => import('./views/ui-elements/table/RecordSliderTableWithoutButton.vue'),
           meta: {

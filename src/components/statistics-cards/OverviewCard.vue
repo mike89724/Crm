@@ -18,7 +18,7 @@
       </div>
       <div :class="{'mt-24': value.title_value == null}">
         <vue-apex-charts
-          type="area"
+          type="bar"
           width="100%"
           height="300"
           :options="updatedOptions"
@@ -119,12 +119,12 @@ export default {
       },
       yaxis: {
         labels: {
-          show: false
+          show: true
         }
       },
       xaxis: {
         labels: {
-          show: false
+          show: true
         },
         axisBorder: {
           show: false

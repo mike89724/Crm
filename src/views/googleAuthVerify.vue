@@ -3,16 +3,18 @@
         <vs-prompt
             vs-title="Enter Google Auth Code"
             @vs-accept="submit()"
+            @vs-cancel="close()"
             @vs-close="close()"
             :vs-active.sync="activePrompt">
             <div class="">
-            <div style="display: flex;justify-content:center;">
-                <center><img :src=
-                    "'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=200x200&chld=M|0&cht=qr&chl=otpauth://totp/Nuo%3Fsecret%3D' + 'JB4UK6TQPBDUC6CUOA2FMSZSN5GFSY2D'" 
-                    style="height: 150px; margin: 10px auto;">
-                </center>
-            </div>
+            
             <vs-input placeholder="Enter"  v-model="otp" class="mt-4 mb-2 w-full" />
+            <div style="text-align: center;">
+                <a style="text-decoration: underline" href="/pages/login">LOGIN?</a>
+            </div> 
+            <div style="text-align: center;">
+                <a style="text-decoration: underline" href="/setup-2fa">Setup 2FA?</a>  
+            </div> 
             <vs-alert :vs-active="!validName" color="danger" vs-icon="new_releases" >
                 Fields can not be empty please enter the data
             </vs-alert>
@@ -52,18 +54,33 @@
                 console.log(response.data.data.products[0].slug)
                 console.log(response.data.data.products[0].sections[0].slug)
                 console.log(response.data.data.products[0].sections[0].pages[0].slug)
+                this.$vs.notify({
+                    color:'success',
+                    title:'Passed',
+                    text:'Login Successfull!'
+                })
                 this.$router.push({path: '/' + response.data.data.products[0].slug + '/' + response.data.data.products[0].sections[0].slug + '/' + response.data.data.products[0].sections[0].pages[0].slug})
                 // this.$router.push({path: '/home'});
-            } else if(response.status != 200) {
+            } else if(response.status == 401) {
+                this.$vs.notify({
+                    color:'danger',
+                    title:'Error',
+                    text:'Error while logging in!'
+                })
                 this.$router.push({path: '/pages/login'})
+            } else {
+                this.$vs.notify({
+                    color:'danger',
+                    title:'Error',
+                    text:'Error while logging in!'
+                })
             }
-            // this.otp = response;
             },
             close() {
                 this.$vs.notify({
                     color:'danger',
                     title:'Closed',
-                    text:'You close a dialog!'
+                    text:'You closed 2fa modal!'
                 })
                 this.$router.push({ path: '/pages/login'})
             }

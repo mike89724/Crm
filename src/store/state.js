@@ -20,6 +20,7 @@ export function initialState() {
     password: '',
     profileData: null,
     breakpoint: null,
+    routeData: [],
     sidebarWidth: "default",
     reduceButton: themeConfig.sidebarCollapsed,
     bodyOverlay: false,

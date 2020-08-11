@@ -270,7 +270,7 @@ export default {
       if(this.$store.state.profileData) {
         for (let i = 0; i < this.$store.state.profileData.data.data.products.length; i++) {
           for (let j = 0; j < this.$store.state.profileData.data.data.products[i].sections.length; j++) {
-            for (let k = 0; j < this.$store.state.profileData.data.data.products[i].sections[j].pages.length; j++) {
+            for (let k = 0; k < this.$store.state.profileData.data.data.products[i].sections[j].pages.length; k++) {
               if(this.$store.state.profileData.data.data.products[i].sections[j].pages[k].slug === this.$route.params.pageSlug) {
                 this.tag = this.$store.state.profileData.data.data.products[i].sections[j].pages[k].tag
                 this.sectionTag = this.$store.state.profileData.data.data.products[i].sections[j].tag
@@ -300,7 +300,7 @@ export default {
       for(i = 0; i < this.uiComponents.length; i++) {
         if(this.uiComponents[i].name == 'single-value-card') {
           this.singleValueCard.push(this.uiComponents[i])
-        } else if(this.uiComponents[i].name == 'area-chart-without-value' || this.uiComponents[i].name  == 'area-chart-with-value') {
+        } else if(this.uiComponents[i].name == 'bar-chart-without-value' || this.uiComponents[i].name  == 'area-chart-with-value') {
           this.graphs.push(this.uiComponents[i])
         } else if(this.uiComponents[i].name == 'record-slider-table') {
           this.tables.push(this.uiComponents[i])
