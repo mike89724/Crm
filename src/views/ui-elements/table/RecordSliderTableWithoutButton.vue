@@ -24,7 +24,7 @@
               <div v-for="(item,index) in modalData.components" :key="index">
                 <div v-if="item.element == 'static-text'">
                   <span v-if="item.value">{{item.title}} : {{item.value}}</span>
-                  <span v-else-if="item.element == 'static-text' && item.default-value">{{item.title}} : {{item.default_value}}</span>
+                  <span v-else-if="item.element == 'static-text' && item.default_value">{{item.title}} : {{item.default_value}}</span>
                 </div>
                 <div v-if="item.element == 'input-text'">
                   <span>{{item.title}} :</span>
@@ -38,7 +38,7 @@
                 </div>
                 <div v-if="item.element == 'checkbox'">
                   <span>{{item.title}}</span>
-                  <vs-input type="checkbox" :placeholder="item.default_value" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
+                  <vs-input type="checkbox" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
                 </div>
               </div>
               <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
@@ -572,6 +572,10 @@ export default {
           },
         })
         this.modalData = response.data.data[0]
+        for(let i = 0; i < this.modalData.components.length; i++) {
+          if(this.modalData.components[i].element == 'input-text')
+            this.modalValue[i] = this.modalData.components[i].default_value;
+        }
         this.activePrompt1 = true;
     },
     async buttonAction2(subPage) {
