@@ -4,8 +4,10 @@
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
         <h5 v-if="title" class="pt-3 pb-3">{{title}}</h5>
         <h5 v-else class="pt-3 pb-3">{{table.title}}</h5>
-        <div v-if="tableText != ''">{{this.tableText}}<span class="cursor-pointer" @click="remove(1)"> x</span></div>
-        <div v-if="tableText2 != ''">{{this.tableText2}}<span class="cursor-pointer" @click="remove(2)"> x</span></div>
+        <div style="background-color: #fffd5; width: max-content;">
+          <div v-if="tableText != ''">{{this.tableText}}<span class="cursor-pointer" style="font-weight:600;" @click="remove(1)">    x</span></div>
+          <div v-if="tableText2 != ''">{{this.tableText2}}<span class="cursor-pointer" style="font-weight:600;" @click="remove(2)">   x</span></div>
+        </div>
       </vs-col>
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <div v-if="table.buttons.length > 0">
@@ -13,14 +15,42 @@
             <vs-button class="text-xs" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
           </div>
         </div>
-        <vs-prompt   
-          vs-title=""                
-          :vs-active.sync="activePrompt1">
-          <div class="con-exemple-prompt">
-            
-            <vs-input type="checkbox" placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
-          </div>
-        </vs-prompt>
+        <div v-if="modalData.components.length > 0">
+          <vs-prompt   
+            :vs-title="modalData.title"    
+            :vs-buttons-hidden="true"            
+            :vs-active.sync="activePrompt1">
+            <div v-if="modalData && modalData.components.length > 0" class="con-exemple-prompt">
+              <div v-for="(item,index) in modalData.components" :key="index">
+                <div v-if="item.element == 'static-text'">
+                  <span v-if="item.value">{{item.title}} : {{item.value}}</span>
+                  <span v-else-if="item.element == 'static-text' && item.default-value">{{item.title}} : {{item.default_value}}</span>
+                </div>
+                <div v-if="item.element == 'input-text'">
+                  <span>{{item.title}} :</span>
+                  <vs-input type="input" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
+                </div>
+                <div v-if="item.element == 'selectbox'">
+                  <span>{{item.title}} : </span>
+                  <vs-radio val="1">
+                    Option A
+                  </vs-radio> 
+                </div>
+                <div v-if="item.element == 'checkbox'">
+                  <span>{{item.title}}</span>
+                  <vs-input type="checkbox" :placeholder="item.default_value" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
+                </div>
+              </div>
+              <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
+                <div class="pl-5" v-for="(button, y) in modalData.buttons" :key="y">
+                  <button :class="getClassByCode(button.color)" @click="modalButtonAction(button.action)" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
+                    font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
+                </div>
+              </div>
+              
+            </div>
+          </vs-prompt>
+        </div>
         <feather-icon
           v-if="!showFilters"
           @click="openNewRoute()"
@@ -57,7 +87,7 @@
                     </div>
                   </template>
                   <v-list class="vs-con-tbody vs-table--tbody absolute" style="width: max-content;">
-                    <div v-if="column.datatype === 'date' || 'integer'" class="p-2 cursor-pointer" @click="showPrompt2(column.col_tag, column.title)">
+                    <div v-if="column.datatype === 'date'" class="p-2 cursor-pointer" @click="showPrompt2(column.col_tag, column.title)">
                       <feather-icon icon="FilterIcon"></feather-icon>FILTER
                     </div>
                      <div v-else class="p-2 cursor-pointer" @click="showPrompt(column.col_tag, column.title)">
@@ -79,9 +109,9 @@
                       @vs-accept="filter(table.sub_page_tag)"
                       :vs-active.sync="prompt">
                       <div class="">
-                        
-                        <vs-input placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
-                        <vs-input placeholder="Search" v-model="valMultipe.value2" class="mt-4 mb-2 w-full" />
+                        <div>Format: yyyy/mm/dd </div>
+                        <vs-input placeholder="Start Date" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
+                        <vs-input placeholder="End Date" v-model="valMultipe.value2" class="mt-4 mb-2 w-full" />
                       </div>
                     </vs-prompt>
                     <div class="p-2 cursor-pointer" @click="Sort(2, column.col_tag, table.sub_page_tag, column.title)"><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
@@ -98,24 +128,24 @@
               </vs-td>
               <template class="expand-user" slot="expand">
                 <div style="display: block; width: 100%;">
-                  <table style="width: 80%; margin: auto;">
+                  <table style="width: 60%; margin: auto;">
                     <thead>
-                      <td style="font-size: 1.25rem; text-align: center" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
+                      <th style="border: 1px solid; font-size: 1.25rem; text-align: center" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
                         <div>{{item.title}}</div>
-                      </td>
+                      </th>
                     </thead>
                     <tbody>
-                      <td style="font-size: 1.25rem; text-align: center">
-                        <img style="height: 50px; width: 50px; border-radius: 50%; display: inline;" :src="table.secondary_values[index][0]">
+                      <td style="border: 1px solid; text-align: center">
+                        <a :href="table.secondary_values[index][0]">{{table.secondary_values[index][0]}}</a>
                       </td>
-                      <td style="font-size: 1.25rem; text-align: center">
+                      <td style="border: 1px solid; text-align: center">
                         {{table.secondary_values[index][1]}}
                       </td>
                     </tbody>  
                   </table>
-                  <div style="margin-top: 5%; width: 80%; margin: auto; padding-top: 5%;" class="flex">
+                  <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
                     <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
-                      <button v-if="table.action_values[index][y]" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
+                      <button v-if="table.action_values[index][y]" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
                         font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
                     </div>
                   </div>
@@ -207,7 +237,16 @@ export default {
       prompt: false,
       table: {},
       colTag: '',
-      modalData: {},
+      modalData: {
+        components: [
+          {
+              "title": "Id",
+              "element": "static-text",
+              "value": 4
+          },
+        ]
+      },
+      modalValue: [],
       subPageTag: '',
       sortColTag: '',
       filterColTag: '',
@@ -325,6 +364,35 @@ export default {
     this.setTags();
   },
   methods: {
+    async modalButtonAction(action) {
+      let payLoad = {}
+      for(let i = 0; i < action.params.length; i++) {
+        payLoad[action.params[i].tag] = this.modalValue[i];
+      }
+      let response = await axios.post('https://api-crm.nuofox.com/action',{
+        action_tag: action.tag,
+        action_params: payLoad,
+        page_tag: this.tag,
+        section_tag: this.sectionTag,
+        product_tag: this.productTag
+      },
+      {
+        headers: {
+        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+        },
+      })
+      console.log(response);
+      if(response.status == 200) {
+        this.$vs.notify({
+          color:'success',
+          title: 'Success',
+          text: 'Action Performed Successfully'
+        })
+      }
+      this.activePrompt1 = false;
+
+      
+    },
     async remove(id) {
       if(id == 1) {
         this.sort = '',
@@ -456,9 +524,26 @@ export default {
         }
       }
     },
-    buttonAction(subPage) {
-      this.activePrompt1 = true;
-      this.modalData = this.subPage
+    async buttonAction(subPage, id) {
+      let response = await axios.post('https://api-crm.nuofox.com/page',{
+          page_tag: this.tag,
+          section_tag: this.sectionTag,
+          product_tag: this.productTag,
+          get_main_page: 0,
+          sub_page: [{
+            tag: subPage.tag,
+            params: {
+              id: id
+            }
+          }]
+        },
+        {
+          headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+          },
+        })
+        this.modalData = response.data.data[0]
+        this.activePrompt1 = true;
     },
     showPrompt(id, name) {
       this.activePrompt = true;
