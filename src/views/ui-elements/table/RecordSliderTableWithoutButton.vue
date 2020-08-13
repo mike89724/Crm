@@ -393,6 +393,7 @@ export default {
   methods: {
     async modalButtonAction(action) {
       let payLoad = {}
+      this.modalValue = [];
       for(let i = 0; i < action.params.length; i++) {
         payLoad[action.params[i].tag] = this.modalValue[i];
       }
@@ -552,9 +553,8 @@ export default {
       }
     },
     async buttonAction(subPage, id) {
-      
-        let payLoad = {}
-        payLoad[subPage.params[0].tag] = id;
+      let payLoad = {}
+      payLoad[subPage.params[0].tag] = id;
       
       let response = await axios.post('https://api-crm.nuofox.com/page',{
           page_tag: this.tag,
