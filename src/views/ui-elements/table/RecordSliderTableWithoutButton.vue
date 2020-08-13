@@ -9,7 +9,7 @@
           <div v-if="tableText2 != ''">{{this.tableText2}}<span class="cursor-pointer" style="font-weight:600;" @click="remove(2)">   x</span></div>
         </div>
       </vs-col>
-      <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
+      <vs-col vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <div v-if="table.buttons.length > 0">
           <div v-for="(button,index) in table.buttons" :key="index" style="margin-right: 25px;">
             <vs-button class="text-xs" @click="buttonAction2(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
@@ -255,6 +255,8 @@ export default {
       filterColName: '',
       sort: '',
       tag: '',
+      offset:'',
+      limit: '',
       sectionTag: '',
       productTag: '',
       tableText: '',
@@ -320,8 +322,29 @@ export default {
     if(this.value){
       this.table = this.value
       this.subPageTag = this.table.sub_page_tag
+      if(this.$store.state.routeData[this.$route.params.pageSlug]) {
+        this.sort = this.$store.state.routeData[this.$route.params.pageSlug].sort,
+        this.valMultipe.value1 = this.$store.state.routeData[this.$route.params.pageSlug].value1,
+        this.sortColTag = this.$store.state.routeData[this.$route.params.pageSlug].sortColTag,
+        this.filterColTag = this.$store.state.routeData[this.$route.params.pageSlug].filterColTag,
+        this.offset = this.$store.state.routeData[this.$route.params.pageSlug].offset,
+        this.limit = this.$store.state.routeData[this.$route.params.pageSlug].limit,
+        this.tableText = this.$store.state.routeData[this.$route.params.pageSlug].tableText,
+        this.tableText2 = this.$store.state.routeData[this.$route.params.pageSlug].tableText2
+        await this.getTableData();
+      } 
     } else {
       this.subPageTag = this.$route.params.subPagetag
+      if(this.$store.state.routeData[this.$route.params.pageSlug]) {
+        this.sort = this.$store.state.routeData[this.$route.params.pageSlug].sort,
+        this.valMultipe.value1 = this.$store.state.routeData[this.$route.params.pageSlug].value1,
+        this.sortColTag = this.$store.state.routeData[this.$route.params.pageSlug].sortColTag,
+        this.filterColTag = this.$store.state.routeData[this.$route.params.pageSlug].filterColTag,
+        this.offset = this.$store.state.routeData[this.$route.params.pageSlug].offset,
+        this.limit = this.$store.state.routeData[this.$route.params.pageSlug].limit,
+        this.tableText = this.$store.state.routeData[this.$route.params.pageSlug].tableText,
+        this.tableText2 = this.$store.state.routeData[this.$route.params.pageSlug].tableText2
+      }
       // const response = await axios.post('https://api-crm.nuofox.com/page',{
       //   page_tag: "user",
       //   section_tag: "access_control",
@@ -581,15 +604,39 @@ export default {
     async Sort(number, tag, pageTag, colName) {
       this.sortColTag = tag,
       this.sort = number
-         if(number == 1) {
+        if(number == 1) {
         this.tableText = 'Sorted By' + ' Descending on ' + colName
       } else {
         this.tableText = 'Sorted By' + ' Ascending on ' + colName
       }
+      let value = {}
+      value[this.$route.params.pageSlug] = {
+        sort: this.sort,
+        sortColTag: this.sortColTag,
+        value1: this.valMultipe.value1,
+        filterColTag: this.filterColTag,
+        offset: this.offset,
+        limit: this.limit,
+        tableText: this.tableText,
+        tableText2: this.tableText2
+      }
+      this.$store.commit('routeData', value)
       await this.getTableData();  
     },
     async filter(pageTag) {
       this.tableText2 = 'Filtered ' + this.filterColName + " by " + '"' + this.valMultipe.value1 + '"' 
+      let value = {}
+      value[this.$route.params.pageSlug] = {
+        sort: this.sort,
+        sortColTag: this.sortColTag,
+        value1: this.valMultipe.value1,
+        filterColTag: this.filterColTag,
+        offset: this.offset,
+        limit: this.limit,
+        tableText: this.tableText,
+        tableText2: this.tableText2
+      }
+      this.$store.commit('routeData', value)
       await this.getTableData();
     },
     acceptAlert() {
