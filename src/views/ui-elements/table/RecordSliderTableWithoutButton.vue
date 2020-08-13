@@ -12,7 +12,7 @@
       <vs-col v-if="!showFilters" vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
         <div v-if="table.buttons.length > 0">
           <div v-for="(button,index) in table.buttons" :key="index" style="margin-right: 25px;">
-            <vs-button class="text-xs" @click="buttonAction(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
+            <vs-button class="text-xs" @click="buttonAction2(button.sub_page)" style="margin-top: -3.5%; margin-right: 10%;">{{button.title}}</vs-button>
           </div>
         </div>
         <div v-if="modalData.components.length > 0">
@@ -145,8 +145,10 @@
                   </table>
                   <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
                     <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
-                      <button v-if="table.action_values[index][y]" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
+                      <button v-if="table.action_values[index][y] && button.sub_page" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
                         font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
+                      <button v-else-if="table.action_values[index][y] && button.action" :class="getClassByCode(button.style.color)" @click="modalButtonAction(button.action, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
+                    font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
                     </div>
                   </div>
                 </div>
@@ -525,6 +527,10 @@ export default {
       }
     },
     async buttonAction(subPage, id) {
+      
+        let payLoad = {}
+        payLoad[subPage.params[0].tag] = id;
+      
       let response = await axios.post('https://api-crm.nuofox.com/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
@@ -532,9 +538,26 @@ export default {
           get_main_page: 0,
           sub_page: [{
             tag: subPage.tag,
-            params: {
-              id: id
-            }
+            params: payLoad,
+          }]
+        },
+        {
+          headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+          },
+        })
+        this.modalData = response.data.data[0]
+        this.activePrompt1 = true;
+    },
+    async buttonAction2(subPage) {
+      let response = await axios.post('https://api-crm.nuofox.com/page',{
+          page_tag: this.tag,
+          section_tag: this.sectionTag,
+          product_tag: this.productTag,
+          get_main_page: 0,
+          sub_page: [{
+            tag: subPage.tag,
+            params: {},
           }]
         },
         {
