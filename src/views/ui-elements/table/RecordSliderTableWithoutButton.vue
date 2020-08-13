@@ -128,21 +128,23 @@
               </vs-td>
               <template class="expand-user" slot="expand">
                 <div style="display: block; width: 100%;">
-                  <table style="width: 60%; margin: auto;">
-                    <thead>
-                      <th style="border: 1px solid; font-size: 1.25rem; text-align: center" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
-                        <div>{{item.title}}</div>
-                      </th>
-                    </thead>
-                    <tbody>
-                      <td style="border: 1px solid; text-align: center">
-                        <a :href="table.secondary_values[index][0]">{{table.secondary_values[index][0]}}</a>
-                      </td>
-                      <td style="border: 1px solid; text-align: center">
-                        {{table.secondary_values[index][1]}}
-                      </td>
-                    </tbody>  
-                  </table>
+                  <div style="width:60%; margin: auto;">
+                    <table style="width: 60%;">
+                      <thead>
+                        <th style="border: 1px solid; font-size: 1.25rem; text-align: center" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
+                          <div>{{item.title}}</div>
+                        </th>
+                      </thead>
+                      <tbody>
+                        <td style="border: 1px solid; text-align: center">
+                          <a :href="table.secondary_values[index][0]">{{table.secondary_values[index][0]}}</a>
+                        </td>
+                        <td style="border: 1px solid; text-align: center">
+                          {{table.secondary_values[index][1]}}
+                        </td>
+                      </tbody>  
+                    </table>
+                  </div>
                   <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
                     <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
                       <button v-if="table.action_values[index][y] && button.sub_page" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;

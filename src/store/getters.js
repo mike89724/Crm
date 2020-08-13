@@ -17,22 +17,23 @@ const getters = {
     if(state.profileData != null) {
       return state.profileData.data.data.products 
     }  
-    else return [];
+    else return  []
+          
   },
   imageUrl(state) {
-    if(state.profileData != null) {
+    if(state.profileData != {}) {
       return state.profileData.data.data.image 
     }  
     else return '';
   },
   firstName(state) {
-    if(state.profileData != null) {
+    if(state.profileData != {}) {
       return state.profileData.data.data.first_name 
     }  
     else return '';
   },
   lastName(state) {
-    if(state.profileData != null) {
+    if(state.profileData != {}) {
       return state.profileData.data.data.last_name 
     }  
     else return '';

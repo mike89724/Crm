@@ -18,7 +18,11 @@ export function initialState() {
     isUserLoggedIn: false,
     email: '',
     password: '',
-    profileData: null,
+    profileData: {data: {data: {
+      products: [
+        
+      ]
+    }}},
     breakpoint: null,
     routeData: {},
     sidebarWidth: "default",

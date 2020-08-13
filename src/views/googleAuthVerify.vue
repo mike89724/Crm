@@ -47,13 +47,7 @@
             if(response.status == 200) {
                 this.showData = true;
                 this.$store.commit('profileData', response);
-
-                console.log('printing response')
-                console.log(response);
-                console.log("printing path")
-                console.log(response.data.data.products[0].slug)
-                console.log(response.data.data.products[0].sections[0].slug)
-                console.log(response.data.data.products[0].sections[0].pages[0].slug)
+                this.$store.commit('routeData', {})
                 this.$vs.notify({
                     color:'success',
                     title:'Passed',

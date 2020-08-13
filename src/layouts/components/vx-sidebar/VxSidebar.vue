@@ -49,6 +49,7 @@
                       <vs-dropdown  vs-custom-content vs-trigger-click class="cursor-pointer">
                         <div class="con-img flex">
                           <img
+                            v-if="imageUrl != null"
                             key="localImg"
                             :src="imageUrl"
                             alt="user-img"
@@ -56,7 +57,7 @@
                             height="50"
                             style="padding: 0px !important;"
                             class="rounded-full shadow-md cursor-pointer block" />
-                            <div style="font-weight: 600; text-transform: capitalize" class="ml-4 mt-4">{{firstName}} {{lastName}}</div>
+                            <div v-if="firstName != null" style="font-weight: 600; text-transform: capitalize" class="ml-4 mt-4">{{firstName}} {{lastName}}</div>
                         </div>
                         <vs-dropdown-menu style="z-index: 9999999;" class="dropdown-menu-right ml-5">
                           <ul style="min-width: 9rem">
@@ -277,21 +278,28 @@ export default {
     },
     methods: {
       logout() {
+        this.$store.commit('routeData', {})
+        this.$store.commit('profileData', {data: {data: {
+          products: [
+            
+          ]
+        }}})
+        this.$router.push('/pages/login')
         // if user is logged in via auth0
-        if (this.$auth.profile) this.$auth.logOut();
+        // if (this.$auth.profile) this.$auth.logOut();
 
-        // if user is looged in via firebase
-        const firebaseCurrentUser = firebase.auth().currentUser
+        // // if user is looged in via firebase
+        // const firebaseCurrentUser = firebase.auth().currentUser
 
-        if (firebaseCurrentUser) {
-            firebase.auth().signOut().then(() => {
-                this.$router.push('/pages/login')
-                localStorage.removeItem('userInfo');
-            })
-        }
-        // Change role on logout. Same value as initialRole of acj.js
-        this.$acl.change('admin')
-        localStorage.removeItem('userRole');
+        // if (firebaseCurrentUser) {
+        //     firebase.auth().signOut().then(() => {
+        //         this.$router.push('/pages/login')
+        //         localStorage.removeItem('userInfo');
+        //     })
+        // }
+        // // Change role on logout. Same value as initialRole of acj.js
+        // this.$acl.change('admin')
+        // localStorage.removeItem('userRole');
         },
       toggleLiveData() {
         this.$store.dispatch("togglePusher", !this.$store.state.pusher);
@@ -367,7 +375,9 @@ export default {
     mounted() {
         // this.activePrompt = true;
         // this.promtShown = true;
-        this.profileData = this.$store.state.profileData
+        if(this.$store.state.profileData) {
+          this.profileData = this.$store.state.profileData
+        }
         this.$nextTick(() => {
             window.addEventListener('resize', this.handleWindowResize);
         });

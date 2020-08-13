@@ -109,6 +109,12 @@ export default {
                 this.$store.commit('email', this.email)
                 this.$store.commit('password', this.password)
             }
+            this.$store.commit('profileData', {data: {data: {
+            products: [
+                
+            ]
+            }}})
+            this.$store.commit('routeData', {})
             if(response.status == 200) {
                 this.$router.push({path: '/google-auth-verify/otp'});
             }
