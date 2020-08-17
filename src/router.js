@@ -238,7 +238,7 @@ const router = new Router({
           }
         },
         {
-          path: '/loan/orders',
+          path: '/action/history',
           name: 'loanfull',
           component: () => import('./views/ui-elements/table/TableLoanDetailsFull.vue'),
           meta: {

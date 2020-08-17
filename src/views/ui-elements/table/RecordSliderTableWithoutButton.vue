@@ -20,34 +20,38 @@
             :vs-title="modalData.title"    
             :vs-buttons-hidden="true"            
             :vs-active.sync="activePrompt1">
-            <div v-if="modalData && modalData.components.length > 0" class="con-exemple-prompt">
-              <div v-for="(item,index) in modalData.components" :key="index">
-                <div v-if="item.element == 'static-text'">
-                  <span v-if="item.value">{{item.title}} : {{item.value}}</span>
-                  <span v-else-if="item.element == 'static-text' && item.default_value">{{item.title}} : {{item.default_value}}</span>
+            <div style="max-height: 350px; overflow-y: scroll;">
+              <div v-if="modalData && modalData.components.length > 0" class="con-exemple-prompt">
+                <div v-for="(item,index) in modalData.components" :key="index">
+                  <div v-if="item.element == 'static-text'">
+                    <span v-if="item.value">{{item.title}} : {{item.value}}</span>
+                    <span v-else-if="item.element == 'static-text' && item.default_value">{{item.title}} : {{item.default_value}}</span>
+                  </div>
+                  <div v-if="item.element == 'input-text'">
+                    <span>{{item.title}} :</span>
+                    <vs-input type="input" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
+                  </div>
+                  <div v-if="item.element == 'input-selectbox'">
+                    <span>{{item.title}} : </span>
+                    <vs-radio val="1">
+                      Option A
+                    </vs-radio> 
+                  </div>
+                  <div v-if="item.element == 'input-checkbox'">
+                    <span>{{item.title}}</span>
+                    <div v-for="(choice,y) in item.choices" :key='y'>
+                      <vs-input type="checkbox" :placeholder="item.default_value" v-model="roleId[y]" class="mt-4 mb-2 w-full" />
+                    </div>  
+                  </div>
                 </div>
-                <div v-if="item.element == 'input-text'">
-                  <span>{{item.title}} :</span>
-                  <vs-input type="input" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
+                <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
+                  <div class="pl-5" v-for="(button, y) in modalData.buttons" :key="y">
+                    <button :class="getClassByCode(button.color)" @click="modalButtonAction(button.action)" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
+                      font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
+                  </div>
                 </div>
-                <div v-if="item.element == 'selectbox'">
-                  <span>{{item.title}} : </span>
-                  <vs-radio val="1">
-                    Option A
-                  </vs-radio> 
-                </div>
-                <div v-if="item.element == 'checkbox'">
-                  <span>{{item.title}}</span>
-                  <vs-input type="checkbox" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
-                </div>
+                
               </div>
-              <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
-                <div class="pl-5" v-for="(button, y) in modalData.buttons" :key="y">
-                  <button :class="getClassByCode(button.color)" @click="modalButtonAction(button.action)" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
-                    font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
-                </div>
-              </div>
-              
             </div>
           </vs-prompt>
         </div>
@@ -128,7 +132,7 @@
               </vs-td>
               <template class="expand-user" slot="expand">
                 <div style="display: block; width: 100%;">
-                  <div style="width:60%; margin: auto;">
+                  <div style="width:80%; margin: auto;">
                     <table style="width: 60%;">
                       <thead>
                         <th style="border: 1px solid; font-size: 1.25rem; text-align: center" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
@@ -145,11 +149,11 @@
                       </tbody>  
                     </table>
                   </div>
-                  <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
+                  <div style="margin-top: 5%; width: 80%; margin: auto; padding-top: 5%;" class="flex">
                     <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
                       <button v-if="table.action_values[index][y] && button.sub_page" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
                         font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
-                      <button v-else-if="table.action_values[index][y] && button.action" :class="getClassByCode(button.style.color)" @click="modalButtonAction(button.action, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
+                      <button v-else-if="table.action_values[index][y] && button.action" :class="getClassByCode(button.style.color)" @click="directAction(button.action, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
                     font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
                     </div>
                   </div>
@@ -241,6 +245,7 @@ export default {
       prompt: false,
       table: {},
       colTag: '',
+      roleId: [],
       modalData: {
         components: [
           {
@@ -330,7 +335,7 @@ export default {
         this.sortColTag = this.$store.state.routeData[this.$route.params.pageSlug].sortColTag,
         this.filterColTag = this.$store.state.routeData[this.$route.params.pageSlug].filterColTag,
         this.offset = this.$store.state.routeData[this.$route.params.pageSlug].offset,
-        this.limit = this.$store.state.routeData[this.$route.params.pageSlug].limit,
+        this.pageSize = this.$store.state.routeData[this.$route.params.pageSlug].limit,
         this.tableText = this.$store.state.routeData[this.$route.params.pageSlug].tableText,
         this.tableText2 = this.$store.state.routeData[this.$route.params.pageSlug].tableText2
         await this.getTableData();
@@ -343,7 +348,7 @@ export default {
         this.sortColTag = this.$store.state.routeData[this.$route.params.pageSlug].sortColTag,
         this.filterColTag = this.$store.state.routeData[this.$route.params.pageSlug].filterColTag,
         this.offset = this.$store.state.routeData[this.$route.params.pageSlug].offset,
-        this.limit = this.$store.state.routeData[this.$route.params.pageSlug].limit,
+        this.pageSize = this.$store.state.routeData[this.$route.params.pageSlug].limit,
         this.tableText = this.$store.state.routeData[this.$route.params.pageSlug].tableText,
         this.tableText2 = this.$store.state.routeData[this.$route.params.pageSlug].tableText2
       }
@@ -391,24 +396,36 @@ export default {
     this.setTags();
   },
   methods: {
-    async modalButtonAction(action) {
-      let payLoad = {}
-      this.modalValue = [];
-      for(let i = 0; i < action.params.length; i++) {
-        payLoad[action.params[i].tag] = this.modalValue[i];
+    async getOffset() {
+      if(this.activePage > 1) {
+        this.offset = (this.activePage - 1)*this.pageSize
       }
-      let response = await axios.post('https://api-crm.nuofox.com/action',{
-        action_tag: action.tag,
-        action_params: payLoad,
-        page_tag: this.tag,
-        section_tag: this.sectionTag,
-        product_tag: this.productTag
-      },
-      {
-        headers: {
-        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+      if(this.offset != '') {
+        await this.getTableData();
+      }
+    },
+    async directAction(action) {
+       let response;
+      // payload['role_ids'] = this.roleId
+      try {
+          response = await axios.post('https://api-crm.nuofox.com/action',{
+          action_tag: action.tag,
+          action_params: {
+            tag: "status",
+            val_raw: 2
+          },
+          page_tag: this.tag,
+          section_tag: this.sectionTag,
+          product_tag: this.productTag
         },
-      })
+        {
+          headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+          },
+        })
+      } catch(err) {
+         response = err
+        }
       console.log(response);
       if(response.status == 200) {
         this.$vs.notify({
@@ -417,6 +434,59 @@ export default {
           text: 'Action Performed Successfully'
         })
       }
+      else {
+        this.$vs.notify({
+          color:'danger',
+          title: 'Failed',
+          text: 'Action Failed'
+        })
+      }
+    },
+    async modalButtonAction(action) {
+      let payLoad = {}
+      // this.modalValue = [];
+      for(let i = 0; i < action.params.length; i++) {
+        if(action.params[i].tag === 'role_ids'){
+          payLoad[action.params[i].tag] = this.roleId
+         }
+        else {
+          payLoad[action.params[i].tag] = this.modalValue[i];
+        }
+      }
+      let response;
+      // payload['role_ids'] = this.roleId
+      try {
+          response = await axios.post('https://api-crm.nuofox.com/action',{
+          action_tag: action.tag,
+          action_params: payLoad,
+          page_tag: this.tag,
+          section_tag: this.sectionTag,
+          product_tag: this.productTag
+        },
+        {
+          headers: {
+          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+          },
+        })
+      } catch(err) {
+         response = err
+        }
+      console.log(response);
+      if(response.status == 200) {
+        this.$vs.notify({
+          color:'success',
+          title: 'Success',
+          text: 'Action Performed Successfully'
+        })
+      }
+      else {
+        this.$vs.notify({
+          color:'danger',
+          title: 'Failed',
+          text: 'Action Failed'
+        })
+      }
+      
       this.activePrompt1 = false;
 
       
@@ -443,7 +513,10 @@ export default {
           get_main_page: 0,
           sub_page: [{
             tag: this.subPageTag,
-            params: {},
+            params: {
+              offset: this.offset,
+              limit: this.pageSize
+            },
           }]
         },
         {
@@ -462,7 +535,9 @@ export default {
             tag: this.subPageTag,
             params: {
               sort: this.sort,
-              sort_col: this.sortColTag
+              sort_col: this.sortColTag,
+              offset: this.offset,
+              limit: this.pageSize
             }
           }]
         },
@@ -480,8 +555,10 @@ export default {
           sub_page: [{
             tag: this.subPageTag,
             params: {
-              search_list: this.valMultipe.value1,
-              sort_col: this.filterColTag
+              search_list: [this.valMultipe.value1],
+              sort_col: this.filterColTag,
+              offset: this.offset,
+              limit: this.pageSize
             }
           }]
         },
@@ -502,7 +579,9 @@ export default {
               sort: this.sort,
               sort_col: this.sortColTag,
               search_list: [this.valMultipe.value1],
-              search_col: this.filterColTag
+              search_col: this.filterColTag,
+              offset: this.offset,
+              limit: this.pageSize
             }
           }]
         },
@@ -622,7 +701,7 @@ export default {
         value1: this.valMultipe.value1,
         filterColTag: this.filterColTag,
         offset: this.offset,
-        limit: this.limit,
+        limit: this.pageSize,
         tableText: this.tableText,
         tableText2: this.tableText2
       }
@@ -638,7 +717,7 @@ export default {
         value1: this.valMultipe.value1,
         filterColTag: this.filterColTag,
         offset: this.offset,
-        limit: this.limit,
+        limit: this.pageSize,
         tableText: this.tableText,
         tableText2: this.tableText2
       }
@@ -854,31 +933,15 @@ export default {
   },
   watch: {
     activePage: async function() {
-      await this.getSwapOrders();
+      await this.getOffset();
     },
     pageSize: async function() {
-      await this.getSwapOrders();
+      await this.getTableData();
     },
-    sortKey: async function() {
-      await this.getSwapOrders();
-    },
-    order: async function() {
-      await this.getSwapOrders();
-    },
-    status: async function() {
-      await this.getSwapOrders();
-    },
-    dateRange: async function() {
-      await this.getSwapOrders();
-    },
-    "$store.state.primaryCurrency": async function() {
-      this.showTable = false;
-      await this.getSwapOrders();
-      this.showTable = true;
-    },
+
     "$store.state.theme": async function() {
       this.showTable = false;
-      await this.getSwapOrders();
+      await this.getTableData();
       this.showTable = true;
     }
   }
