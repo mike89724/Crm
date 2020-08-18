@@ -37,38 +37,44 @@
         },    
         methods: {
             async submit() {
-                let response = await axios.post('https://api-crm.nuofox.com/login/final', {
-                email: this.$store.state.email,
-                password: this.$store.state.password,
-                ga_token: this.otp  
-            })
-            console.log('priniting final response')
-            console.log(response)
-            if(response.status == 200) {
-                this.showData = true;
-                this.$store.commit('profileData', response);
-                this.$store.commit('routeData', {})
-                this.$vs.notify({
-                    color:'success',
-                    title:'Passed',
-                    text:'Login Successfull!'
-                })
-                this.$router.push({path: '/' + response.data.data.products[0].slug + '/' + response.data.data.products[0].sections[0].slug + '/' + response.data.data.products[0].sections[0].pages[0].slug})
-                // this.$router.push({path: '/home'});
-            } else if(response.status == 401) {
-                this.$vs.notify({
-                    color:'danger',
-                    title:'Error',
-                    text:'Error while logging in!'
-                })
-                this.$router.push({path: '/pages/login'})
-            } else {
-                this.$vs.notify({
-                    color:'danger',
-                    title:'Error',
-                    text:'Error while logging in!'
-                })
-            }
+                let response;
+                try {
+                    response = await axios.post('https://api-crm.nuofox.com/login/final', {
+                    email: this.$store.state.email,
+                    password: this.$store.state.password,
+                    ga_token: this.otp  
+                    })
+                } catch(err) {
+                    response = err
+                }
+
+                console.log('priniting final response')
+                console.log(response)
+                if(response.status == 200) {
+                    this.showData = true;
+                    this.$store.commit('profileData', response);
+                    this.$store.commit('routeData', {})
+                    this.$vs.notify({
+                        color:'success',
+                        title:'Passed',
+                        text:'Login Successfull!'
+                    })
+                    this.$router.push({path: '/' + response.data.data.products[0].slug + '/' + response.data.data.products[0].sections[0].slug + '/' + response.data.data.products[0].sections[0].pages[0].slug})
+                    // this.$router.push({path: '/home'});
+                } else if(response.status == 401) {
+                    this.$vs.notify({
+                        color:'danger',
+                        title:'Error',
+                        text:'Error while logging in!'
+                    })
+                    this.$router.push({path: '/pages/login'})
+                } else {
+                    this.$vs.notify({
+                        color:'danger',
+                        title:'Error',
+                        text:'Error while logging in!'
+                    })
+                }
             },
             close() {
                 this.$vs.notify({

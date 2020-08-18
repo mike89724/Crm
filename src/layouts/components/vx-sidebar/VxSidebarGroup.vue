@@ -86,12 +86,12 @@ export default {
         isGroupActive() {
             return (sidebarItem) => {
 
-                const path = this.$route.fullPath;
+                const path = this.$route.params.pageSlug;
                 let open = false;
                 let func = function(sidebarItem) {
                     if (sidebarItem.pages) {
                         sidebarItem.pages.forEach((item) => {
-                            if (path == item.url) {
+                            if (path == item.slug) {
                                 open = true
                             } else if (item.pages) {
                                 func(item)

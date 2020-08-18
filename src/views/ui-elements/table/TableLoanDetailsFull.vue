@@ -21,26 +21,26 @@
         <vs-table :class="{'mt-5': (updatedWidth < 768), 'mt-2': (updatedWidth >= 768)}" style="width: 100%;" v-if="showTable" :hoverFlat="false" :data="history">
           <template slot="header"></template>
           <template slot="thead">
-            <vs-th><div class="loan-width-acceptable">ID</div></vs-th>
-            <vs-th><div style="text-align: center;" class="loan-width-acceptable">META DATA</div></vs-th>
-            <vs-th><div class="loan-width-acceptable">MESSAGE</div></vs-th>
-            <vs-th><div class="loan-width-acceptable">STATUS</div></vs-th>
+            <vs-th><div class="loan-width-acceptable center-align">ID</div></vs-th>
+            <vs-th><div style="text-align: center; center-align" class="loan-width-acceptable">META DATA</div></vs-th>
+            <vs-th><div class="loan-width-acceptable center-align">MESSAGE</div></vs-th>
+            <vs-th><div class="loan-width-acceptable center-align">STATUS</div></vs-th>
             <vs-th class="flex-center"><div style="text-align: center;" class="loan-width-acceptable">ACTION</div></vs-th>
-            <vs-th><div class="loan-width-acceptable">PATH</div></vs-th>
+            <vs-th><div class="loan-width-acceptable center-align">PATH</div></vs-th>
           </template>
           <template slot-scope="{data}">
             <vs-tr :id="tr.id" class="row-expand" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td :data="currentTime"><div class="loan-width-acceptable">{{data[indextr].id}}</div></vs-td>
+              <vs-td class="center-align" ><div class="loan-width-acceptable">{{data[indextr].id}}</div></vs-td>
               <vs-td class="center-align"><div class="loan-width-acceptable">{{data[indextr].metadata}}</div></vs-td>
-              <vs-td
+              <vs-td class="center-align"
               >
               {{data[indextr].message}}
               </vs-td>
-              <vs-td         
+              <vs-td class="center-align"       
               >{{data[indextr].status}}</vs-td>
-                {{data[indextr].action.title}}
-              <vs-td>
-              {{data[indextr].product.title}}/{{data[indextr].section.title}}/{{data[indextr].page.title}}
+              <vs-td class="center-align">{{data[indextr].action.title}}</vs-td>
+              <vs-td class="center-align">
+                {{data[indextr].product.title}}/{{data[indextr].section.title}}/{{data[indextr].page.title}}
               </vs-td>
             </vs-tr>
           </template>

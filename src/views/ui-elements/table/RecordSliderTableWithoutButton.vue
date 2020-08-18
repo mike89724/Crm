@@ -1,4 +1,4 @@
-<template>
+ <template>
   <vx-card class="relative" id="table-swap">
     <vs-row vs-type="flex" vs-justify="space-between">
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
@@ -135,21 +135,18 @@
                   <div style="width:80%; margin: auto;">
                     <table style="width: 60%;">
                       <thead>
-                        <th style="border: 1px solid; font-size: 1.25rem; text-align: center" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
+                        <th style="border: 1px solid; font-size: 1.25rem; text-align: center; max-width: 150px;" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
                           <div>{{item.title}}</div>
                         </th>
                       </thead>
                       <tbody>
-                        <td style="border: 1px solid; text-align: center">
-                          <a :href="table.secondary_values[index][0]">{{table.secondary_values[index][0]}}</a>
-                        </td>
-                        <td style="border: 1px solid; text-align: center">
-                          {{table.secondary_values[index][1]}}
+                        <td v-for="(data,c) in table.secondary_values[index]" :key="c"  style="border: 1px solid; text-align: center; max-width: 150px; text-overflow: ellipsis;">
+                          <a :href="data">{{data}}</a>
                         </td>
                       </tbody>  
                     </table>
                   </div>
-                  <div style="margin-top: 5%; width: 80%; margin: auto; padding-top: 5%;" class="flex">
+                  <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
                     <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
                       <button v-if="table.action_values[index][y] && button.sub_page" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
                         font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
