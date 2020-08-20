@@ -56,7 +56,7 @@
     "vuedraggable": "^2.20.0",
     "vuejs-datepicker": "^1.5.4",
     "vuepress": "^0.14.10",
-    "vuesax": "3.8.59",
+    "vuesax": "^3.8.59",
     "vuetify": "^1.3.8",
     "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.0.0"

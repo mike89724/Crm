@@ -74,6 +74,7 @@
                         title:'Error',
                         text:'Error while logging in!'
                     })
+                    this.$router.push({path: '/pages/login'})
                 }
             },
             close() {

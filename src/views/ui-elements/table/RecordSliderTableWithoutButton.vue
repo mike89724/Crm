@@ -4,9 +4,9 @@
       <vs-col vs-lg="8" vs-md="8" vs-sm="8">
         <h5 v-if="title" class="pt-3 pb-3">{{title}}</h5>
         <h5 v-else class="pt-3 pb-3">{{table.title}}</h5>
-        <div style="background-color: #fffd5; width: max-content;">
-          <div v-if="tableText != ''">{{this.tableText}}<span class="cursor-pointer" style="font-weight:600;" @click="remove(1)">    x</span></div>
-          <div v-if="tableText2 != ''">{{this.tableText2}}<span class="cursor-pointer" style="font-weight:600;" @click="remove(2)">   x</span></div>
+        <div class="p-3 mb-3" v-if="tableText != '' || tableText2 != ''" style="background-color: #ffffd5; width: max-content; border: 1px solid;">
+          <div v-if="tableText != ''">{{this.tableText}}<feather-icon icon="Trash2Icon" class="cursor-pointer" style="font-weight:600;" @click="remove(1)">    x</feather-icon></div>
+          <div v-if="tableText2 != ''">{{this.tableText2}}<feather-icon icon="Trash2Icon" class="cursor-pointer" style="font-weight:600;" @click="remove(2)">   x</feather-icon></div>
         </div>
       </vs-col>
       <vs-col vs-lg="4" vs-sm="4" style="display: flex; justify-content: flex-end; align-items: center;">
@@ -40,7 +40,8 @@
                   <div v-if="item.element == 'input-checkbox'">
                     <span>{{item.title}}</span>
                     <div v-for="(choice,y) in item.choices" :key='y'>
-                      <vs-input type="checkbox" :placeholder="item.default_value" v-model="roleId[y]" class="mt-4 mb-2 w-full" />
+                      <vs-checkbox v-model="roleId[y]" class="mt-4 mb-2 w-full">
+                      </vs-checkbox>
                     </div>  
                   </div>
                 </div>
@@ -135,12 +136,12 @@
                   <div style="width:80%; margin: auto;">
                     <table style="width: 60%;">
                       <thead>
-                        <th style="border: 1px solid; font-size: 1.25rem; text-align: center; max-width: 150px;" class="pl-5" v-for="(item, x) in table.secondary_columns" :key="x">
+                        <th class="pl-5 secondary-col-head" v-for="(item, x) in table.secondary_columns" :key="x">
                           <div>{{item.title}}</div>
                         </th>
                       </thead>
                       <tbody>
-                        <td v-for="(data,c) in table.secondary_values[index]" :key="c"  style="border: 1px solid; text-align: center; max-width: 150px; text-overflow: ellipsis;">
+                        <td v-for="(data,c) in table.secondary_values[index]" :key="c"  class="secondary-val-head">
                           <a :href="data">{{data}}</a>
                         </td>
                       </tbody>  
@@ -149,9 +150,9 @@
                   <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
                     <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
                       <button v-if="table.action_values[index][y] && button.sub_page" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
-                        font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
+                        font-size: 1rem; color: #ffffff; border-radius: 6px; cursor: pointer;">{{button.title}}</button>
                       <button v-else-if="table.action_values[index][y] && button.action" :class="getClassByCode(button.style.color)" @click="directAction(button.action, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
-                    font-size: 1rem; color: #ffffff; border-radius: 6px;">{{button.title}}</button>
+                        font-size: 1rem; color: #ffffff; border-radius: 6px; cursor: pointer;">{{button.title}}</button>
                     </div>
                   </div>
                 </div>
@@ -442,8 +443,14 @@ export default {
     async modalButtonAction(action) {
       let payLoad = {}
       // this.modalValue = [];
+      for(let j = 0; j < this.roleId.length; j++) {
+        if(this.roleId[j] == true) {
+          this.roleId[j] = 1;
+        } else this.roleId[j] = 0;
+      }
       for(let i = 0; i < action.params.length; i++) {
         if(action.params[i].tag === 'role_ids'){
+          
           payLoad[action.params[i].tag] = this.roleId
          }
         else {
@@ -498,6 +505,18 @@ export default {
         this.filterColTag = '',        
         this.tableText2 = ''
       }
+      const value = {}
+      value[this.$route.params.pageSlug] = {
+        sort: this.sort,
+        sortColTag: this.sortColTag,
+        value1: this.valMultipe.value1,
+        filterColTag: this.filterColTag,
+        offset: this.offset,
+        limit: this.pageSize,
+        tableText: this.tableText,
+        tableText2: this.tableText2
+      }
+      this.$store.commit('routeData', value)
       await this.getTableData();
     },
     async getTableData() {
@@ -629,6 +648,8 @@ export default {
       }
     },
     async buttonAction(subPage, id) {
+      this.modalValue = []
+      this.roleId = []
       let payLoad = {}
       payLoad[subPage.params[0].tag] = id;
       
@@ -649,8 +670,13 @@ export default {
         })
         this.modalData = response.data.data[0]
         for(let i = 0; i < this.modalData.components.length; i++) {
-          if(this.modalData.components[i].element == 'input-text')
+          if(this.modalData.components[i].element == 'input-text') {
             this.modalValue[i] = this.modalData.components[i].default_value;
+          } else if(this.modalData.components[i].element == 'input-checkbox') {
+            if(this.modalData.components[i].default_value == 1) {
+              this.roleId.push(true)
+            } else this.roleId.push(false)
+          } 
         }
         this.activePrompt1 = true;
     },
@@ -945,6 +971,17 @@ export default {
 };
 </script>
 <style lang="scss">
+.secondary-col-head {
+  border: 1px solid; 
+  font-size: 1.25rem; 
+  text-align: center; 
+  max-width: 150px;
+}
+.secondary-val-head {
+  border: 1px solid; 
+  text-align: center; 
+  max-width: 150px;
+}
 .link-button {
   background: #007bff !important;
 }
