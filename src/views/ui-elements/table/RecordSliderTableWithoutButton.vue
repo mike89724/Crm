@@ -978,9 +978,10 @@ export default {
   max-width: 150px;
 }
 .secondary-val-head {
-  border: 1px solid; 
+  border: 1px solid !important; 
   text-align: center; 
   max-width: 150px;
+  text-overflow: ellipsis;
 }
 .link-button {
   background: #007bff !important;

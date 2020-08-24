@@ -263,7 +263,7 @@ export default {
     console.log('printing tag')
     console.log(this.$route.params.pageSlug)
     // this.setTags();
-    this.getHomeData();
+    await this.getHomeData();
   },
   methods: {
     setTags() {
@@ -276,8 +276,6 @@ export default {
                 this.sectionTag = this.$store.state.profileData.data.data.products[i].sections[j].tag
                 this.productTag = this.$store.state.profileData.data.data.products[i].tag
               }
-              else return
-
             }
           }
         }
