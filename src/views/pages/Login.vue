@@ -97,27 +97,38 @@ export default {
             this.recaptchaToken = token;
         },
         async login() {
-            var response = await axios.post('https://api-crm.nuofox.com/login/init', {
+            let response
+
+            try {
+                response = await axios.post('https://ed36e3edc322.ngrok.io/login/init', {
                     email: this.email,
                     password: this.password,
                     recaptcha_response: this.recaptchaToken   
-            })
+                })
 
-            console.log(response);
-            this.$store.commit('isUserLoggedIn', true)
-            if(this.email != '' && this.password != ''){
-                this.$store.commit('email', this.email)
-                this.$store.commit('password', this.password)
-            }
-            this.$store.commit('profileData', {data: {data: {
-            products: [
-                
-            ]
-            }}})
-            this.$store.commit('routeData', {})
-            if(response.status == 200) {
-                this.$router.push({path: '/google-auth-verify/otp'});
-            }
+                console.log(response);
+                this.$store.commit('isUserLoggedIn', true)
+                if(this.email != '' && this.password != ''){
+                    this.$store.commit('email', this.email)
+                    this.$store.commit('password', this.password)
+                }
+                this.$store.commit('profileData', {data: {data: {
+                products: [
+                    
+                ]
+                }}})
+                this.$store.commit('routeData', {})
+                if(response.status == 200) {
+                    this.$router.push({path: '/google-auth-verify/otp'});
+                }
+            } catch(err) {
+                response = err
+                this.$vs.notify({
+                    color:'danger',
+                    title: 'Failed',
+                    text: 'Login Failed'
+                })
+            }  
             // const payload = {
             //     checkbox_remember_me: this.checkbox_remember_me,
             //     userDetails: {

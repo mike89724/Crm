@@ -18,7 +18,8 @@
         <div v-if="modalData.components.length > 0">
           <vs-prompt   
             :vs-title="modalData.title"    
-            :vs-buttons-hidden="true"            
+            :vs-buttons-hidden="true"  
+            :vs-is-valid="validField"          
             :vs-active.sync="activePrompt1">
             <div style="max-height: 350px; overflow-y: scroll;">
               <div v-if="modalData && modalData.components.length > 0" class="con-exemple-prompt">
@@ -29,6 +30,7 @@
                   </div>
                   <div v-if="item.element == 'input-text'">
                     <span>{{item.title}} :</span>
+                    <vs-tooltip :text="item.description"></vs-tooltip>
                     <vs-input type="input" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
                   </div>
                   <div v-if="item.element == 'input-selectbox'">
@@ -87,15 +89,15 @@
                 <v-menu offset-y>
                   <template v-slot:activator="{ on }">
                     <div style="white-space: nowrap;" type="border" :href="`#${index}`" v-on="on" class="cursor-pointer outline">
-                          {{column.title}}
-                          <feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>
+                      {{column.title}}
+                      <feather-icon v-if="column.can_filter == true || column.can_sort == true" class="h-3" icon="ChevronsDownIcon"></feather-icon>
                     </div>
                   </template>
                   <v-list class="vs-con-tbody vs-table--tbody absolute" style="width: max-content;">
-                    <div v-if="column.datatype === 'date'" class="p-2 cursor-pointer" @click="showPrompt2(column.col_tag, column.title)">
+                    <div v-if="column.datatype === 'date' && column.can_filter == true" class="p-2 cursor-pointer" @click="showPrompt2(column.col_tag, column.title)">
                       <feather-icon icon="FilterIcon"></feather-icon>FILTER
                     </div>
-                     <div v-else class="p-2 cursor-pointer" @click="showPrompt(column.col_tag, column.title)">
+                     <div v-else-if="column.datatype != 'date' && column.can_filter == true" class="p-2 cursor-pointer" @click="showPrompt(column.col_tag, column.title)">
                       <feather-icon icon="FilterIcon"></feather-icon>FILTER
                     </div>
                     <vs-prompt
@@ -119,8 +121,8 @@
                         <vs-input placeholder="End Date" v-model="valMultipe.value2" class="mt-4 mb-2 w-full" />
                       </div>
                     </vs-prompt>
-                    <div class="p-2 cursor-pointer" @click="Sort(2, column.col_tag, table.sub_page_tag, column.title)"><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
-                    <div class="p-2 cursor-pointer" @click="Sort(1, column.col_tag, table.sub_page_tag, column.title)"><feather-icon class="h-3" icon="ChevronsUpIcon"></feather-icon>DESCENDING</div>
+                    <div v-if="column.can_sort == true" class="p-2 cursor-pointer" @click="Sort(2, column.col_tag, table.sub_page_tag, column.title)"><feather-icon class="h-3" icon="ChevronsDownIcon"></feather-icon>ASCENDING</div>
+                    <div v-if="column.can_sort == true" class="p-2 cursor-pointer" @click="Sort(1, column.col_tag, table.sub_page_tag, column.title)"><feather-icon class="h-3" icon="ChevronsUpIcon"></feather-icon>DESCENDING</div>
                   </v-list>
                 </v-menu>   
               </div>
@@ -128,8 +130,11 @@
           </template>
           <template slot-scope="{data}">
             <vs-tr class="row-expand" v-for="(item, index) in data" :key="index">
-              <vs-td v-for="(rowItem, i) in item" :key="i">
-                {{rowItem}}
+              <vs-td v-for="(rowItem, zoo) in item" :key="zoo">
+                <a v-if="table.main_columns[zoo].style && table.main_columns[zoo].style.is_underlined == true" :href="rowItem">
+                  {{rowItem}}
+                </a>
+                <span v-else>{{rowItem}}</span>
               </vs-td>
               <template class="expand-user" slot="expand">
                 <div style="display: block; width: 100%;">
@@ -137,12 +142,13 @@
                     <table style="width: 60%;">
                       <thead>
                         <th class="pl-5 secondary-col-head" v-for="(item, x) in table.secondary_columns" :key="x">
-                          <div>{{item.title}}</div>
+                          <div  class="">{{item.title}}</div>
                         </th>
                       </thead>
                       <tbody>
                         <td v-for="(data,c) in table.secondary_values[index]" :key="c"  class="secondary-val-head">
-                          <a :href="data">{{data}}</a>
+                          <a  v-if="table.secondary_columns[c].style && table.secondary_columns[c].style.is_underlined == true" :href="data"></a>
+                          <span v-else-if="table.secondary_columns[c].style == null"> {{data}} </span>
                         </td>
                       </tbody>  
                     </table>
@@ -243,6 +249,7 @@ export default {
       prompt: false,
       table: {},
       colTag: '',
+      rowId: '',
       roleId: [],
       modalData: {
         components: [
@@ -327,30 +334,30 @@ export default {
     if(this.value){
       this.table = this.value
       this.subPageTag = this.table.sub_page_tag
-      if(this.$store.state.routeData[this.$route.params.pageSlug]) {
-        this.sort = this.$store.state.routeData[this.$route.params.pageSlug].sort,
-        this.valMultipe.value1 = this.$store.state.routeData[this.$route.params.pageSlug].value1,
-        this.sortColTag = this.$store.state.routeData[this.$route.params.pageSlug].sortColTag,
-        this.filterColTag = this.$store.state.routeData[this.$route.params.pageSlug].filterColTag,
-        this.offset = this.$store.state.routeData[this.$route.params.pageSlug].offset,
-        this.pageSize = this.$store.state.routeData[this.$route.params.pageSlug].limit,
-        this.tableText = this.$store.state.routeData[this.$route.params.pageSlug].tableText,
-        this.tableText2 = this.$store.state.routeData[this.$route.params.pageSlug].tableText2
+      if(this.$store.state.routeData[this.subPageTag]) {
+        this.sort = this.$store.state.routeData[this.subPageTag].sort,
+        this.valMultipe.value1 = this.$store.state.routeData[this.subPageTag].value1,
+        this.sortColTag = this.$store.state.routeData[this.subPageTag].sortColTag,
+        this.filterColTag = this.$store.state.routeData[this.subPageTag].filterColTag,
+        this.offset = this.$store.state.routeData[this.subPageTag].offset,
+        this.pageSize = this.$store.state.routeData[this.subPageTag].limit,
+        this.tableText = this.$store.state.routeData[this.subPageTag].tableText,
+        this.tableText2 = this.$store.state.routeData[this.subPageTag].tableText2
         await this.getTableData();
       } 
     } else {
       this.subPageTag = this.$route.params.subPagetag
-      if(this.$store.state.routeData[this.$route.params.pageSlug]) {
-        this.sort = this.$store.state.routeData[this.$route.params.pageSlug].sort,
-        this.valMultipe.value1 = this.$store.state.routeData[this.$route.params.pageSlug].value1,
-        this.sortColTag = this.$store.state.routeData[this.$route.params.pageSlug].sortColTag,
-        this.filterColTag = this.$store.state.routeData[this.$route.params.pageSlug].filterColTag,
-        this.offset = this.$store.state.routeData[this.$route.params.pageSlug].offset,
-        this.pageSize = this.$store.state.routeData[this.$route.params.pageSlug].limit,
-        this.tableText = this.$store.state.routeData[this.$route.params.pageSlug].tableText,
-        this.tableText2 = this.$store.state.routeData[this.$route.params.pageSlug].tableText2
+      if(this.$store.state.routeData[this.subPageTag]) {
+        this.sort = this.$store.state.routeData[this.subPageTag].sort,
+        this.valMultipe.value1 = this.$store.state.routeData[this.subPageTag].value1,
+        this.sortColTag = this.$store.state.routeData[this.subPageTag].sortColTag,
+        this.filterColTag = this.$store.state.routeData[this.subPageTag].filterColTag,
+        this.offset = this.$store.state.routeData[this.subPageTag].offset,
+        this.pageSize = this.$store.state.routeData[this.subPageTag].limit,
+        this.tableText = this.$store.state.routeData[this.subPageTag].tableText,
+        this.tableText2 = this.$store.state.routeData[this.subPageTag].tableText2
       }
-      // const response = await axios.post('https://api-crm.nuofox.com/page',{
+      // const response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
       //   page_tag: "user",
       //   section_tag: "access_control",
       //   product_tag: "settings",
@@ -394,6 +401,17 @@ export default {
     this.setTags();
   },
   methods: {
+    validField() {
+      for(let i = 0; i < this.modalValue.length; i++) {
+        if(modalValue[i] == '') {
+          this.$vs.notify({
+            color:'danger',
+            title:'Closed',
+            text:'Fields Cannot be Empty'
+          })
+        }
+      }
+    },
     async getOffset() {
       if(this.activePage > 1) {
         this.offset = (this.activePage - 1)*this.pageSize
@@ -406,7 +424,7 @@ export default {
        let response;
       // payload['role_ids'] = this.roleId
       try {
-          response = await axios.post('https://api-crm.nuofox.com/action',{
+          response = await axios.post('https://ed36e3edc322.ngrok.io/action',{
           action_tag: action.tag,
           action_params: {
             tag: "status",
@@ -422,8 +440,8 @@ export default {
           },
         })
       } catch(err) {
-         response = err
-        }
+          response = err
+      }
       console.log(response);
       if(response.status == 200) {
         this.$vs.notify({
@@ -443,24 +461,38 @@ export default {
     async modalButtonAction(action) {
       let payLoad = {}
       // this.modalValue = [];
+      for(let k = 0; k < this.modalData.components.length; k++) {
+        if(this.modalData.components[k].element == 'input-text' && this.modalData.components[k].required == true) {
+          if(!this.modalValue[k] ||this.modalValue[k] == '') {
+            this.$vs.notify({
+              color:'danger',
+              title: 'Failed',
+              text: 'Fields Cannot be Empty'
+            })
+            return
+          }
+        }
+      }
       for(let j = 0; j < this.roleId.length; j++) {
         if(this.roleId[j] == true) {
           this.roleId[j] = 1;
         } else this.roleId[j] = 0;
       }
       for(let i = 0; i < action.params.length; i++) {
-        if(action.params[i].tag === 'role_ids'){
-          
+        if(action.params[i].tag === 'role_ids'){         
           payLoad[action.params[i].tag] = this.roleId
          }
-        else {
+        if(action.params[i].tag === 'id') {
+          payLoad[action.params[i].tag] = this.rowId 
+        } 
+        if(this.modalValue[i]){
           payLoad[action.params[i].tag] = this.modalValue[i];
+        } 
         }
-      }
       let response;
       // payload['role_ids'] = this.roleId
       try {
-          response = await axios.post('https://api-crm.nuofox.com/action',{
+          response = await axios.post('https://ed36e3edc322.ngrok.io/action',{
           action_tag: action.tag,
           action_params: payLoad,
           page_tag: this.tag,
@@ -506,7 +538,7 @@ export default {
         this.tableText2 = ''
       }
       const value = {}
-      value[this.$route.params.pageSlug] = {
+      value[this.subPageTag] = {
         sort: this.sort,
         sortColTag: this.sortColTag,
         value1: this.valMultipe.value1,
@@ -522,7 +554,7 @@ export default {
     async getTableData() {
       let response = '';
       if(this.sort == '' && this.valMultipe.value1 == '') {
-          response = await axios.post('https://api-crm.nuofox.com/page',{
+          response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -542,7 +574,7 @@ export default {
         })
       }
       else if(this.sort  != '' && this.valMultipe.value1 ==  '') {
-         response = await axios.post('https://api-crm.nuofox.com/page',{
+         response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -563,7 +595,7 @@ export default {
           },
         })
       } else if(this.sort  == '' && this.valMultipe.value1 !=  '') {
-         response = await axios.post('https://api-crm.nuofox.com/page',{
+         response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -572,7 +604,7 @@ export default {
             tag: this.subPageTag,
             params: {
               search_list: [this.valMultipe.value1],
-              sort_col: this.filterColTag,
+              search_col: this.filterColTag,
               offset: this.offset,
               limit: this.pageSize
             }
@@ -584,7 +616,7 @@ export default {
           },
         })
       } else if(this.sort != '' && this.valMultipe.value1 != '') {
-          response = await axios.post('https://api-crm.nuofox.com/page',{
+          response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -634,14 +666,12 @@ export default {
       if(this.$store.state.profileData.data.data.products) {
         for (let i = 0; i < this.$store.state.profileData.data.data.products.length; i++) {
           for (let j = 0; j < this.$store.state.profileData.data.data.products[i].sections.length; j++) {
-            for (let k = 0; j < this.$store.state.profileData.data.data.products[i].sections[j].pages.length; j++) {
+            for (let k = 0; k < this.$store.state.profileData.data.data.products[i].sections[j].pages.length; k++) {
               if(this.$store.state.profileData.data.data.products[i].sections[j].pages[k].slug === this.$route.params.pageSlug) {
                 this.tag = this.$store.state.profileData.data.data.products[i].sections[j].pages[k].tag
                 this.sectionTag = this.$store.state.profileData.data.data.products[i].sections[j].tag
                 this.productTag = this.$store.state.profileData.data.data.products[i].tag
               }
-              else return
-
             }
           }
         }
@@ -651,9 +681,10 @@ export default {
       this.modalValue = []
       this.roleId = []
       let payLoad = {}
+      this.rowId = id;
       payLoad[subPage.params[0].tag] = id;
       
-      let response = await axios.post('https://api-crm.nuofox.com/page',{
+      let response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -681,7 +712,7 @@ export default {
         this.activePrompt1 = true;
     },
     async buttonAction2(subPage) {
-      let response = await axios.post('https://api-crm.nuofox.com/page',{
+      let response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -718,7 +749,7 @@ export default {
         this.tableText = 'Sorted By' + ' Ascending on ' + colName
       }
       let value = {}
-      value[this.$route.params.pageSlug] = {
+      value[this.subPageTag] = {
         sort: this.sort,
         sortColTag: this.sortColTag,
         value1: this.valMultipe.value1,
@@ -734,7 +765,7 @@ export default {
     async filter(pageTag) {
       this.tableText2 = 'Filtered ' + this.filterColName + " by " + '"' + this.valMultipe.value1 + '"' 
       let value = {}
-      value[this.$route.params.pageSlug] = {
+      value[this.subPageTag] = {
         sort: this.sort,
         sortColTag: this.sortColTag,
         value1: this.valMultipe.value1,
@@ -932,6 +963,7 @@ export default {
     },
   },
   computed: {
+    
     getPagesCount() {
       var maxItems = parseFloat(this.pageSize);
       var totalNumberOfOrders = 5

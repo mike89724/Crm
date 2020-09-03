@@ -17,8 +17,8 @@
       <generic-card :width="componentWidth(graphs.length)" :value="graphs[index].value" :name="graphs[index].name" :title="graphs[index].title" :key="index" v-for="(componentItem, index) in graphs">
       </generic-card>
     </div>
-    <div class="flex justify-between my-10">
-      <generic-card :width="componentWidth(tables.length)" :value="tables[index]" :name="tables[index].name" :title="tables[index].title" :key="index" v-for="(componentItem, index) in tables">
+    <div class="my-10">
+      <generic-card style="display: block; margin-bottom: 10%;" :width="'100%'" :value="tables[index]" :name="tables[index].name" :title="tables[index].title" :key="index" v-for="(componentItem, index) in tables">
       </generic-card>
     </div>
   </div>
@@ -282,7 +282,7 @@ export default {
       }
     },
     async getHomeData() {
-      const response = await axios.post('https://api-crm.nuofox.com/page', {
+      const response = await axios.post('https://ed36e3edc322.ngrok.io/page', {
         page_tag: this.tag,
         section_tag: this.sectionTag,
         product_tag: this.productTag

