@@ -282,7 +282,7 @@ export default {
       }
     },
     async getHomeData() {
-      const response = await axios.post('https://ed36e3edc322.ngrok.io/page', {
+      const response = await axios.post('https://api-crm.nuofox.com/page', {
         page_tag: this.tag,
         section_tag: this.sectionTag,
         product_tag: this.productTag

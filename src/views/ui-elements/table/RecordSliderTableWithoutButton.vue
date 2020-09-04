@@ -18,8 +18,7 @@
         <div v-if="modalData.components.length > 0">
           <vs-prompt   
             :vs-title="modalData.title"    
-            :vs-buttons-hidden="true"  
-            :vs-is-valid="validField"          
+            :vs-buttons-hidden="true"          
             :vs-active.sync="activePrompt1">
             <div style="max-height: 350px; overflow-y: scroll;">
               <div v-if="modalData && modalData.components.length > 0" class="con-exemple-prompt">
@@ -29,8 +28,10 @@
                     <span v-else-if="item.element == 'static-text' && item.default_value">{{item.title}} : {{item.default_value}}</span>
                   </div>
                   <div v-if="item.element == 'input-text'">
-                    <span>{{item.title}} :</span>
-                    <vs-tooltip :text="item.description"></vs-tooltip>
+                    <v-tooltip>
+                      <span slot="activator">{{item.title}} :</span>
+                      <span>{{item.description}}</span>
+                    </v-tooltip>
                     <vs-input type="input" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
                   </div>
                   <div v-if="item.element == 'input-selectbox'">
@@ -136,19 +137,20 @@
                 </a>
                 <span v-else>{{rowItem}}</span>
               </vs-td>
-              <template class="expand-user" slot="expand">
+              <template vs-w="12" class="expand-user" slot="expand">
                 <div style="display: block; width: 100%;">
                   <div style="width:80%; margin: auto;">
                     <table style="width: 60%;">
                       <thead>
                         <th class="pl-5 secondary-col-head" v-for="(item, x) in table.secondary_columns" :key="x">
-                          <div  class="">{{item.title}}</div>
+                          <div class="">{{item.title}}</div>
                         </th>
                       </thead>
                       <tbody>
                         <td v-for="(data,c) in table.secondary_values[index]" :key="c"  class="secondary-val-head">
-                          <a  v-if="table.secondary_columns[c].style && table.secondary_columns[c].style.is_underlined == true" :href="data"></a>
-                          <span v-else-if="table.secondary_columns[c].style == null"> {{data}} </span>
+                          <a  v-if="data && table.secondary_columns[c].style && table.secondary_columns[c].style.is_underlined == true" :href="data"></a>
+                          <span v-else-if="data && table.secondary_columns[c].style == null"> {{data}} </span>
+                          <span v-else> -- </span>
                         </td>
                       </tbody>  
                     </table>
@@ -291,7 +293,7 @@ export default {
       sortKey: "added_on",
       order: "DESC",
       status: "",
-      orderCount: "",
+      orderCount: 5,
       statusNames: [
         {
           value: "All",
@@ -334,6 +336,9 @@ export default {
     if(this.value){
       this.table = this.value
       this.subPageTag = this.table.sub_page_tag
+      if(this.table.count) {
+        this.orderCount = this.table.count
+      }
       if(this.$store.state.routeData[this.subPageTag]) {
         this.sort = this.$store.state.routeData[this.subPageTag].sort,
         this.valMultipe.value1 = this.$store.state.routeData[this.subPageTag].value1,
@@ -357,7 +362,7 @@ export default {
         this.tableText = this.$store.state.routeData[this.subPageTag].tableText,
         this.tableText2 = this.$store.state.routeData[this.subPageTag].tableText2
       }
-      // const response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
+      // const response = await axios.post('https://api-crm.nuofox.com/page',{
       //   page_tag: "user",
       //   section_tag: "access_control",
       //   product_tag: "settings",
@@ -421,15 +426,20 @@ export default {
       }
     },
     async directAction(action) {
-       let response;
+      let response;
+      let params = {}
       // payload['role_ids'] = this.roleId
+      for(let i = 0; i < action.params.length; i++) {
+        if(action.params[i].tag === 'id') {         
+          params[action.params[i].tag] = this.rowId
+        } else if(action.params[i].tag === 'status' && action.params[i].val_raw) {
+          params[action.params[i].tag] = action.params[i].val_raw
+        }
+      }  
       try {
-          response = await axios.post('https://ed36e3edc322.ngrok.io/action',{
+          response = await axios.post('https://api-crm.nuofox.com/action',{
           action_tag: action.tag,
-          action_params: {
-            tag: "status",
-            val_raw: 2
-          },
+          action_params: params,
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag
@@ -460,9 +470,10 @@ export default {
     },
     async modalButtonAction(action) {
       let payLoad = {}
+      let count = 0;
       // this.modalValue = [];
       for(let k = 0; k < this.modalData.components.length; k++) {
-        if(this.modalData.components[k].element == 'input-text' && this.modalData.components[k].required == true) {
+        if(this.modalData.components[k].element == 'input-text') {
           if(!this.modalValue[k] ||this.modalValue[k] == '') {
             this.$vs.notify({
               color:'danger',
@@ -473,26 +484,51 @@ export default {
           }
         }
       }
+      let modModalVal = []
+      for(let i = 0; i < this.modalValue.length; i ++) {
+        if(this.modalValue[i]) {
+          modModalVal.push(this.modalValue[i])
+        }
+      }
       for(let j = 0; j < this.roleId.length; j++) {
         if(this.roleId[j] == true) {
           this.roleId[j] = 1;
         } else this.roleId[j] = 0;
       }
       for(let i = 0; i < action.params.length; i++) {
-        if(action.params[i].tag === 'role_ids'){         
-          payLoad[action.params[i].tag] = this.roleId
-         }
+        // payLoad[action.params[i].tag] = action.params[i].val
+
+
+        
+        // if(action.params[i].tag === 'role_ids') {         
+        //   payLoad[action.params[i].tag] = this.roleId
+        // }
+        
         if(action.params[i].tag === 'id') {
           payLoad[action.params[i].tag] = this.rowId 
+          count++;
         } 
-        if(this.modalValue[i]){
-          payLoad[action.params[i].tag] = this.modalValue[i];
-        } 
+        else if(action.params[i].tag === 'role_ids') { 
+          payLoad[action.params[i].tag] = this.roleId
+          count++;
         }
+        else if(action.params[i].tag === 'action') {         
+          payLoad[action.params[i].tag] = action.params[i].val
+          count ++;
+        }
+        else if(action.params[i].tag === 'status' && action.params[i].val_raw) {
+          payLoad [action.params[i].tag] = action.params[i].val_raw
+        }  
+        else if(modModalVal[i-count]) {
+          payLoad[action.params[i].tag] = modModalVal[i-count];
+        } else {
+          payLoad[action.params[i].tag] = ""
+        }
+      }
       let response;
       // payload['role_ids'] = this.roleId
       try {
-          response = await axios.post('https://ed36e3edc322.ngrok.io/action',{
+          response = await axios.post('https://api-crm.nuofox.com/action',{
           action_tag: action.tag,
           action_params: payLoad,
           page_tag: this.tag,
@@ -554,7 +590,7 @@ export default {
     async getTableData() {
       let response = '';
       if(this.sort == '' && this.valMultipe.value1 == '') {
-          response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
+          response = await axios.post('https://api-crm.nuofox.com/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -574,7 +610,7 @@ export default {
         })
       }
       else if(this.sort  != '' && this.valMultipe.value1 ==  '') {
-         response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
+         response = await axios.post('https://api-crm.nuofox.com/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -595,7 +631,7 @@ export default {
           },
         })
       } else if(this.sort  == '' && this.valMultipe.value1 !=  '') {
-         response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
+         response = await axios.post('https://api-crm.nuofox.com/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -616,7 +652,7 @@ export default {
           },
         })
       } else if(this.sort != '' && this.valMultipe.value1 != '') {
-          response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
+          response = await axios.post('https://api-crm.nuofox.com/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -642,6 +678,9 @@ export default {
       this.transition = true;
       this.showTable = false;
       this.table = response.data.data[0]
+      if(this.table.count) {
+        this.orderCount = this.table.count
+      }
       this.$nextTick(() => {
         this.showTable = true;
       });
@@ -684,7 +723,7 @@ export default {
       this.rowId = id;
       payLoad[subPage.params[0].tag] = id;
       
-      let response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
+      let response = await axios.post('https://api-crm.nuofox.com/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -712,7 +751,7 @@ export default {
         this.activePrompt1 = true;
     },
     async buttonAction2(subPage) {
-      let response = await axios.post('https://ed36e3edc322.ngrok.io/page',{
+      let response = await axios.post('https://api-crm.nuofox.com/page',{
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -900,20 +939,6 @@ export default {
         self.showTable = true;
       });
     },
-    matchStatus(originalStatusLabel, newStatusLabel) {
-      if (originalStatusLabel == "Completed" && newStatusLabel === 1) {
-        return true;
-      } else if (originalStatusLabel == "Pending" && newStatusLabel == 4) {
-        return true;
-      } else if (originalStatusLabel == "Failed" && newStatusLabel == 2
-      ) {
-        return true;
-      } else if (originalStatusLabel == "All" || originalStatusLabel == "") {
-        return true;
-      } else {
-        return false;
-      }
-    },
     clipLarge(val) {
       if (val) return val.slice(0, 5) + "...";
       else return val;
@@ -925,6 +950,14 @@ export default {
         });
     },
     clickRow(event) {
+      for(var x = 0; x<this.table.main_columns.length; x++) {
+        if(this.table.main_columns[x].col_tag === 'id') {
+          console.log(x)
+          var tableRowId = parseInt(event.currentTarget.rowIndex) - 1
+          this.rowId = this.table.main_values[tableRowId][x]
+          break;
+        }
+      }
       var classList = event.target.className.split(" ");
       if (classList.includes("vs-icon")) {
         event.target.parentNode.parentElement.click();
@@ -962,12 +995,10 @@ export default {
       }
     },
   },
-  computed: {
-    
+  computed: { 
     getPagesCount() {
       var maxItems = parseFloat(this.pageSize);
-      var totalNumberOfOrders = 5
-      return Math.ceil(totalNumberOfOrders / maxItems);
+      return Math.ceil(this.orderCount / maxItems);
     },
     updatedWidth() {
       return parseInt(screen.width);

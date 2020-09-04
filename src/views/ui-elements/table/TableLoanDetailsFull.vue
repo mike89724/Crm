@@ -329,7 +329,7 @@ export default {
       return getHyphenSeparatedDate(date);
     },
     async getHistory() {
-      const response = await axios.get('https://ed36e3edc322.ngrok.io/action/history',{
+      const response = await axios.get('https://api-crm.nuofox.com/action/history',{
         params: {
           offset: this.offset,
           limit: this.pageSize

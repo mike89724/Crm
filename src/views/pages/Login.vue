@@ -100,7 +100,7 @@ export default {
             let response
 
             try {
-                response = await axios.post('https://ed36e3edc322.ngrok.io/login/init', {
+                response = await axios.post('https://api-crm.nuofox.com/login/init', {
                     email: this.email,
                     password: this.password,
                     recaptcha_response: this.recaptchaToken   
