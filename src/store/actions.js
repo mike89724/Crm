@@ -18,7 +18,6 @@ const actions = {
     // ////////////////////////////////////////////
     // SIDEBAR & UI UX
     // ////////////////////////////////////////////
-
     updateSidebarWidth({ commit }, width) {
         commit('UPDATE_SIDEBAR_WIDTH', width);
     },
@@ -58,6 +57,19 @@ const actions = {
     setPrimaryCurrency({ commit }, primaryCurrency) {
         commit("setPrimaryCurrency", primaryCurrency);
     },
+    logout({ commit }) {
+      commit('routeData', {})
+      commit('profileData', {data: {data: {
+          products: [
+            
+          ]
+        }}})
+      commit("token", "");
+      commit("resfreshToken", "");
+      commit("user", '');
+      this.$router.push('/pages/login')
+
+    } 
 
 
     // ////////////////////////////////////////////

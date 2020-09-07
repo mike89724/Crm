@@ -45,6 +45,15 @@ const mutations = {
     routeData(state, value) {
       state.routeData = value;
     },
+    user(state, value) {
+      state.user = value
+    },
+    refreshToken(state, value) {
+      state.refreshToken = value
+    },
+    token(state, value) {
+      state.token = value
+    },
     setGlobalReserveDetails(state, globalReserveDetails) {
         state.globalReserveDetails = globalReserveDetails;
     },

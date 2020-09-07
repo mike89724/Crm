@@ -36,6 +36,7 @@ import PageService from "@/services/PageService.js";
 import {getFrame} from "@/utils/util.js";
 import GenericCard from "@/components/statistics-cards/GenericUICard.vue";
 import axios from 'axios'
+// import PageService from "../services/PageService";
 
 export default {
   data() {
@@ -282,16 +283,18 @@ export default {
       }
     },
     async getHomeData() {
-      const response = await axios.post('https://api-crm.nuofox.com/page', {
+      let response
+      let payLoad = {
         page_tag: this.tag,
         section_tag: this.sectionTag,
         product_tag: this.productTag
-      },
-      {
-        headers: {
-        Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-        },
-      })
+      }
+      try {
+        response = await PageService.getPageDetails(payLoad)
+      } catch(err){
+        response = err
+      }
+      
       console.log(response);
       this.uiComponents = response.data.data
       var i;

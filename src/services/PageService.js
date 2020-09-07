@@ -1,13 +1,13 @@
-import Api from "./DummyAPI";
+import Api from "./Api";
 
 export default {
-  getPageDetails(pageName) {
-    return Api().get(
-      "page-details", {
-        params: {
-          page: pageName
-        }
-      }
-    )
+  getPageDetails(payLoad) {
+    return Api().post('page', payLoad)
+  },
+  performAction(payLoad) {
+    return Api().post('action', payLoad)
+  },
+  getHistory(payLoad) {
+    return Api().get('action/history', payLoad)
   }
 }

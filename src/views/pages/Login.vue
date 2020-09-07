@@ -72,6 +72,7 @@
 import VueRecaptcha from 'vue-recaptcha' ;
 import router from '@/router'
 import axios from 'axios';
+import AuthenticationService from "../../services/AuthenticationService";
 export default {
     data() {
         return {
@@ -99,12 +100,14 @@ export default {
         async login() {
             let response
 
+            var payLoad = {
+                email: this.email,
+                password: this.password,
+                recaptcha_response: this.recaptchaToken  
+            }
+
             try {
-                response = await axios.post('https://api-crm.nuofox.com/login/init', {
-                    email: this.email,
-                    password: this.password,
-                    recaptcha_response: this.recaptchaToken   
-                })
+                response = await AuthenticationService.loginInit(payLoad)
 
                 console.log(response);
                 this.$store.commit('isUserLoggedIn', true)

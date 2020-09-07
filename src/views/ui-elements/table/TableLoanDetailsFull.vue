@@ -96,6 +96,7 @@ import {formatDate} from "@/static/util";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import ExpandableRowGraph from "@/views/ExpandableRowGraph.vue";
+import PageService from '@/services/PageService.js'
 import axios from 'axios';
 
 export default {
@@ -329,15 +330,16 @@ export default {
       return getHyphenSeparatedDate(date);
     },
     async getHistory() {
-      const response = await axios.get('https://api-crm.nuofox.com/action/history',{
-        params: {
+      let response
+      let payLoad= {params: {
           offset: this.offset,
           limit: this.pageSize
-        },
-        headers: { 
-          Authorization: 'Bearer ' + this.$store.state.profileData.data.data.token
-        }
-      })
+        },}
+      try {
+        response = await PageService.getHistory(payLoad)
+      } catch(err) {
+        response = err
+      }
       this.history = response.data.data;
       this.orderCount = history.length;
       this.showTable = false;

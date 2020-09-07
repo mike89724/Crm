@@ -16,6 +16,8 @@ export function initialState() {
   return {
     isSidebarActive: true,
     isUserLoggedIn: false,
+    user: '',
+    refreshToken: '',
     email: '',
     password: '',
     profileData: {data: {data: {

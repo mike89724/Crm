@@ -25,6 +25,7 @@
 
 <script>
     import axios from 'axios';
+    import AuthenticationService from "../services/AuthenticationService";
     export default {
         data() {
             return {
@@ -38,12 +39,13 @@
         methods: {
             async submit() {
                 let response;
-                try {
-                    response = await axios.post('https://api-crm.nuofox.com/login/final', {
+                let payLoad = {
                     email: this.$store.state.email,
                     password: this.$store.state.password,
-                    ga_token: this.otp  
-                    })
+                    ga_token: this.otp
+                }
+                try {
+                    response = await AuthenticationService.loginFinal(payLoad)
                 } catch(err) {
                     response = err
                 }
@@ -53,6 +55,9 @@
                 if(response.status == 200) {
                     this.showData = true;
                     this.$store.commit('profileData', response);
+                    this.$store.commit('token', response.data.data.token);
+                    this.$store.commit('refreshToken', response.data.data.refresh_token);
+                    this.$store.commit('user', response.data.data.email);
                     this.$store.commit('routeData', {})
                     this.$vs.notify({
                         color:'success',

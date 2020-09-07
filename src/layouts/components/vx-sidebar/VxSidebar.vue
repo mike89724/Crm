@@ -278,13 +278,14 @@ export default {
     },
     methods: {
       logout() {
-        this.$store.commit('routeData', {})
-        this.$store.commit('profileData', {data: {data: {
-          products: [
+        this.$store.dispatch(logout)
+        // this.$store.commit('routeData', {})
+        // this.$store.commit('profileData', {data: {data: {
+        //   products: [
             
-          ]
-        }}})
-        this.$router.push('/pages/login')
+        //   ]
+        // }}})
+        // this.$router.push('/pages/login')
         // if user is logged in via auth0
         // if (this.$auth.profile) this.$auth.logOut();
 

@@ -23,27 +23,38 @@
             <div style="max-height: 350px; overflow-y: scroll;">
               <div v-if="modalData && modalData.components.length > 0" class="con-exemple-prompt">
                 <div v-for="(item,index) in modalData.components" :key="index">
-                  <div v-if="item.element == 'static-text'">
+                  <div class="" v-if="item.element == 'static-text'">
                     <span v-if="item.value">{{item.title}} : {{item.value}}</span>
-                    <span v-else-if="item.element == 'static-text' && item.default_value">{{item.title}} : {{item.default_value}}</span>
+                    <span class="" v-else-if="item.element == 'static-text' && item.default_value">{{item.title}} : {{item.default_value}}</span>
+                     <span class="" v-if="item.description">
+                      <i class="icon-info-circle tooltip text-xs">i<span class="tooltiptext">{{item.description}}</span></i>
+                    </span>
                   </div>
                   <div v-if="item.element == 'input-text'">
-                    <v-tooltip>
-                      <span slot="activator">{{item.title}} :</span>
-                      <span>{{item.description}}</span>
-                    </v-tooltip>
+                      <span class="">{{item.title}} :</span>   
+                       <span class="" v-if="item.description">
+                        <i class="tooltip text-xs">i<span class="tooltiptext">{{item.description}}</span></i>
+                      </span>
                     <vs-input type="input" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
                   </div>
                   <div v-if="item.element == 'input-selectbox'">
-                    <span>{{item.title}} : </span>
+                    <span class="">{{item.title}} :</span>
+                     <span class="" v-if="item.description">
+                      <i class="tooltip text-xs">i<span class="tooltiptext">{{item.description}}</span></i>
+                    </span>                 
                     <vs-radio val="1">
                       Option A
                     </vs-radio> 
                   </div>
                   <div v-if="item.element == 'input-checkbox'">
-                    <span>{{item.title}}</span>
+                    <span class="">{{item.title}}</span>
+                    <span class="tooltip" v-if="item.description">
+                      <span class="" v-if="item.description">
+                      <i class="icon-info-circle tooltip text-xs">.  i<span class="tooltiptext">{{item.description}}</span></i>
+                    </span>
+                    </span> 
                     <div v-for="(choice,y) in item.choices" :key='y'>
-                      <vs-checkbox v-model="roleId[y]" class="mt-4 mb-2 w-full">
+                      <vs-checkbox v-model="roleId[y]" :placeholder="item.choices[y]" class="mt-4 mb-2 w-full">
                       </vs-checkbox>
                     </div>  
                   </div>
@@ -140,7 +151,7 @@
               <template vs-w="12" class="expand-user" slot="expand">
                 <div style="display: block; width: 100%;">
                   <div style="width:80%; margin: auto;">
-                    <table style="width: 60%;">
+                    <table v-if="showRowTable" style="width: 60%;">
                       <thead>
                         <th class="pl-5 secondary-col-head" v-for="(item, x) in table.secondary_columns" :key="x">
                           <div class="">{{item.title}}</div>
@@ -155,7 +166,7 @@
                       </tbody>  
                     </table>
                   </div>
-                  <div style="margin-top: 5%; width: 60%; margin: auto; padding-top: 5%;" class="flex">
+                  <div style="margin-top: 5%; width: 80%; margin: auto; padding-top: 5%;" class="flex">
                     <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
                       <button v-if="table.action_values[index][y] && button.sub_page" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
                         font-size: 1rem; color: #ffffff; border-radius: 6px; cursor: pointer;">{{button.title}}</button>
@@ -214,15 +225,24 @@
 import TradeDetailService from "@/services/TradeDetailService";
 import SwapDetailService from "@/services/SwapDetailService";
 import Pusher from "pusher-js";
-import {pusherKey} from "@/config/settings.js"
-import {getTradeOrderStatus, getFrame, getHyphenSeparatedDate} from "@/utils/util.js";
-import { formatDate } from "@/static/util.js";
+import {
+  pusherKey
+} from "@/config/settings.js"
+import {
+  getTradeOrderStatus,
+  getFrame,
+  getHyphenSeparatedDate
+} from "@/utils/util.js";
+import {
+  formatDate
+} from "@/static/util.js";
 import VueApexCharts from "vue-apexcharts";
 import ExpandableRowGraph from "@/views/ExpandableRowGraph.vue";
 import ExpandableRowTable from "@/views/ExpandableRowTable.vue";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import axios from 'axios';
+import PageService from "@/services/PageService.js";
 
 export default {
   props: {
@@ -250,17 +270,16 @@ export default {
       swaps: [],
       prompt: false,
       table: {},
+      showRowTable: true,
       colTag: '',
       rowId: '',
       roleId: [],
       modalData: {
-        components: [
-          {
-              "title": "Id",
-              "element": "static-text",
-              "value": 4
-          },
-        ]
+        components: [{
+          "title": "Id",
+          "element": "static-text",
+          "value": 4
+        }, ]
       },
       modalValue: [],
       subPageTag: '',
@@ -269,7 +288,7 @@ export default {
       filterColName: '',
       sort: '',
       tag: '',
-      offset:'',
+      offset: '',
       limit: '',
       sectionTag: '',
       productTag: '',
@@ -278,12 +297,12 @@ export default {
       currentTime: (new Date()).getMilliseconds(),
       rowClicked: 0,
       transition: true,
-      activePrompt:false,
-      activePrompt1:false,
-      val:'',
+      activePrompt: false,
+      activePrompt1: false,
+      val: '',
       valMultipe: {
-        value1:'',
-        value2:''
+        value1: '',
+        value2: ''
       },
       showTable: true,
       // tableText: '',
@@ -294,8 +313,7 @@ export default {
       order: "DESC",
       status: "",
       orderCount: 5,
-      statusNames: [
-        {
+      statusNames: [{
           value: "All",
           text: "All"
         },
@@ -333,34 +351,34 @@ export default {
     DateRangePicker
   },
   async mounted() {
-    if(this.value){
+    if (this.value) {
       this.table = this.value
       this.subPageTag = this.table.sub_page_tag
-      if(this.table.count) {
+      if (this.table.count) {
         this.orderCount = this.table.count
       }
-      if(this.$store.state.routeData[this.subPageTag]) {
+      if (this.$store.state.routeData[this.subPageTag]) {
         this.sort = this.$store.state.routeData[this.subPageTag].sort,
-        this.valMultipe.value1 = this.$store.state.routeData[this.subPageTag].value1,
-        this.sortColTag = this.$store.state.routeData[this.subPageTag].sortColTag,
-        this.filterColTag = this.$store.state.routeData[this.subPageTag].filterColTag,
-        this.offset = this.$store.state.routeData[this.subPageTag].offset,
-        this.pageSize = this.$store.state.routeData[this.subPageTag].limit,
-        this.tableText = this.$store.state.routeData[this.subPageTag].tableText,
-        this.tableText2 = this.$store.state.routeData[this.subPageTag].tableText2
+          this.valMultipe.value1 = this.$store.state.routeData[this.subPageTag].value1,
+          this.sortColTag = this.$store.state.routeData[this.subPageTag].sortColTag,
+          this.filterColTag = this.$store.state.routeData[this.subPageTag].filterColTag,
+          this.offset = this.$store.state.routeData[this.subPageTag].offset,
+          this.pageSize = this.$store.state.routeData[this.subPageTag].limit,
+          this.tableText = this.$store.state.routeData[this.subPageTag].tableText,
+          this.tableText2 = this.$store.state.routeData[this.subPageTag].tableText2
         await this.getTableData();
-      } 
+      }
     } else {
       this.subPageTag = this.$route.params.subPagetag
-      if(this.$store.state.routeData[this.subPageTag]) {
+      if (this.$store.state.routeData[this.subPageTag]) {
         this.sort = this.$store.state.routeData[this.subPageTag].sort,
-        this.valMultipe.value1 = this.$store.state.routeData[this.subPageTag].value1,
-        this.sortColTag = this.$store.state.routeData[this.subPageTag].sortColTag,
-        this.filterColTag = this.$store.state.routeData[this.subPageTag].filterColTag,
-        this.offset = this.$store.state.routeData[this.subPageTag].offset,
-        this.pageSize = this.$store.state.routeData[this.subPageTag].limit,
-        this.tableText = this.$store.state.routeData[this.subPageTag].tableText,
-        this.tableText2 = this.$store.state.routeData[this.subPageTag].tableText2
+          this.valMultipe.value1 = this.$store.state.routeData[this.subPageTag].value1,
+          this.sortColTag = this.$store.state.routeData[this.subPageTag].sortColTag,
+          this.filterColTag = this.$store.state.routeData[this.subPageTag].filterColTag,
+          this.offset = this.$store.state.routeData[this.subPageTag].offset,
+          this.pageSize = this.$store.state.routeData[this.subPageTag].limit,
+          this.tableText = this.$store.state.routeData[this.subPageTag].tableText,
+          this.tableText2 = this.$store.state.routeData[this.subPageTag].tableText2
       }
       // const response = await axios.post('https://api-crm.nuofox.com/page',{
       //   page_tag: "user",
@@ -374,7 +392,7 @@ export default {
       // },
       // {
       //   headers: {
-      //   Authorization: "Bearer " + this.$store.state.profileData.data.data.token
+      //   Authorization: "Bearer " + this.$store.state.token
       //   },
       // })
       // this.table = response.data.data[0]
@@ -407,76 +425,90 @@ export default {
   },
   methods: {
     validField() {
-      for(let i = 0; i < this.modalValue.length; i++) {
-        if(modalValue[i] == '') {
+      for (let i = 0; i < this.modalValue.length; i++) {
+        if (modalValue[i] == '') {
           this.$vs.notify({
-            color:'danger',
-            title:'Closed',
-            text:'Fields Cannot be Empty'
+            color: 'danger',
+            title: 'Closed',
+            text: 'Fields Cannot be Empty'
           })
         }
       }
     },
     async getOffset() {
-      if(this.activePage > 1) {
-        this.offset = (this.activePage - 1)*this.pageSize
+      if (this.activePage > 1) {
+        this.offset = (this.activePage - 1) * this.pageSize
       }
-      if(this.offset != '') {
+      if (this.offset != '') {
         await this.getTableData();
       }
     },
     async directAction(action) {
       let response;
       let params = {}
+      let body = {}
       // payload['role_ids'] = this.roleId
-      for(let i = 0; i < action.params.length; i++) {
-        if(action.params[i].tag === 'id') {         
+      for (let i = 0; i < action.params.length; i++) {
+        if (action.params[i].tag === 'id') {
           params[action.params[i].tag] = this.rowId
-        } else if(action.params[i].tag === 'status' && action.params[i].val_raw) {
+        } else if (action.params[i].tag === 'status' && action.params[i].val_raw) {
           params[action.params[i].tag] = action.params[i].val_raw
         }
-      }  
+      }
+      body = {
+        action_tag: action.tag,
+        action_params: params,
+        page_tag: this.tag,
+        section_tag: this.sectionTag,
+        product_tag: this.productTag
+      }
       try {
-          response = await axios.post('https://api-crm.nuofox.com/action',{
-          action_tag: action.tag,
-          action_params: params,
-          page_tag: this.tag,
-          section_tag: this.sectionTag,
-          product_tag: this.productTag
-        },
-        {
-          headers: {
-          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-          },
-        })
-      } catch(err) {
-          response = err
+        response = await PageService.performAction(body)         
+      } catch (err) {
+        response = err
       }
       console.log(response);
-      if(response.status == 200) {
+      if (response.status == 200) {
         this.$vs.notify({
-          color:'success',
+          color: 'success',
           title: 'Success',
           text: 'Action Performed Successfully'
         })
-      }
-      else {
+        await this.getTableData()
+      } else {
         this.$vs.notify({
-          color:'danger',
+          color: 'danger',
           title: 'Failed',
           text: 'Action Failed'
         })
       }
     },
-    async modalButtonAction(action) {
+    async modalButtonAction(action,item) {
       let payLoad = {}
+      let body = {}
       let count = 0;
       // this.modalValue = [];
-      for(let k = 0; k < this.modalData.components.length; k++) {
-        if(this.modalData.components[k].element == 'input-text') {
-          if(!this.modalValue[k] ||this.modalValue[k] == '') {
+      for (let k = 0; k < this.modalData.components.length; k++) {
+        if (this.modalData.components[k].element == 'input-text') {
+          if (!this.modalValue[k] || this.modalValue[k] == '') {
             this.$vs.notify({
-              color:'danger',
+              color: 'danger',
+              title: 'Failed',
+              text: 'Fields Cannot be Empty'
+            })
+            return
+          }
+        }
+        if (this.modalData.components[k].element == 'input-checkbox') {
+           let checkCount =0;
+          for(let g=0; g < this.roleId.length; g++) {
+            if(this.roleId[g] == false) {
+              checkCount++;
+            }
+          }  
+          if(checkCount === this.roleId.length) {
+            this.$vs.notify({
+              color: 'danger',
               title: 'Failed',
               text: 'Fields Cannot be Empty'
             })
@@ -485,93 +517,81 @@ export default {
         }
       }
       let modModalVal = []
-      for(let i = 0; i < this.modalValue.length; i ++) {
-        if(this.modalValue[i]) {
+      for (let i = 0; i < this.modalValue.length; i++) {
+        if (this.modalValue[i]) {
           modModalVal.push(this.modalValue[i])
         }
       }
-      for(let j = 0; j < this.roleId.length; j++) {
-        if(this.roleId[j] == true) {
+      for (let j = 0; j < this.roleId.length; j++) {
+        if (this.roleId[j] == true) {
           this.roleId[j] = 1;
-        } else this.roleId[j] = 0;
+        } else {
+          this.roleId[j] = 0;
+          }
       }
-      for(let i = 0; i < action.params.length; i++) {
-        // payLoad[action.params[i].tag] = action.params[i].val
-
-
-        
-        // if(action.params[i].tag === 'role_ids') {         
-        //   payLoad[action.params[i].tag] = this.roleId
-        // }
-        
-        if(action.params[i].tag === 'id') {
-          payLoad[action.params[i].tag] = this.rowId 
+      for (let i = 0; i < action.params.length; i++) {
+        if (action.params[i].tag === 'id') {
+          payLoad[action.params[i].tag] = this.rowId
+          count++;
+        } else if (action.params[i].tag === 'role_ids') {
+          payLoad[action.params[i].tag] = this.roleId
           count++;
         } 
-        else if(action.params[i].tag === 'role_ids') { 
+        else if (action.params[i].tag === 'resubmit') {
           payLoad[action.params[i].tag] = this.roleId
           count++;
         }
-        else if(action.params[i].tag === 'action') {         
+        else if (action.params[i].tag === 'action') {
           payLoad[action.params[i].tag] = action.params[i].val
-          count ++;
-        }
-        else if(action.params[i].tag === 'status' && action.params[i].val_raw) {
-          payLoad [action.params[i].tag] = action.params[i].val_raw
-        }  
-        else if(modModalVal[i-count]) {
-          payLoad[action.params[i].tag] = modModalVal[i-count];
+          count++;
+        } else if (action.params[i].tag === 'status' && action.params[i].val_raw) {
+          payLoad[action.params[i].tag] = action.params[i].val_raw
+        } else if (modModalVal[i - count]) {
+          payLoad[action.params[i].tag] = modModalVal[i - count];
         } else {
           payLoad[action.params[i].tag] = ""
         }
       }
       let response;
+      body = {
+        action_tag: action.tag,
+        action_params: payLoad,
+        page_tag: this.tag,
+        section_tag: this.sectionTag,
+        product_tag: this.productTag
+      }
       // payload['role_ids'] = this.roleId
       try {
-          response = await axios.post('https://api-crm.nuofox.com/action',{
-          action_tag: action.tag,
-          action_params: payLoad,
-          page_tag: this.tag,
-          section_tag: this.sectionTag,
-          product_tag: this.productTag
-        },
-        {
-          headers: {
-          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-          },
-        })
-      } catch(err) {
-         response = err
-        }
+        response = await PageService.performAction(body)
+      } catch (err) {
+        response = err
+      }
       console.log(response);
-      if(response.status == 200) {
+      if (response.status == 200) {
         this.$vs.notify({
-          color:'success',
+          color: 'success',
           title: 'Success',
           text: 'Action Performed Successfully'
         })
-      }
-      else {
+        await this.getTableData()
+      } else {
         this.$vs.notify({
-          color:'danger',
+          color: 'danger',
           title: 'Failed',
           text: 'Action Failed'
         })
       }
-      
       this.activePrompt1 = false;
-
-      
     },
     async remove(id) {
-      if(id == 1) {
+      if (id == 1) {
         this.sort = '',
-        this.sortColTag = '',
-        this.tableText = ''
+          this.sortColTag = '',
+          this.tableText = ''
       } else {
         this.valMultipe.value1 = '',
-        this.filterColTag = '',        
-        this.tableText2 = ''
+          this.filterColTag = '',
+          this.tableText2 = ''
       }
       const value = {}
       value[this.subPageTag] = {
@@ -589,8 +609,9 @@ export default {
     },
     async getTableData() {
       let response = '';
-      if(this.sort == '' && this.valMultipe.value1 == '') {
-          response = await axios.post('https://api-crm.nuofox.com/page',{
+      let payLoad = {}
+      if (this.sort == '' && this.valMultipe.value1 == '') {
+        payLoad = {
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -602,36 +623,36 @@ export default {
               limit: this.pageSize
             },
           }]
-        },
-        {
-          headers: {
-          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-          },
-        })
-      }
-      else if(this.sort  != '' && this.valMultipe.value1 ==  '') {
-         response = await axios.post('https://api-crm.nuofox.com/page',{
-          page_tag: this.tag,
-          section_tag: this.sectionTag,
-          product_tag: this.productTag,
-          get_main_page: 0,
-          sub_page: [{
-            tag: this.subPageTag,
-            params: {
-              sort: this.sort,
-              sort_col: this.sortColTag,
-              offset: this.offset,
-              limit: this.pageSize
-            }
-          }]
-        },
-        {
-          headers: {
-          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-          },
-        })
-      } else if(this.sort  == '' && this.valMultipe.value1 !=  '') {
-         response = await axios.post('https://api-crm.nuofox.com/page',{
+        }
+        try {
+          response = await PageService.getPageDetails(payLoad)
+        } catch(err) {
+          response = err
+        }       
+
+      } else if (this.sort != '' && this.valMultipe.value1 == '') {
+          payLoad = {
+            page_tag: this.tag,
+            section_tag: this.sectionTag,
+            product_tag: this.productTag,
+            get_main_page: 0,
+            sub_page: [{
+              tag: this.subPageTag,
+              params: {
+                sort: this.sort,
+                sort_col: this.sortColTag,
+                offset: this.offset,
+                limit: this.pageSize
+              }
+            }]
+          }
+        try {
+          response = await PageService.getPageDetails(payLoad)
+        } catch(err) {
+          response = err
+        }   
+      } else if (this.sort == '' && this.valMultipe.value1 != '') {
+        payLoad = {
           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
@@ -645,15 +666,15 @@ export default {
               limit: this.pageSize
             }
           }]
-        },
-        {
-          headers: {
-          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-          },
-        })
-      } else if(this.sort != '' && this.valMultipe.value1 != '') {
-          response = await axios.post('https://api-crm.nuofox.com/page',{
-          page_tag: this.tag,
+        }
+        try {
+          response = await PageService.getPageDetails(payLoad)
+        } catch(err) {
+          response = err
+        }   
+      } else if (this.sort != '' && this.valMultipe.value1 != '') {
+        payLoad = {
+           page_tag: this.tag,
           section_tag: this.sectionTag,
           product_tag: this.productTag,
           get_main_page: 0,
@@ -668,17 +689,17 @@ export default {
               limit: this.pageSize
             }
           }]
-        },
-        {
-          headers: {
-          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-          },
-        })
+        }
+        try {
+          response = await PageService.getPageDetails(payLoad)
+        } catch(err) {
+          response = err
+        }   
       }
       this.transition = true;
       this.showTable = false;
       this.table = response.data.data[0]
-      if(this.table.count) {
+      if (this.table.count) {
         this.orderCount = this.table.count
       }
       this.$nextTick(() => {
@@ -687,26 +708,26 @@ export default {
       this.transition = false;
     },
     getClassByCode(color) {
-      if(color == 'link') {
+      if (color == 'link') {
         return 'link-button'
-      } else if(color == 'safe') {
+      } else if (color == 'safe') {
         return 'safe-button'
-      } else if(color == 'medium') {
+      } else if (color == 'medium') {
         return 'medium-button'
-      } else if(color == 'danger') {
+      } else if (color == 'danger') {
         return 'danger-button'
-      } else if(color == 'inactive') {
+      } else if (color == 'inactive') {
         return 'inactive-button'
-      } else if(color == 'white') {
+      } else if (color == 'white') {
         return 'white-button'
       }
     },
     setTags() {
-      if(this.$store.state.profileData.data.data.products) {
+      if (this.$store.state.profileData.data.data.products) {
         for (let i = 0; i < this.$store.state.profileData.data.data.products.length; i++) {
           for (let j = 0; j < this.$store.state.profileData.data.data.products[i].sections.length; j++) {
             for (let k = 0; k < this.$store.state.profileData.data.data.products[i].sections[j].pages.length; k++) {
-              if(this.$store.state.profileData.data.data.products[i].sections[j].pages[k].slug === this.$route.params.pageSlug) {
+              if (this.$store.state.profileData.data.data.products[i].sections[j].pages[k].slug === this.$route.params.pageSlug) {
                 this.tag = this.$store.state.profileData.data.data.products[i].sections[j].pages[k].tag
                 this.sectionTag = this.$store.state.profileData.data.data.products[i].sections[j].tag
                 this.productTag = this.$store.state.profileData.data.data.products[i].tag
@@ -717,72 +738,80 @@ export default {
       }
     },
     async buttonAction(subPage, id) {
+      let body = {}
+      let response
       this.modalValue = []
       this.roleId = []
       let payLoad = {}
       this.rowId = id;
       payLoad[subPage.params[0].tag] = id;
-      
-      let response = await axios.post('https://api-crm.nuofox.com/page',{
-          page_tag: this.tag,
-          section_tag: this.sectionTag,
-          product_tag: this.productTag,
-          get_main_page: 0,
-          sub_page: [{
-            tag: subPage.tag,
-            params: payLoad,
-          }]
-        },
-        {
-          headers: {
-          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-          },
-        })
-        this.modalData = response.data.data[0]
-        for(let i = 0; i < this.modalData.components.length; i++) {
-          if(this.modalData.components[i].element == 'input-text') {
-            this.modalValue[i] = this.modalData.components[i].default_value;
-          } else if(this.modalData.components[i].element == 'input-checkbox') {
-            if(this.modalData.components[i].default_value == 1) {
-              this.roleId.push(true)
-            } else this.roleId.push(false)
-          } 
+
+      body = {
+        page_tag: this.tag,
+        section_tag: this.sectionTag,
+        product_tag: this.productTag,
+        get_main_page: 0,
+        sub_page: [{
+          tag: subPage.tag,
+          params: payLoad,
+        }]
+      }
+      try {
+        response = await PageService.getPageDetails(body)
+      } catch(err) {
+        response = err
+      }
+      this.modalData = response.data.data[0]
+      for (let i = 0; i < this.modalData.components.length; i++) {
+        if (this.modalData.components[i].element == 'input-text') {
+          this.modalValue[i] = this.modalData.components[i].default_value;
+        } else if (this.modalData.components[i].element == 'input-checkbox') {
+          // if (this.modalData.components[i].default_value == 1) {
+          //   this.roleId.push(true)
+          // } else this.roleId.push(false)
+          if(this.modalData.components[i].choices) {
+            for(let j=0; j<this.modalData.components[i].choices.length; j++) {
+              this.roleId.push(false)
+            }
+          }
         }
-        this.activePrompt1 = true;
+      }
+      this.activePrompt1 = true;
     },
     async buttonAction2(subPage) {
-      let response = await axios.post('https://api-crm.nuofox.com/page',{
-          page_tag: this.tag,
-          section_tag: this.sectionTag,
-          product_tag: this.productTag,
-          get_main_page: 0,
-          sub_page: [{
-            tag: subPage.tag,
-            params: {},
-          }]
-        },
-        {
-          headers: {
-          Authorization: "Bearer " + this.$store.state.profileData.data.data.token
-          },
-        })
-        this.modalData = response.data.data[0]
-        this.activePrompt1 = true;
+      let response
+      let body = {
+        page_tag: this.tag,
+        section_tag: this.sectionTag,
+        product_tag: this.productTag,
+        get_main_page: 0,
+        sub_page: [{
+          tag: subPage.tag,
+          params: {},
+        }]
+      }
+      try {
+        response = await PageService.getPageDetails(body)
+      } catch(err) {
+        response = err
+      }
+      this.modalData = response.data.data[0]
+      this.activePrompt1 = true;
     },
     showPrompt(id, name) {
       this.activePrompt = true;
       this.filterColTag = id;
       this.filterColName = name;
     },
-     showPrompt2(id, name) {
+    showPrompt2(id, name) {
       this.prompt = true;
       this.filterColTag = id;
       this.filterColName = name;
     },
     async Sort(number, tag, pageTag, colName) {
       this.sortColTag = tag,
-      this.sort = number
-        if(number == 1) {
+        this.sort = number
+      if (number == 1) {
         this.tableText = 'Sorted By' + ' Descending on ' + colName
       } else {
         this.tableText = 'Sorted By' + ' Ascending on ' + colName
@@ -799,10 +828,10 @@ export default {
         tableText2: this.tableText2
       }
       this.$store.commit('routeData', value)
-      await this.getTableData();  
+      await this.getTableData();
     },
     async filter(pageTag) {
-      this.tableText2 = 'Filtered ' + this.filterColName + " by " + '"' + this.valMultipe.value1 + '"' 
+      this.tableText2 = 'Filtered ' + this.filterColName + " by " + '"' + this.valMultipe.value1 + '"'
       let value = {}
       value[this.subPageTag] = {
         sort: this.sort,
@@ -820,16 +849,16 @@ export default {
     acceptAlert() {
       this.clearValMultiple();
       this.$vs.notify({
-        color:'success',
-        title:'Accept Selected',
-        text:'search successful'
+        color: 'success',
+        title: 'Accept Selected',
+        text: 'search successful'
       })
     },
-    close(){
+    close() {
       this.$vs.notify({
-        color:'danger',
-        title:'Closed',
-        text:'You closed search!'
+        color: 'danger',
+        title: 'Closed',
+        text: 'You closed search!'
       })
     },
     clearValMultiple() {
@@ -859,7 +888,9 @@ export default {
         eventAction: 'Clicked',
         eventLabel: 'Swap Orders'
       });
-      this.$router.push({ path: "/" + this.$route.params.productSlug + "/" + this.$route.params.sectionSlug + "/" + this.$route.params.pageSlug + "/" + this.table.sub_page_tag});
+      this.$router.push({
+        path: "/" + this.$route.params.productSlug + "/" + this.$route.params.sectionSlug + "/" + this.$route.params.pageSlug + "/" + this.table.sub_page_tag
+      });
     },
     getMaxPages() {
       return 5;
@@ -945,17 +976,29 @@ export default {
     },
     expandRowAfterClick() {
       var trExpand = document.getElementsByClassName("tr-expand");
-        Array.from(trExpand).forEach(trItem => {
-          trItem.children[0].setAttribute("colspan", "12");
-        });
+      Array.from(trExpand).forEach(trItem => {
+        trItem.children[0].setAttribute("colspan", "12");
+      });
     },
     clickRow(event) {
-      for(var x = 0; x<this.table.main_columns.length; x++) {
-        if(this.table.main_columns[x].col_tag === 'id') {
+      this.showRowTable = true;
+      for (var x = 0; x < this.table.main_columns.length; x++) {
+        if (this.table.main_columns[x].col_tag === 'id') {
           console.log(x)
           var tableRowId = parseInt(event.currentTarget.rowIndex) - 1
           this.rowId = this.table.main_values[tableRowId][x]
           break;
+        }
+      }
+      for (var y = 0; y < this.table.secondary_values.length; y++) {
+        let count = 0;
+        for (var z = 0; z < this.table.secondary_values[y].length; z++) {
+          if (this.table.secondary_values[y][z] == null) {
+            count++;
+          }
+        }
+        if (count === this.table.secondary_values[y].length) {
+          this.showRowTable = false;
         }
       }
       var classList = event.target.className.split(" ");
@@ -995,7 +1038,7 @@ export default {
       }
     },
   },
-  computed: { 
+  computed: {
     getPagesCount() {
       var maxItems = parseFloat(this.pageSize);
       return Math.ceil(this.orderCount / maxItems);
@@ -1018,14 +1061,14 @@ export default {
     }
   },
   watch: {
-    activePage: async function() {
+    activePage: async function () {
       await this.getOffset();
     },
-    pageSize: async function() {
+    pageSize: async function () {
       await this.getTableData();
     },
 
-    "$store.state.theme": async function() {
+    "$store.state.theme": async function () {
       this.showTable = false;
       await this.getTableData();
       this.showTable = true;
@@ -1322,5 +1365,44 @@ export default {
 }
 #table-swap .con-vs-dialog .vs-dialog-dark {
   background: transparent !important;
+}
+</style>
+<style>
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }
 </style>
