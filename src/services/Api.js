@@ -58,18 +58,6 @@ export default () => {
             "Bearer " + store.state.token;
           return axios.request(originalRequest);
         });
-      } else if (error.response.status === 403) {
-        store.dispatch("logout");
-        if (router.currentRoute.name === "login") {
-          return Promise.reject(error.response);
-        } else {
-          store.dispatch("showModalWithOptions", {
-            name: "newIp",
-            params: {
-              email: ""
-            }
-          })
-        }
       } else {
         // analytics.track('Error in API response', {
         //   location: response.request.responseURL

@@ -26,35 +26,36 @@
                   <div class="" v-if="item.element == 'static-text'">
                     <span v-if="item.value">{{item.title}} : {{item.value}}</span>
                     <span class="" v-else-if="item.element == 'static-text' && item.default_value">{{item.title}} : {{item.default_value}}</span>
-                     <span class="" v-if="item.description">
-                      <i class="icon-info-circle tooltip text-xs">i<span class="tooltiptext">{{item.description}}</span></i>
+                     <span class="tooltip text-xs" v-if="item.description">
+                      <img src="./info.svg" class="icon-info-circle text-xs"><span class="tooltiptext">{{item.description}}</span>
                     </span>
                   </div>
                   <div v-if="item.element == 'input-text'">
-                      <span class="">{{item.title}} :</span>   
-                       <span class="" v-if="item.description">
-                        <i class="tooltip text-xs">i<span class="tooltiptext">{{item.description}}</span></i>
+                      <span class="">{{item.title}}</span>   
+                      <span class="tooltip text-xs" v-if="item.description">
+                        <img src="./info.svg" class="icon-info-circle text-xs"><span class="tooltiptext">{{item.description}}</span>
                       </span>
                     <vs-input type="input" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
                   </div>
                   <div v-if="item.element == 'input-selectbox'">
                     <span class="">{{item.title}} :</span>
-                     <span class="" v-if="item.description">
-                      <i class="tooltip text-xs">i<span class="tooltiptext">{{item.description}}</span></i>
+                     <span class="tooltip text-xs" v-if="item.description">
+                      <img src="./info.svg" class="icon-info-circle text-xs"><span class="tooltiptext">{{item.description}}</span>
                     </span>                 
                     <vs-radio val="1">
-                      Option A
+                      
                     </vs-radio> 
                   </div>
                   <div v-if="item.element == 'input-checkbox'">
                     <span class="">{{item.title}}</span>
                     <span class="tooltip" v-if="item.description">
-                      <span class="" v-if="item.description">
-                      <i class="icon-info-circle tooltip text-xs">.  i<span class="tooltiptext">{{item.description}}</span></i>
+                      <span class="tooltip" v-if="item.description">
+                      <img src="./info.svg" class="icon-info-circle text-xs"><span class="tooltiptext">{{item.description}}</span>
                     </span>
                     </span> 
                     <div v-for="(choice,y) in item.choices" :key='y'>
                       <vs-checkbox v-model="roleId[y]" :placeholder="item.choices[y]" class="mt-4 mb-2 w-full">
+                        {{choice}}
                       </vs-checkbox>
                     </div>  
                   </div>
@@ -151,7 +152,7 @@
               <template vs-w="12" class="expand-user" slot="expand">
                 <div style="display: block; width: 100%;">
                   <div style="width:80%; margin: auto;">
-                    <table v-if="showRowTable" style="width: 60%;">
+                    <table style="width: 60%;">
                       <thead>
                         <th class="pl-5 secondary-col-head" v-for="(item, x) in table.secondary_columns" :key="x">
                           <div class="">{{item.title}}</div>
@@ -160,18 +161,18 @@
                       <tbody>
                         <td v-for="(data,c) in table.secondary_values[index]" :key="c"  class="secondary-val-head">
                           <a  v-if="data && table.secondary_columns[c].style && table.secondary_columns[c].style.is_underlined == true" :href="data"></a>
-                          <span v-else-if="data && table.secondary_columns[c].style == null"> {{data}} </span>
+                          <span style="text-overflow: ellipsis;" v-else-if="data && table.secondary_columns[c].style == null"> {{data}} </span>
                           <span v-else> -- </span>
                         </td>
                       </tbody>  
                     </table>
                   </div>
-                  <div style="margin-top: 5%; width: 80%; margin: auto; padding-top: 5%;" class="flex">
+                  <div style="margin-top: 5%; width: 80%; margin: auto; padding-top: 2%;" class="flex">
                     <div class="pl-5" v-for="(button, y) in table.action_columns" :key="y">
                       <button v-if="table.action_values[index][y] && button.sub_page" :class="getClassByCode(button.style.color)" @click="buttonAction(button.sub_page, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
-                        font-size: 1rem; color: #ffffff; border-radius: 6px; cursor: pointer;">{{button.title}}</button>
+                        font-size: 0.75rem; color: #ffffff; border-radius: 6px; cursor: pointer;">{{button.title}}</button>
                       <button v-else-if="table.action_values[index][y] && button.action" :class="getClassByCode(button.style.color)" @click="directAction(button.action, table.main_values[index][0])" style="margin-top: -3.5%; margin-right: 10%; padding: .75rem 2rem; font-family: Montserrat, Helvetica, Arial, sans-serif;
-                        font-size: 1rem; color: #ffffff; border-radius: 6px; cursor: pointer;">{{button.title}}</button>
+                        font-size: 0.75rem; color: #ffffff; border-radius: 6px; cursor: pointer;">{{button.title}}</button>
                     </div>
                   </div>
                 </div>
@@ -981,7 +982,7 @@ export default {
       });
     },
     clickRow(event) {
-      this.showRowTable = true;
+      // this.showRowTable = true;
       for (var x = 0; x < this.table.main_columns.length; x++) {
         if (this.table.main_columns[x].col_tag === 'id') {
           console.log(x)
@@ -990,17 +991,17 @@ export default {
           break;
         }
       }
-      for (var y = 0; y < this.table.secondary_values.length; y++) {
-        let count = 0;
-        for (var z = 0; z < this.table.secondary_values[y].length; z++) {
-          if (this.table.secondary_values[y][z] == null) {
-            count++;
-          }
-        }
-        if (count === this.table.secondary_values[y].length) {
-          this.showRowTable = false;
-        }
-      }
+      // for (var y = 0; y < this.table.secondary_values.length; y++) {
+      //   let count = 0;
+      //   for (var z = 0; z < this.table.secondary_values[y].length; z++) {
+      //     if (this.table.secondary_values[y][z] == null) {
+      //       count++;
+      //     }
+      //   }
+      //   if (count === this.table.secondary_values[y].length) {
+      //     this.showRowTable = false;
+      //   }
+      // }
       var classList = event.target.className.split(" ");
       if (classList.includes("vs-icon")) {
         event.target.parentNode.parentElement.click();
@@ -1077,9 +1078,16 @@ export default {
 };
 </script>
 <style lang="scss">
+.icon-info-circle {
+  height: 15px;
+  vertical-align: middle;
+  margin-left: 2%;
+  padding-bottom: 7px;
+
+}
 .secondary-col-head {
   border: 1px solid; 
-  font-size: 1.25rem; 
+  font-size: 0.90rem; 
   text-align: center; 
   max-width: 150px;
 }
@@ -1375,19 +1383,20 @@ export default {
 
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 120px;
+  width: max-content;
   background-color: #555;
   color: #fff;
   text-align: center;
   border-radius: 6px;
-  padding: 5px 0;
+  padding: 5px 5px;
   position: absolute;
   z-index: 1;
-  bottom: 125%;
+  bottom: 90%;
   left: 50%;
   margin-left: -60px;
   opacity: 0;
   transition: opacity 0.3s;
+  font-style: italic;
 }
 
 .tooltip .tooltiptext::after {

@@ -474,11 +474,11 @@ export default {
     }
 
     .vue-form-wizard {
-        /deep/ .wizard-header {
+         .wizard-header {
             padding: 0;
         }
 
-        /deep/ .wizard-tab-content {
+         .wizard-tab-content {
             padding-right: 0;
             padding-left: 0;
         }

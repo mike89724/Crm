@@ -69,7 +69,7 @@ const actions = {
       commit("user", '');
       this.$router.push('/pages/login')
 
-    } 
+    },
 
 
     // ////////////////////////////////////////////
