@@ -26,22 +26,22 @@
                   <div class="" v-if="item.element == 'static-text'">
                     <span v-if="item.value">{{item.title}} : {{item.value}}</span>
                     <span class="" v-else-if="item.element == 'static-text' && item.default_value">{{item.title}} : {{item.default_value}}</span>
-                     <span class="tooltip" v-if="item.description">
-                      <img src="./info.svg" class="info-circle  text-xs"><span class="tooltiptext">{{item.description}}</span></i>
+                     <span class="" v-if="item.description">
+                      <i class="icon-info-circle tooltip text-xs">i<span class="tooltiptext">{{item.description}}</span></i>
                     </span>
                   </div>
                   <div v-if="item.element == 'input-text'">
                       <span class="">{{item.title}} :</span>   
-                       <span class="tooltip" v-if="item.description">
-                        <img src="./info.svg" class="info-circle  text-xs"><span class="tooltiptext">{{item.description}}</span></i>
+                       <span class="" v-if="item.description">
+                        <i class="tooltip text-xs">i<span class="tooltiptext">{{item.description}}</span></i>
                       </span>
                     <vs-input type="input" :placeholder="item.default_value" v-model="modalValue[index]" class="mt-4 mb-2 w-full" />
                   </div>
                   <div v-if="item.element == 'input-selectbox'">
                     <span class="">{{item.title}} :</span>
-                     <span class="tooltip" v-if="item.description">
-                      <img src="./info.svg" class="info-circle  text-xs"><span class="tooltiptext">{{item.description}}</span></i>
-                    </span>            
+                     <span class="" v-if="item.description">
+                      <i class="tooltip text-xs">i<span class="tooltiptext">{{item.description}}</span></i>
+                    </span>                 
                     <vs-radio val="1">
                       Option A
                     </vs-radio> 
@@ -49,13 +49,12 @@
                   <div v-if="item.element == 'input-checkbox'">
                     <span class="">{{item.title}}</span>
                     <span class="tooltip" v-if="item.description">
-                      <span class="tooltip" v-if="item.description">
-                      <img src="./info.svg" class="info-circle  text-xs"><span class="tooltiptext">{{item.description}}</span></i>
+                      <span class="" v-if="item.description">
+                      <i class="icon-info-circle tooltip text-xs">.  i<span class="tooltiptext">{{item.description}}</span></i>
                     </span>
                     </span> 
                     <div v-for="(choice,y) in item.choices" :key='y'>
-                      <vs-checkbox v-model="roleId[y]" class="mt-4 mb-2 w-full">
-                        {{choice}}
+                      <vs-checkbox v-model="roleId[y]" :placeholder="item.choices[y]" class="mt-4 mb-2 w-full">
                       </vs-checkbox>
                     </div>  
                   </div>
@@ -1078,12 +1077,6 @@ export default {
 };
 </script>
 <style lang="scss">
-.info-circle {
-  height: 15px;
-  vertical-align: middle;
-  padding-bottom: 2px;
-  margin-left: 6px;
-}
 .secondary-col-head {
   border: 1px solid; 
   font-size: 1.25rem; 

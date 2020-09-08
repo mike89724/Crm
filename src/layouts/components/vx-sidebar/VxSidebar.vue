@@ -278,7 +278,7 @@ export default {
     },
     methods: {
       logout() {
-        this.$store.dispatch('logout')
+        this.$store.dispatch(logout)
         // this.$store.commit('routeData', {})
         // this.$store.commit('profileData', {data: {data: {
         //   products: [

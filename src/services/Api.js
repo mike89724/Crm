@@ -41,11 +41,9 @@ export default () => {
             .catch(error => {
               store.dispatch("logout");
               isRefreshing = false;
-              vs.$notify(
-                text = "Your session has expired. Please login again to continue",
-                color='danger',
-                        title='Error',
-                        // text='Error while logging in!'
+              vue.$showSnackbar(
+                "Your session has expired. Please login again to continue",
+                "error"
               );
               return Promise.reject(error.response);
             });

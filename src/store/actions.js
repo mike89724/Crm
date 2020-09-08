@@ -13,7 +13,6 @@ import TokenPriceService from '@/services/TokenPriceService';
 import LoanDetailService from '@/services/LoanDetailService.js';
 import TradeDetailService from '@/services/TradeDetailService.js';
 import SwapDetailService from '@/services/SwapDetailService.js';
-import router from "../../src/router.js";
 const actions = {
 
     // ////////////////////////////////////////////
@@ -68,9 +67,9 @@ const actions = {
       commit("token", "");
       commit("resfreshToken", "");
       commit("user", '');
-      router.push('/pages/login')
+      this.$router.push('/pages/login')
 
-    },
+    } 
 
 
     // ////////////////////////////////////////////
