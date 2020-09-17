@@ -119,6 +119,7 @@
                       @vs-accept="filter(table.sub_page_tag)"
                       :vs-active.sync="activePrompt">
                       <div class="">
+                        a
                         
                         <vs-input placeholder="Search" v-model="valMultipe.value1" class="mt-4 mb-2 w-full" />
                       </div>
